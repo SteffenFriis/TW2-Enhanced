@@ -7,6 +7,8 @@
 // @run-at      document-start
 // @include     https://*.tribalwars2.com/game.php*
 // @icon        https://i.imgur.com/0NuESU2.png
+// @downloadURL  https://raw.githubusercontent.com/SteffenFriis/TW2-Enhanced/main/TW2-Enhanced.js
+// @updateURL    https://raw.githubusercontent.com/SteffenFriis/TW2-Enhanced/main/TW2-Enhanced.js
 // ==/UserScript==
 
 /*!
