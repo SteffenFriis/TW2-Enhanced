@@ -2,7 +2,7 @@
 // @name        TW2 Enhanced
 // @description Make your experience with Tribal Wars 2 more enhanced and better. You're welcome!
 // @namespace   kin0x/userscripts
-// @version     1.0.0
+// @version     1.0.1
 // @grant       unsafeWindow
 // @run-at      document-start
 // @include     https://*.tribalwars2.com/game.php*
@@ -12,7 +12,7 @@
 // ==/UserScript==
 
 /*!
- * TW2 Enhanced 1.0
+ * TW2 Enhanced 1.0.1
  * 23 Jun 2026
  * Developed by Kin0x
  */
