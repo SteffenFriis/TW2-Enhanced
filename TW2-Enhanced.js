@@ -2,20 +2,14 @@
 // @name        TW2 Enhanced
 // @description Make your experience with Tribal Wars 2 more enhanced and better. You're welcome!
 // @namespace   kin0x/userscripts
-// @version     1.0.1
+// @version     1.0.2
 // @grant       unsafeWindow
 // @run-at      document-start
 // @include     https://*.tribalwars2.com/game.php*
-// @icon        https://i.imgur.com/0NuESU2.png
+// @icon        https://raw.githubusercontent.com/SteffenFriis/TW2-Enhanced/870017eb2adda2ef124ae9bef041dd949cf22129/images/btn-menu.png
 // @downloadURL  https://raw.githubusercontent.com/SteffenFriis/TW2-Enhanced/main/TW2-Enhanced.js
 // @updateURL    https://raw.githubusercontent.com/SteffenFriis/TW2-Enhanced/main/TW2-Enhanced.js
 // ==/UserScript==
-
-/*!
- * TW2 Enhanced 1.0.1
- * 23 Jun 2026
- * Developed by Kin0x
- */
 
 (function awaitInjector (window, main) {
     if (typeof window.injector === 'undefined') {
@@ -195,11 +189,6 @@ define('two/utils', [
 ) {
     const utils = {};
 
-    /**
-     * Gera um número aleatório aproximado da base.
-     *
-     * @param {Number} base - Número base para o calculo.
-     */
     utils.randomSeconds = function (base) {
         if (!base) {
             return 0;
@@ -213,11 +202,6 @@ define('two/utils', [
         return Math.round(Math.random() * (max - min) + min);
     };
 
-    /**
-     * Converte uma string com um tempo em segundos.
-     *
-     * @param {String} time - Tempo que será convertido (hh:mm:ss)
-     */
     utils.time2seconds = function (time) {
         time = time.split(':');
         time[0] = parseInt(time[0], 10) * 60 * 60;
@@ -229,12 +213,6 @@ define('two/utils', [
         });
     };
 
-    /**
-     * Emite notificação nativa do jogo.
-     *
-     * @param {String} type - success || error
-     * @param {String} message - Texto a ser exibido
-     */
     utils.notif = function (type, message) {
         $rootScope.$broadcast(eventTypeProvider.NOTIFICATION_DISABLE);
         $rootScope.$broadcast(eventTypeProvider.NOTIFICATION_ENABLE);
@@ -249,43 +227,20 @@ define('two/utils', [
     };
 
 
-    /**
-     * Gera uma string com nome e coordenadas da aldeia
-     *
-     * @param {Object} village - Dados da aldeia
-     * @return {String}
-     */
+
     utils.genVillageLabel = function (village) {
         return village.name + ' (' + village.x + '|' + village.y + ')';
     };
 
-    /**
-     * Verifica se uma coordenada é válida.
-     * 00|00
-     * 000|00
-     * 000|000
-     * 00|000
-     *
-     * @param {String} xy - Coordenadas
-     * @return {Boolean}
-     */
     utils.isValidCoords = function (xy) {
         return /\s*\d{2,3}\|\d{2,3}\s*/.test(xy);
     };
 
-    /**
-     * Validação de horario e data de envio. Exmplo: 23:59:00:999 30/12/2016
-     *
-     * @param  {String}  dateTime
-     * @return {Boolean}
-     */
     utils.isValidDateTime = function (dateTime) {
         return /^\s*([01][0-9]|2[0-3]):[0-5]\d:[0-5]\d(:\d{1,3})? (0[1-9]|[12][0-9]|3[0-1])\/(0[1-9]|1[0-2])\/\d{4}\s*$/.test(dateTime);
     };
 
-    /**
-     * Inverte a posição do dia com o mês.
-     */
+
     utils.fixDate = function (dateTime) {
         const dateAndTime = dateTime.trim().split(' ');
         const time = dateAndTime[0];
@@ -294,23 +249,10 @@ define('two/utils', [
         return time + ' ' + date[1] + '/' + date[0] + '/' + date[2];
     };
 
-    /**
-     * Gera um id unico
-     *
-     * @return {String}
-     */
     utils.guid = function () {
         return Math.floor((Math.random()) * 0x1000000).toString(16);
     };
 
-    /**
-     * Obtem o timestamp de uma data em string.
-     * Formato da data: mês/dia/ano
-     * Exmplo de entrada: 23:59:59:999 12/30/2017
-     *
-     * @param  {String} dateString - Data em formato de string.
-     * @return {Number} Timestamp (milisegundos)
-     */
     utils.getTimeFromString = function (dateString, offset) {
         const dateSplit = utils.fixDate(dateString).split(' ');
         const time = dateSplit[0].split(':');
@@ -330,11 +272,7 @@ define('two/utils', [
         return _date.getTime() + (offset || 0);
     };
 
-    /**
-     * Formata milisegundos em hora/data
-     *
-     * @return {String} Data e hora formatada
-     */
+
     utils.formatDate = function (ms, format) {
         return $filter('readableDateFilter')(
             ms,
@@ -345,11 +283,7 @@ define('two/utils', [
         );
     };
 
-    /**
-     * Obtem a diferença entre o timezone local e do servidor.
-     *
-     * @type {Number}
-     */
+
     utils.getTimeOffset = function () {
         const localDate = $timeHelper.gameDate();
         const localOffset = localDate.getTimezoneOffset() * 1000 * 60;
@@ -394,16 +328,7 @@ define('two/utils', [
         return list;
     };
 
-    /**
-     * @param {Object} origin - Objeto da aldeia origem.
-     * @param {Object} target - Objeto da aldeia alvo.
-     * @param {Object} units - Exercito usado no ataque como referência
-     * para calcular o tempo.
-     * @param {String} type - Tipo de comando (attack,support,relocate)
-     * @param {Object} officers - Oficiais usados no comando (usados para efeitos)
-     *
-     * @return {Number} Tempo de viagem
-     */
+
     utils.getTravelTime = function (origin, target, units, type, officers, useEffects) {
         const targetIsBarbarian = !target.character_id;
         const targetIsSameTribe = target.character_id && target.tribe_id &&
@@ -611,1209 +536,6 @@ define('two/language', [
     let initialized = false;
     // eslint-disable-next-line
     const languages = {
-    "cs_cz": {
-        "about": {
-            "contact": "Contact",
-            "email": "E-mail",
-            "links": "Project links",
-            "source_code": "Source Code",
-            "issues_suggestions": "Issues/suggestions",
-            "translations": "Translations"
-        },
-        "attack_view": {
-            "filter_types": "Types",
-            "filter_show_attacks_tooltip": "Show attacks",
-            "filter_show_supports_tooltip": "Show supports",
-            "filter_show_relocations_tooltip": "Show relocations",
-            "filter_incoming_units": "Incoming Units",
-            "commands_copy_arrival_tooltip": "Copy arrival date.",
-            "commands_copy_backtime_tooltip": "Copy backtime date.",
-            "commands_set_remove_tooltip": "Set a CommandQueue to remove all troops before the attack hit.",
-            "command_type_tooltip": "Command Type",
-            "slowest_unit_tooltip": "Slowest Unit",
-            "command_type": "CT",
-            "slowest_unit": "SU",
-            "actions": "Actions",
-            "no_incoming": "No commands incoming.",
-            "copy": "Copy",
-            "current_only_tooltip": "Current village only"
-        },
-        "auto_collector": {
-            "description": "Automatické Ukládání či Přesun surovin do druhé vesnice.",
-            "activated": "Automatické ukládání aktivováno",
-            "deactivated": "Automatické ukládání deaktivováno"
-        },
-        "auto_minter": {
-            "enabled_groups": "Mint coins only on villages with the group",
-            "preserve_wood": "Preserve village's wood",
-            "preserve_clay": "Preserve village's clay",
-            "preserve_iron": "Preserve village's iron",
-            "check_interval": "Interval: Mint coins every"
-        },
-        "builder_queue": {
-            "started": "BuilderQueue started",
-            "stopped": "BuilderQueue stopped",
-            "settings": "Settings",
-            "settings_village_groups": "Build only on villages with the group",
-            "settings_building_sequence": "Building sequence",
-            "settings_building_sequence_final": "Buildings final levels",
-            "settings_priorize_farm": "Priorize farm if it's full",
-            "settings_saved": "Settings saved!",
-            "logs_no_builds": "No builds started",
-            "logs_clear": "Clear logs",
-            "sequences": "Sequences",
-            "sequences_move_up": "Move up",
-            "sequences_move_down": "Move down",
-            "sequences_add_building": "Add building",
-            "sequences_select_edit": "Select a sequence to edit",
-            "sequences_edit_sequence": "Edit sequence",
-            "select_group": "Select a group",
-            "add_building_success": "%d has added at position %d",
-            "add_building_limit_exceeded": "%d reached maximum level (%d)",
-            "position": "Position",
-            "remove_building": "Remove building from list",
-            "clone": "Clone",
-            "remove_sequence": "Remove selected sequence",
-            "name_sequence_min_lenght": "The sequence name must have at least 3 character.",
-            "sequence_created": "New sequence %d created.",
-            "sequence_updated": "Sequence %d updated.",
-            "sequence_removed": "Sequence %d removed.",
-            "error_sequence_exists": "This sequence already exists.",
-            "error_sequence_no_exists": "This sequence doesn't exist.",
-            "error_sequence_invalid": "Some sequence's value is invalid.",
-            "logs_cleared": "Logs cleared.",
-            "create_sequence": "Create a sequence",
-            "settings_preserve_resources": "Preserve village's resources",
-            "settings_preserve_wood": "Preserve village's wood",
-            "settings_preserve_clay": "Preserve village's clay",
-            "settings_preserve_iron": "Preserve village's iron",
-            "discard_changes_title": "Unsaved sequence",
-            "discard_changes_text": "The selected sequence have unsaved changes. Are you sure you want to discard the changes?",
-            "clone_warn_changed_sequence_title": "Changed sequence",
-            "clone_warn_changed_sequence_text": "The sequence you are trying to clone was changed. If you accept, the old version will be cloned.",
-            "clone_sequence": "Clone selected sequence",
-            "amount": "Amount",
-            "empty_sequence": "Empty sequence"
-        },
-        "builder_queue_add_building_modal": {
-            "title": "Add new building"
-        },
-        "builder_queue_name_sequence_modal": {
-            "title": "Sequence name"
-        },
-        "builder_queue_remove_sequence_modal": {
-            "title": "Remove sequence",
-            "text": "Are you sure to remove this sequence? If this sequence is the active one, another sequence will be selected and the BuilderQueue stopped."
-        },
-        "command_queue": {
-            "title": "CommandQueue",
-            "attack": "Záchvat",
-            "support": "Podpěra, podpora",
-            "relocate": "převod",
-            "sent": "odesláno",
-            "activated": "aktivován",
-            "deactivated": "zakázán",
-            "expired": "vypršela",
-            "removed": "odstraněn",
-            "added": "přidané",
-            "general_clear": "Vymazat protokoly",
-            "general_next_command": "Další příkaz",
-            "add_basics": "Základní informace",
-            "add_origin": "Počáteční souřadnice",
-            "add_selected": "Aktivní vesnice",
-            "add_target": "Cílové souřadnice",
-            "add_map_selected": "Vybraná vesnice na mapě",
-            "date_type_arrive": "Příkaz dorazí k datu",
-            "date_type_out": "Příkaz opustit k datu",
-            "add_current_date": "Dnešní datum",
-            "add_current_date_plus": "Zvyšte datum za 100 milisekund.",
-            "add_current_date_minus": "Zkraťte datum za 100 milisekund.",
-            "add_travel_times": "Cestovní čas",
-            "add_date": "Čas schůzky",
-            "add_no_village": "vyberte vesnici ...",
-            "add_village_search": "Hledání vesnice ...",
-            "add_clear": "Vymazat pole",
-            "add_insert_preset": "Vložte předvolbu",
-            "queue_waiting": "Čekající příkazy",
-            "queue_none_added": "Nebyl přidán žádný příkaz.",
-            "queue_sent": "Příkazy odeslány",
-            "queue_none_sent": "Žádný příkaz odeslán.",
-            "queue_expired": "Příkazy, jejichž platnost vypršela",
-            "queue_none_expired": "Žádný příkaz nevypršel.",
-            "queue_remove": "Odebrat seznam formulářů příkazů",
-            "queue_filters": "Filtr příkazů",
-            "filters_selected_village": "Zobrazit pouze příkazy z vybrané vesnice",
-            "filters_barbarian_target": "Zobrazit jako cíl pouze příkazy s barbarskými vesnicemi",
-            "filters_attack": "Ukázat útoky",
-            "filters_support": "Zobrazit podpory",
-            "filters_relocate": "Zobrazit převody",
-            "filters_text_match": "Filtrovat podle textu ...",
-            "command_out": "Ven",
-            "command_time_left": "Zbývající čas",
-            "command_arrive": "Příchod",
-            "error_no_units_enough": "Žádné jednotky k odeslání příkazu!",
-            "error_not_own_village": "Původní vesnici nevlastníte vy!",
-            "error_origin": "Souřadnice původní vesnice neplatné!",
-            "error_target": "Souřadnice cílové vesnice jsou neplatné!",
-            "error_no_units": "Nejsou zadány žádné jednotky!",
-            "error_invalid_date": "Neplatné datum",
-            "error_already_sent_attack": "Tento útok už měl odejít",
-            "error_already_sent_support": "Tato podpora už měla zůstat",
-            "error_already_sent_relocate": "Toto přemístění mělo již opustit",
-            "error_relocate_disabled": "Přemístění není v tomto světě povoleno.",
-            "error_no_map_selected_village": "Na mapě není žádná vybraná vesnice.",
-            "error_remove_error": "Chyba při odebrání příkazu.",
-            "tab_add": "Přidat příkaz",
-            "tab_waiting": "Příkazy ve frontě",
-            "tab_logs": "Příkazové protokoly"
-        },
-        "farm_overflow": {
-            "open_report": "Otevřít zprávu",
-            "no_report": "Žádná zpráva",
-            "reports": "Zprávy",
-            "date": "Dává ti",
-            "status_time_limit": "Cíl je příliš daleko",
-            "status_command_limit": "Limit příkazu",
-            "status_full_storage": "Úložiště je plné",
-            "status_no_units": "Nejsou k dispozici žádné jednotky",
-            "status_abandoned_conquered": "Opuštěný dobytý",
-            "status_protected_village": "Cíl je chráněn",
-            "status_busy_target": "Cíl je pod útokem",
-            "status_no_targets": "K dispozici nejsou žádné cíle",
-            "status_target_cycle_end": "Cílový cyklus skončil",
-            "status_not_allowed_points": "Cílové body nejsou povoleny",
-            "status_unknown": "Neznámý stav",
-            "status_attacking": "Útočí",
-            "status_waiting_cycle": "Čekací cyklus",
-            "status_user_stop": "Zastaveno hráčem",
-            "status_expired_step": "Příkaz vypršel",
-            "not_loaded": "Není načten.",
-            "ignored_targets": "Ignorované cíle",
-            "no_ignored_targets": "Nic ignorováno",
-            "included_targets": "Zahrnuté cíle",
-            "no_included_targets": "Nic není zahrnuto",
-            "farmer_villages": "Farmářské vesnice",
-            "no_farmer_villages": "Žádné farmářské vesnice",
-            "last_status": "Poslední stav",
-            "attacking": "Útočí.",
-            "paused": "Pozastaveno.",
-            "command_limit": "Bylo dosaženo limitu 50 útoků, čeká na návrat.",
-            "last_attack": "Poslední útok",
-            "village_switch": "Přechod na vesnici",
-            "no_preset": "Žádné dostupné předvolby.",
-            "no_selected_village": "Žádné dostupné vesnice.",
-            "no_units": "Ve vesnici nejsou k dispozici žádné jednotky, čekající útoky se vracejí.",
-            "no_units_no_commands": "V žádné vesnici se nevracejí jednotky ani příkazy.",
-            "no_villages": "Žádné vesničky dostupné, čekající útoky se vracejí.",
-            "preset_first": "Nejprve nastavte předvolbu!",
-            "selected_village": "Vesnice vybrána",
-            "loading_targets": "Načítání cílů ...",
-            "checking_targets": "Kontrola cílů ...",
-            "restarting_commands": "Restartování příkazů ...",
-            "ignored_village": "přidán do ignorovaného seznamu",
-            "included_village": "přidán do seznamu",
-            "ignored_village_removed": "odstraněn ze seznamu ignorovaných",
-            "included_village_removed": "odstraněn ze seznamu",
-            "priority_target": "přidáno k prioritám.",
-            "analyse_targets": "Analýza cílů.",
-            "step_cycle_restart": "Restartování cyklu příkazů ..",
-            "step_cycle_end": "Seznam vesnic skončil a čekal na další běh.",
-            "step_cycle_end_no_villages": "K zahájení cyklu nejsou k dispozici žádné vesnice.",
-            "step_cycle_next": "Seznam vesnic skončil, další cyklus: %d.",
-            "step_cycle_next_no_villages": "K zahájení cyklu není k dispozici žádná vesnice, další cyklus: %d.",
-            "full_storage": "Sklad ve vesnici je plný.",
-            "farm_stopped": "FarmOverflow se zastavil.",
-            "farm_started": "FarmOverflow byl spuštěn.",
-            "groups_presets": "Skupiny a předvolby",
-            "presets": "Útok pomocí předvoleb",
-            "group_ignored": "Ignorujte vesnice ze skupiny",
-            "group_include": "Zahrňte vesnice ze skupin",
-            "group_only": "Útočte pouze s vesnicemi ze skupin",
-            "attack_interval": "Interval mezi útoky",
-            "preserve_command_slots": "Zachovat příkazové sloty",
-            "farmer_cycle_interval": "Interval mezi zemědělskými cykly",
-            "ignore_on_loss": "Ignorujte cíl, který způsobí ztrátu",
-            "ignore_full_storage": "Nepoužívejte farmy s vesnicemi s plným úložištěm",
-            "step_cycle_header": "Nastavení krokového cyklu",
-            "step_cycle": "Povolit krokový cyklus",
-            "step_cycle_notifs": "Oznámení cyklů",
-            "target_filters": "Cílové filtry",
-            "min_distance": "Cíle minimální vzdálenosti",
-            "max_distance": "Zaměřuje maximální vzdálenost",
-            "min_points": "Zaměřuje minimální počet bodů",
-            "max_points": "Zaměřuje maximální počet bodů",
-            "max_travel_time": "Maximální doba jízdy",
-            "logs_limit": "Maximální počet položek protokolu",
-            "event_attack": "Zobrazit protokoly úkolů o útocích",
-            "event_village_change": "Zobrazit protokoly úkolů o změnách vesnice",
-            "event_priority_add": "Zobrazit protokoly úkolů prioritních cílů",
-            "event_ignored_village": "Zobrazit protokoly úkolů ignorovaných vesnic",
-            "settings_saved": "Nastavení uloženo!",
-            "misc": "Smíšený",
-            "attack": "Záchvat",
-            "no_logs": "Nejsou zaregistrovány žádné protokoly",
-            "clear_logs": "Vymazat protokoly",
-            "reseted_logs": "Registrované protokoly byly odstraněny.",
-            "date_added": "Datum přidáno",
-            "multiple_attacks_interval": "Interval mezi útoky na stejný cíl",
-            "next_cycle_in": "Další cyklus začíná v",
-            "target_limit_per_village": "Limit cílů na vesnici",
-            "ignore_on_loss_tip": "Toto nastavení funguje pouze v případě, že je vybrána skupina pro ignorování.",
-            "farmer_behavior": "Zemědělci mohou poslat",
-            "allow_single_attack_each_target": "Jeden útok na každý cíl",
-            "allow_multiple_attack_each_target": "Několik útoků na každý cíl",
-            "target_behavior": "Cíle mohou přijímat",
-            "targets_allow_single_farmer": "Útoky od jednoho farmáře",
-            "targets_allow_multiple_farmers": "Útoky od více farmářů"
-        },
-        "minimap": {
-            "minimap": "Minimap",
-            "highlights": "Highlights",
-            "add": "Add highlight",
-            "remove": "Remove highlight",
-            "very_small": "Very small",
-            "small": "Small",
-            "big": "Big",
-            "very_big": "Very big",
-            "placeholder_search": "Search player/tribe",
-            "highlight_add_success": "Highlight added",
-            "highlight_add_error": "Specify a highlight first",
-            "highlight_update_success": "Highlight updated",
-            "highlight_remove_success": "Highlight removed",
-            "highlight_villages": "Villages",
-            "highlight_players": "Players",
-            "highlight_tribes": "Tribes",
-            "highlight_add_error_exists": "Highlight already exists!",
-            "highlight_add_error_no_entry": "Select a player/tribe first!",
-            "highlight_add_error_invalid_color": "Invalid color!",
-            "village": "Village",
-            "player": "Player",
-            "tribe": "Tribe",
-            "color": "Color (Hex)",
-            "tooltip_pick_color": "Select a color",
-            "misc": "Miscellaneous settings",
-            "colors_misc": "Miscellaneous colors",
-            "colors_diplomacy": "Diplomacy colors",
-            "settings_saved": "Settings saved!",
-            "settings_map_size": "Map size",
-            "settings_right_click_action": "Village's right click action",
-            "highlight_village": "Highlight village",
-            "highlight_player": "Highlight player",
-            "highlight_tribe": "Highlight tribe",
-            "settings_show_floating_minimap": "Show floating minimap",
-            "settings_show_view_reference": "Show view reference",
-            "settings_show_continent_demarcations": "Show continent demarcations",
-            "settings_show_province_demarcations": "Show province demarcations",
-            "settings_show_barbarians": "Show barbarian villages",
-            "settings_show_ghost_villages": "Show non-loaded villages",
-            "settings_show_only_custom_highlights": "Show only custom highlights",
-            "settings_highlight_own": "Highlight own villages",
-            "settings_highlight_selected": "highlight selected village",
-            "settings_highlight_diplomacy": "Auto highlight tribe diplomacies",
-            "settings_colors_background": "Minimap background",
-            "settings_colors_province": "Province demarcation",
-            "settings_colors_continent": "Continent demarcation",
-            "settings_colors_quick_highlight": "Quick highlight",
-            "settings_colors_tribe": "Own tribe",
-            "settings_colors_player": "Own villages",
-            "settings_colors_selected": "Selected village",
-            "settings_colors_ghost": "Non-loaded villages",
-            "settings_colors_ally": "Ally",
-            "settings_colors_pna": "PNA",
-            "settings_colors_enemy": "Enemy",
-            "settings_colors_other": "Other",
-            "settings_colors_barbarian": "Barbarian",
-            "settings_colors_view_reference": "View reference",
-            "settings_reset": "Settings reseted",
-            "tooltip_village": "Village",
-            "tooltip_village_points": "Village points",
-            "tooltip_player": "Player name",
-            "tooltip_player_points": "Player points",
-            "tooltip_tribe": "Tribe",
-            "tooltip_tribe_points": "Tribe points",
-            "tooltip_province": "Province name",
-            "no_highlights": "No highlights created",
-            "reset_confirm_title": "Reset settings",
-            "reset_confirm_text": "All settings gonna be reseted to the default settings.",
-            "reset_confirm_highlights_text": "Also, all highlights are going to be deleted.",
-            "default_village_colors_info": "Color of default villages like abandoned, allies, own tribe, etc. Are altered by the own game's settings panel."
-        },
-        "spy_recruiter": {
-            "enabled_groups": "Recruit spies only on villages with the group",
-            "preserve_wood": "Preserve village's wood",
-            "preserve_clay": "Preserve village's clay",
-            "preserve_iron": "Preserve village's iron",
-            "check_interval": "Interval: Recruit spies every",
-            "recruit_single_spy": "Recruit a single spy on each village every cycle?"
-        },
-        "common": {
-            "start": "Start",
-            "started": "Začal",
-            "pause": "Pauza",
-            "paused": "Pozastaveno",
-            "stop": "Stop",
-            "stopped": "Zastavil",
-            "status": "Postavení",
-            "none": "Žádný",
-            "info": "Informace",
-            "settings": "Nastavení",
-            "others": "Ostatní",
-            "village": "Vesnice",
-            "villages": "Vesnice",
-            "building": "Budova",
-            "buildings": "Budovy",
-            "level": "Úroveň",
-            "registers": "Protokoly",
-            "filters": "Filtry",
-            "add": "Přidat",
-            "waiting": "Čekání",
-            "attack": "Záchvat",
-            "support": "Podpěra, podpora",
-            "relocate": "Převod",
-            "activate": "aktivovat",
-            "deactivate": "Zakázat",
-            "units": "Jednotky",
-            "officers": "Důstojníci",
-            "origin": "Původ",
-            "target": [
-                "cílová",
-                "Cíle"
-            ],
-            "save": "Uložit",
-            "logs": "Protokoly",
-            "no-results": "Žádné výsledky ...",
-            "selected": "Vybraný",
-            "now": "Nyní",
-            "costs": "Náklady",
-            "duration": "Doba trvání",
-            "points": "Body",
-            "player": "Hráč",
-            "players": "Hráči",
-            "next_features": "Další funkce",
-            "misc": "Smíšený",
-            "colors": "Barvy",
-            "reset": "Resetovat",
-            "reset_settings": "Resetovat nastavení",
-            "reset_settings_confirmation": "Opravdu chcete obnovit nastavení?",
-            "here": "tady",
-            "disabled": "- Zakázáno -",
-            "cancel": "zrušení",
-            "actions": "Akce",
-            "remove": "Odstranit",
-            "started_at": "Začalo v",
-            "arrive": "Přijet",
-            "settings_saved": "Nastavení uloženo",
-            "settings_reseted": "Nastavení bylo obnoveno",
-            "discard": "Vyřadit",
-            "new_version": "TWOverflow aktualizován na verzi %d",
-            "check_changes": "Kliknutím sem zkontrolujete změny",
-            "firefox_shill": "Pokud chcete, aby skript fungoval správně na pozadí, použijte prohlížeč Firefox místo prohlížečů založených na prohlížeči Chrome.",
-            "error_invalid_interval": "Neplatný formát času pro %d.",
-            "readable_time_format": "Příklady formátu času: 1 minuta, 30 minut, 4 hodiny, 1 den."
-        }
-    },
-    "de_de": {
-        "about": {
-            "contact": "Kontakt",
-            "email": "E-Mail",
-            "links": "Projektlinks",
-            "source_code": "Quellcode",
-            "issues_suggestions": "Probleme/Vorschäge",
-            "translations": "Übersetzung"
-        },
-        "attack_view": {
-            "filter_types": "Typen",
-            "filter_show_attacks_tooltip": "Zeige Angriffe",
-            "filter_show_supports_tooltip": "Zeige Unterstützungen",
-            "filter_show_relocations_tooltip": "Zeige Umsiedlungen",
-            "filter_incoming_units": "Eintreffende Einheiten",
-            "commands_copy_arrival_tooltip": "Kopiere Ankunftsdatum.",
-            "commands_copy_backtime_tooltip": "Kopiere Datum der Rückkehr.",
-            "commands_set_remove_tooltip": "Erzeuge eine Befehlskette, um alle Truppen vor dem Angriff zu versenden.",
-            "command_type_tooltip": "Befehlstyp",
-            "slowest_unit_tooltip": "Langsamste Einheit",
-            "command_type": "AT",
-            "slowest_unit": "LE",
-            "actions": "Aktionen",
-            "no_incoming": "Keine eingehenden Befehle.",
-            "copy": "Kopiere",
-            "current_only_tooltip": "Nur aktuelles Dorf"
-        },
-        "auto_collector": {
-            "description": "Automatischer Ressourcensammler / Ausbau des zweiten Dorfs.",
-            "activated": "Automatischer Resourcensammler aktiviert",
-            "deactivated": "Automatischer Resourcensammler deaktiviert"
-        },
-        "auto_minter": {
-            "enabled_groups": "Präge Münzen nur in Dörfern dieser Gruppe",
-            "preserve_wood": "Holz im Dorf aufbewahren",
-            "preserve_clay": "Lehm im Dorf aufbewahren",
-            "preserve_iron": "Eisen im Dorf aufbewahren",
-            "check_interval": "Intervall: Präge Münzen alle"
-        },
-        "builder_queue": {
-            "started": "Automatischer Dorfausbau gestartet",
-            "stopped": "Automatischer Dorfausbau angehalten",
-            "settings": "Einstellungen",
-            "settings_village_groups": "Ausbau von Dörfern mit den Gruppen",
-            "settings_building_sequence": "Reihenfolge",
-            "settings_building_sequence_final": "Finale Gebäudestufen",
-            "settings_priorize_farm": "Bevorzuge volle Farmen",
-            "settings_saved": "Einstellungen gespeichert!",
-            "logs_no_builds": "Kein Ausbau gestartet",
-            "logs_clear": "Protokoll löschen",
-            "sequences": "Sequenzen",
-            "sequences_move_up": "Bewege nach oben",
-            "sequences_move_down": "Bewege nach unten",
-            "sequences_add_building": "Gebäudestufe hinzufügen",
-            "sequences_select_edit": "Sequenz zum Ändern wählen",
-            "sequences_edit_sequence": "Sequenz ändern",
-            "select_group": "Gruppe wählen",
-            "add_building_success": "%d wurde auf Platz %d hinzugefügt",
-            "add_building_limit_exceeded": "%d hat die Höchststufe erreicht (%d)",
-            "position": "Platz",
-            "remove_building": "Entferne Gebäudestufe aus der Sequenz",
-            "clone": "Kopieren",
-            "remove_sequence": "Lösche gewählte Sequenz",
-            "name_sequence_min_lenght": "Name muss mindestens aus 3 Zeichen bestehen.",
-            "sequence_created": "Neue Sequenz %d erstellt.",
-            "sequence_updated": "Sequenz %d aktualisiert.",
-            "sequence_removed": "Sequenz %d entfernt.",
-            "error_sequence_exists": "Diese Sequenz existiert bereits.",
-            "error_sequence_no_exists": "Diese Sequenz existiert nicht.",
-            "error_sequence_invalid": "Manche Werte dieser Sequenz sind ungültig.",
-            "logs_cleared": "Protokoll gelöscht.",
-            "create_sequence": "Sequenz erstellen",
-            "settings_preserve_resources": "Dorf-Ressourcen aufbewahren",
-            "settings_preserve_wood": "Holz im Dorf aufbewahren",
-            "settings_preserve_clay": "Lehm im Dorf aufbewahren",
-            "settings_preserve_iron": "Eisen im Dorf aufbewahren",
-            "discard_changes_title": "Unsaved sequence",
-            "discard_changes_text": "The selected sequence have unsaved changes. Are you sure you want to discard the changes?",
-            "clone_warn_changed_sequence_title": "Sequenz geändert",
-            "clone_warn_changed_sequence_text": "The sequence you are trying to clone was changed. If you accept, the old version will be cloned.",
-            "clone_sequence": "Kopiere gewählte Sequenz",
-            "amount": "Anzahl",
-            "empty_sequence": "Leere Sequenz"
-        },
-        "builder_queue_add_building_modal": {
-            "title": "Neue Gebäudestufe hinzufügen"
-        },
-        "builder_queue_name_sequence_modal": {
-            "title": "Name der Sequenz"
-        },
-        "builder_queue_remove_sequence_modal": {
-            "title": "Sequenz entfernen",
-            "text": "Möchtest Du diese Sequenz wirklich entfernen? Wenn diese Sequenz aktiv ist, wird eine andere gewählt und die automatische Bauschleifenbefüllung gestoppt."
-        },
-        "command_queue": {
-            "title": "Befehlsschleife",
-            "attack": "angreifen",
-            "support": "unterstützen",
-            "relocate": "umsiedeln",
-            "sent": "gesendet",
-            "activated": "aktiviert",
-            "deactivated": "deaktiviert",
-            "expired": "abgelaufen",
-            "removed": "entfernt",
-            "added": "hinzugefügt",
-            "general_clear": "Protokoll löschen",
-            "general_next_command": "Nächster Befehl",
-            "add_basics": "Informationen",
-            "add_origin": "Startkoordinaten",
-            "add_selected": "Aktives Dorf",
-            "add_target": "Zielkoordinaten",
-            "add_map_selected": "Ausgewähltes Dorf",
-            "date_type_arrive": "Eintreffzeitpunkt",
-            "date_type_out": "Startzeitpunkt",
-            "add_current_date": "Jetzt",
-            "add_current_date_plus": "Zeitpunkt um 100 Millisekunden erhöhen.",
-            "add_current_date_minus": "Zeitpunkt um 100 Millisekunden verringern.",
-            "add_travel_times": "Laufzeit",
-            "add_date": "Zeitpunkt",
-            "add_no_village": "Dorf auswählen...",
-            "add_village_search": "Dorf suchen...",
-            "add_clear": "Felder leeren",
-            "add_insert_preset": "Vorlagen einfügen",
-            "queue_waiting": "Ausstehende Befehle",
-            "queue_none_added": "Es wurden keine Befehle hinzugefügt.",
-            "queue_sent": "Befehle gesendet",
-            "queue_none_sent": "Kein Befehl gesendet.",
-            "queue_expired": "Abgelaufene Befehle",
-            "queue_none_expired": "Keine abgelaufenen Befehle.",
-            "queue_remove": "Befehl aus Liste entfernen",
-            "queue_filters": "Befehls Filter",
-            "filters_selected_village": "Zeige nur Befehle bezüglich des aktuellen Dorfs",
-            "filters_barbarian_target": "Zeige nur Befehle mit Barbarendörfer als Ziel",
-            "filters_attack": "Zeige Angriffe",
-            "filters_support": "Zeige Unterstützungen",
-            "filters_relocate": "Zeige Umsiedlungen",
-            "filters_text_match": "Filtern nach Text...",
-            "command_out": "Ausgehend",
-            "command_time_left": "Zeit verbleibend",
-            "command_arrive": "Ankunftszeit",
-            "error_no_units_enough": "Nicht genug Einheiten für den Befehl!",
-            "error_not_own_village": "Du bist nicht im Besitz des Startdorfes!",
-            "error_origin": "Startkoordinaten ungültig!",
-            "error_target": "Zielkoordinaten ungültig!",
-            "error_no_units": "Keine Einheiten ausgewählt!",
-            "error_invalid_date": "Ungültiges Datum",
-            "error_already_sent_attack": "Dieser Angriff wurde schon ausgeführt",
-            "error_already_sent_support": "Die Unterstützung wurde schon gesendet",
-            "error_already_sent_relocate": "Die Umsiedlung wurde bereits ausgeführt",
-            "error_relocate_disabled": "Umsiedeln ist in dieser Welt nicht möglich",
-            "error_no_map_selected_village": "Kein Dorf auf der Karte ausgewählt.",
-            "error_remove_error": "Fehler beim Entfernen des Befehls.",
-            "tab_add": "Befehl hinzufügen",
-            "tab_waiting": "Befehle in Warteschleife",
-            "tab_logs": "Befehlsprotokoll"
-        },
-        "farm_overflow": {
-            "open_report": "Bericht öffnen",
-            "no_report": "Kein Bericht",
-            "reports": "Berichte",
-            "date": "Datum",
-            "status_time_limit": "Ziel ist zu weit weg",
-            "status_command_limit": "Befehlslimit",
-            "status_full_storage": "Speicher voll",
-            "status_no_units": "Keine verfügbaren Einheiten",
-            "status_abandoned_conquered": "Keine vefügbaren Einheiten",
-            "status_protected_village": "Ziel ist geschützt",
-            "status_busy_target": "Ziel wird angegriffen",
-            "status_no_targets": "Keine verfügbaren Ziele",
-            "status_target_cycle_end": "Zielzyklus beendet",
-            "status_not_allowed_points": "Zielpunkt nicht erlaubt",
-            "status_unknown": "Unbekannter Status",
-            "status_attacking": "Angreifen",
-            "status_waiting_cycle": "Wartezyklus",
-            "status_user_stop": "Vom Spieler gestoppt",
-            "status_expired_step": "Befehl abgelaufen",
-            "not_loaded": "Nicht geladen.",
-            "ignored_targets": "Ignorierte Ziele",
-            "no_ignored_targets": "Nichts ignoriert",
-            "included_targets": "Hinzugefügte Ziele",
-            "no_included_targets": "Nichts hinzugefügt",
-            "farmer_villages": "Farmdörfer",
-            "no_farmer_villages": "Keine Farmdörfer",
-            "last_status": "Letzter Status",
-            "attacking": "Im Angriff.",
-            "paused": "Angehalten.",
-            "command_limit": "Das Befehlslimit ist erreicht, bitte warte auf die Rückkehr einiger Trupps.",
-            "last_attack": "Letzter Angriff",
-            "village_switch": "Wechsle zu Dorf",
-            "no_preset": "Keine Vorlage verfügbar.",
-            "no_selected_village": "Keine Dörfer verfügbar.",
-            "no_units": "Keine Einheiten im Dorf, wartet auf die Rückkehr von Trupps.",
-            "no_units_no_commands": "Kein Dorf hat Einheiten oder zurückkehrende Befehle.",
-            "no_villages": "Keine Dörfer verfügbar, warte auf Rückkehr von Befehlen.",
-            "preset_first": "Wähle zuerst eine Vorlage!",
-            "selected_village": "Ausgewähltes Dorf",
-            "loading_targets": "Ziele werden geladen...",
-            "checking_targets": "Ziele werden geprüft...",
-            "restarting_commands": "Befehle werden neu gestartet...",
-            "ignored_village": "zur Ignorierliste hinzugefügt",
-            "included_village": "zur Eingeschlossenen-Liste hinzugefügt",
-            "ignored_village_removed": "aus der Ignorier-Liste entfernt",
-            "included_village_removed": "aus der Eingeschlossenen-Liste entfernt",
-            "priority_target": "zur Prioritätenliste hinzugefügt.",
-            "analyse_targets": "Ziele werden analysiert.",
-            "step_cycle_restart": "Befehlszyklus wird neu gestartet..",
-            "step_cycle_end": "Dorfliste abgearbeitet, warte auf den nächsten Durchlauf.",
-            "step_cycle_end_no_villages": "Keine Dörfer verfügbar um den Durchgang zu starten.",
-            "step_cycle_next": "Dorfliste abgearbeitet, nächster Durchgang: %d.",
-            "step_cycle_next_no_villages": "Kein Dorf verfügbar um den Durchgang zu starten, nächster Durchgang: %d.",
-            "full_storage": "Der Speicher des Dorfes ist voll.",
-            "farm_stopped": "FarmOverflow angehalten.",
-            "farm_started": "FarmOverflow gestartet.",
-            "groups_presets": "Gruppen & Vorlagen",
-            "presets": "Vorlagen zum Angriff",
-            "group_ignored": "Ignoriere Dorfgruppe",
-            "group_include": "Dorfgruppe umfassen",
-            "group_only": "Greife nur aus Dörfern dieser Gruppen an",
-            "attack_interval": "Angriffsintervall",
-            "preserve_command_slots": "Befehlsslot aufbewahren",
-            "farmer_cycle_interval": "Intervall zwischen den Bauernzyklen",
-            "ignore_on_loss": "Ignoriere Dörfer, die Truppenverluste verursachen",
-            "ignore_full_storage": "Dörfer mit vollen Speichern überspringen",
-            "step_cycle_header": "Farmzyklus",
-            "step_cycle": "Farmzyklus aktivieren",
-            "step_cycle_notifs": "Benachrichtigungen",
-            "target_filters": "Zielfilter",
-            "min_distance": "Minimale Distanz des Zieldorfes",
-            "max_distance": "Maximale Distanz des Zieldorfes",
-            "min_points": "Minimale Punktzahl des Zielsdorfes",
-            "max_points": "Maximale Punktzahl des Zieldorfes",
-            "max_travel_time": "Maximale Reisezeit",
-            "logs_limit": "Max. Anzahl an Protokoll-Einträgen",
-            "event_attack": "Angriffe protokollieren",
-            "event_village_change": "Dorfwechsel protokollieren",
-            "event_priority_add": "Priorisierte Ziele protokollieren",
-            "event_ignored_village": "Ignorierte Dörfer protokollieren",
-            "settings_saved": "Einstellungen gespeichert!",
-            "misc": "Weitere Einstellungen",
-            "attack": "angreifen",
-            "no_logs": "Keine Angriffe protokolliert",
-            "clear_logs": "Protokoll löschen",
-            "reseted_logs": "Protokoll wurde zurückgesetzt.",
-            "date_added": "Datum hinzugefügt",
-            "multiple_attacks_interval": "Intervall zwischen Angriffen im selben Ziel",
-            "next_cycle_in": "Nächster Zyklus start in",
-            "target_limit_per_village": "Limit der Ziele pro Dorf",
-            "ignore_on_loss_tip": "Diese Einstellung funktioniert nur, wenn eine Ignoriergruppe ausgewählt ist.",
-            "farmer_behavior": "Landwirte können senden",
-            "allow_single_attack_each_target": "Ein einzelner Angriff auf jedes Ziel",
-            "allow_multiple_attack_each_target": "Mehrere Angriffe auf jedes Ziel",
-            "target_behavior": "Ziele können empfangen",
-            "targets_allow_single_farmer": "Angriffe eines einzelnen Bauern",
-            "targets_allow_multiple_farmers": "Angriffe von mehreren Bauern"
-        },
-        "minimap": {
-            "minimap": "Minikarte",
-            "highlights": "Farboptionen",
-            "add": "Farboption erstellen",
-            "remove": "Farboption entfernen",
-            "very_small": "sehr klein",
-            "small": "klein",
-            "big": "groß",
-            "very_big": "sehr groß",
-            "placeholder_search": "Suche Spieler/Stamm",
-            "highlight_add_success": "Farboption hinzugefügt",
-            "highlight_add_error": "Wähle zuerst eine Farboption",
-            "highlight_update_success": "Farboptionen aktualisiert",
-            "highlight_remove_success": "Farboption entfernt",
-            "highlight_villages": "Dörfer",
-            "highlight_players": "Spieler",
-            "highlight_tribes": "Stämme",
-            "highlight_add_error_exists": "Farboption existiert bereits!",
-            "highlight_add_error_no_entry": "Wähle zuerst einen Spieler/Stamm aus!",
-            "highlight_add_error_invalid_color": "Ungültige Farbe!",
-            "village": "Dorf",
-            "player": "Spieler",
-            "tribe": "Stamm",
-            "color": "Wert (Hex)",
-            "tooltip_pick_color": "Eine Farbe auswählen",
-            "misc": "Weitere Einstellungen",
-            "colors_misc": "Sonstige Farben",
-            "colors_diplomacy": "Preset Farbenoptionen der Stammesdiplomatie",
-            "settings_saved": "Einstellungen gespeichert!",
-            "settings_map_size": "Kartengröße",
-            "settings_right_click_action": "Rechtsklickoption des Dorfes",
-            "highlight_village": "Dorf hervorheben",
-            "highlight_player": "Spieler hervorheben",
-            "highlight_tribe": "Stamm hervorheben",
-            "settings_show_floating_minimap": "Zeige Minimap",
-            "settings_show_view_reference": "Show view reference",
-            "settings_show_continent_demarcations": "Zeige Kontinentgrenzen",
-            "settings_show_province_demarcations": "Zeige Provinzgrenzen",
-            "settings_show_barbarians": "Zeige Barbarendörfer",
-            "settings_show_ghost_villages": "Nicht geladene Dörfer anzeigen",
-            "settings_show_only_custom_highlights": "Nur benutzerdefinierte Farboptionen anzeigen",
-            "settings_highlight_own": "Eigene Dörfer automatisch hervorheben",
-            "settings_highlight_selected": "Ausgewähltes Dorf automatisch hervorheben",
-            "settings_highlight_diplomacy": "Stammesdiplomatie automatisch hervorheben",
-            "settings_colors_background": "Hintergrund der Karte",
-            "settings_colors_province": "Provinzgrenze",
-            "settings_colors_continent": "Königreichsgrenze",
-            "settings_colors_quick_highlight": "Schnelles Hervorheben",
-            "settings_colors_tribe": "Eigener Stamm",
-            "settings_colors_player": "Eigene Dörfer",
-            "settings_colors_selected": "Ausgewähltes Dorf",
-            "settings_colors_ghost": "Nicht geladene Dörfer",
-            "settings_colors_ally": "Bündnis",
-            "settings_colors_pna": "NAP",
-            "settings_colors_enemy": "Feind",
-            "settings_colors_other": "Sonstige",
-            "settings_colors_barbarian": "Barbaren",
-            "settings_colors_view_reference": "View reference",
-            "settings_reset": "Einstellungen wurden zurückgesetzt",
-            "tooltip_village": "Dorf",
-            "tooltip_village_points": "Punkte des Dorfes",
-            "tooltip_player": "Spielername",
-            "tooltip_player_points": "Spielerpunkte",
-            "tooltip_tribe": "Stamm",
-            "tooltip_tribe_points": "Punkte des Stammes",
-            "tooltip_province": "Name der Provinz",
-            "no_highlights": "Keine Farboptionen erstellt",
-            "reset_confirm_title": "Einstellungen zurück setzen",
-            "reset_confirm_text": "Alle Einstellungen werden auf Standardeinstellungen zurückgesetzt.",
-            "reset_confirm_highlights_text": "Es werden auch alle Farboptionen gelöscht.",
-            "default_village_colors_info": "Color of default villages like abandoned, allies, own tribe, etc. Are altered by the own game's settings panel."
-        },
-        "spy_recruiter": {
-            "enabled_groups": "Spione nur in Dörfern mit diesen Gruppen rekrutieren",
-            "preserve_wood": "Holz im Dorf aufbewahren",
-            "preserve_clay": "Lehm im Dorf aufbewahren",
-            "preserve_iron": "Eisen im Dorf aufbewahren",
-            "check_interval": "Intervall: Spione alle X rekrutieren",
-            "recruit_single_spy": "Pro Zyklus nur einen Spion pro Dorf rekrutieren?"
-        },
-        "common": {
-            "start": "Start",
-            "started": "Gestartet",
-            "pause": "Pause",
-            "paused": "Pausiert",
-            "stop": "Anhalten",
-            "stopped": "Angehalten",
-            "status": "Status",
-            "none": "Keine",
-            "info": "Informationen",
-            "settings": "Einstellungen",
-            "others": "Andere",
-            "village": "Dorf",
-            "villages": "Dörfer",
-            "building": "Gebäude",
-            "buildings": "Gebäude",
-            "level": "Stufe",
-            "registers": "Protokoll",
-            "filters": "Filter",
-            "add": "Hinzufügen",
-            "waiting": "Ausstehend",
-            "attack": "Angriff",
-            "support": "Unterstützung",
-            "relocate": "Umsiedlung",
-            "activate": "Aktivieren",
-            "deactivate": "Deaktivieren",
-            "units": "Einheiten",
-            "officers": "Offiziere",
-            "origin": "Herkunft",
-            "target": [
-                "Ziel",
-                "Ziele"
-            ],
-            "save": "Speichern",
-            "logs": "Protokoll",
-            "no-results": "Keine Ergebnisse...",
-            "selected": "Ausgewählt",
-            "now": "Jetzt",
-            "costs": "Kosten",
-            "duration": "Dauer",
-            "points": "Punkte",
-            "player": "Spieler",
-            "players": "Spieler",
-            "next_features": "Kommende Features",
-            "misc": "Verschiedenes",
-            "colors": "Farben",
-            "reset": "Zurücksetzen",
-            "reset_settings": "Einstellungen zurücksetzen",
-            "reset_settings_confirmation": "Möchten Sie die Einstellungen wirklich zurücksetzen?",
-            "here": "hier",
-            "disabled": "— Deaktiviert —",
-            "cancel": "Abbrechen",
-            "actions": "Aktionen",
-            "remove": "Entfernen",
-            "started_at": "Gestartet um",
-            "arrive": "Ankommen",
-            "settings_saved": "Einstellungen gespeichert",
-            "settings_reseted": "Einstellungen zurückgesetzt",
-            "discard": "Abbrechen",
-            "new_version": "TWOverflow aktualisiert auf Version %d",
-            "check_changes": "Klicke hier um alle Änderungen anzuzeigen",
-            "firefox_shill": "Wenn du möchtest, dass das Skript im Hintergrund läuft, dann verwende Firefox anstelle von Chrome basierten Browsern.",
-            "error_invalid_interval": "Ungültiges Zeitformat für %d.",
-            "readable_time_format": "Beispiele für Zeitformate: 1 Minute, 30 Minuten, 4 Stunden, 1 Tag."
-        }
-    },
-    "el_gr": {
-        "about": {
-            "contact": "Contact",
-            "email": "Email",
-            "links": "Project links",
-            "source_code": "Source Code",
-            "issues_suggestions": "Issues/suggestions",
-            "translations": "Translations"
-        },
-        "attack_view": {
-            "filter_types": "Είδη",
-            "filter_show_attacks_tooltip": "Επισκόπηση Επιθέσεων",
-            "filter_show_supports_tooltip": "Επισκόπηση υποστήριξεων",
-            "filter_show_relocations_tooltip": "Επισκόπηση Μετεγκατασταση",
-            "filter_incoming_units": "Εισερχόμενες Μονάδες",
-            "commands_copy_arrival_tooltip": "Copy arrival date.",
-            "commands_copy_backtime_tooltip": "Copy backtime date.",
-            "commands_set_remove_tooltip": "Set a CommandQueue to remove all troops before the attack hit.",
-            "command_type_tooltip": "Command Type",
-            "slowest_unit_tooltip": "Slowest Unit",
-            "command_type": "CT",
-            "slowest_unit": "SU",
-            "actions": "Actions",
-            "no_incoming": "No commands incoming.",
-            "copy": "Copy",
-            "current_only_tooltip": "Current village only"
-        },
-        "auto_collector": {
-            "description": "Αυτόματος συλλέκτης Κατάθεση Πόρων / Δεύτερου χωριού συλλέκτης.",
-            "activated": "Αυτόματος συλλέκτης Κατάθεση Πόρων ενεργοποιημένο",
-            "deactivated": "Αυτόματος συλλέκτης Κατάθεση Πόρων απενεργοποιημένο"
-        },
-        "auto_minter": {
-            "enabled_groups": "Mint coins only on villages with the group",
-            "preserve_wood": "Preserve village's wood",
-            "preserve_clay": "Preserve village's clay",
-            "preserve_iron": "Preserve village's iron",
-            "check_interval": "Interval: Mint coins every"
-        },
-        "builder_queue": {
-            "started": "BuilderQueue started",
-            "stopped": "BuilderQueue stopped",
-            "settings": "Settings",
-            "settings_village_groups": "Build only on villages with the group",
-            "settings_building_sequence": "Building sequence",
-            "settings_building_sequence_final": "Buildings final levels",
-            "settings_priorize_farm": "Priorize farm if it's full",
-            "settings_saved": "Settings saved!",
-            "logs_no_builds": "No builds started",
-            "logs_clear": "Clear logs",
-            "sequences": "Sequences",
-            "sequences_move_up": "Move up",
-            "sequences_move_down": "Move down",
-            "sequences_add_building": "Add building",
-            "sequences_select_edit": "Select a sequence to edit",
-            "sequences_edit_sequence": "Edit sequence",
-            "select_group": "Select a group",
-            "add_building_success": "%d has added at position %d",
-            "add_building_limit_exceeded": "%d reached maximum level (%d)",
-            "position": "Position",
-            "remove_building": "Remove building from list",
-            "clone": "Clone",
-            "remove_sequence": "Remove selected sequence",
-            "name_sequence_min_lenght": "The sequence name must have at least 3 character.",
-            "sequence_created": "New sequence %d created.",
-            "sequence_updated": "Sequence %d updated.",
-            "sequence_removed": "Sequence %d removed.",
-            "error_sequence_exists": "This sequence already exists.",
-            "error_sequence_no_exists": "Diese Sequenz existiert nicht.",
-            "error_sequence_invalid": "Some sequence's value is invalid.",
-            "logs_cleared": "Logs cleared.",
-            "create_sequence": "Create a sequence",
-            "settings_preserve_resources": "Preserve village's resources",
-            "settings_preserve_wood": "Preserve village's wood",
-            "settings_preserve_clay": "Preserve village's clay",
-            "settings_preserve_iron": "Preserve village's iron",
-            "discard_changes_title": "Unsaved sequence",
-            "discard_changes_text": "The selected sequence have unsaved changes. Are you sure you want to discard the changes?",
-            "clone_warn_changed_sequence_title": "Changed sequence",
-            "clone_warn_changed_sequence_text": "The sequence you are trying to clone was changed. If you accept, the old version will be cloned.",
-            "clone_sequence": "Clone selected sequence",
-            "amount": "Amount",
-            "empty_sequence": "Empty sequence"
-        },
-        "builder_queue_add_building_modal": {
-            "title": "Add new building"
-        },
-        "builder_queue_name_sequence_modal": {
-            "title": "Sequence name"
-        },
-        "builder_queue_remove_sequence_modal": {
-            "title": "Διαγραφή",
-            "text": "Are you sure to remove this sequence? If this sequence is the active one, another sequence will be selected and the BuilderQueue stopped."
-        },
-        "command_queue": {
-            "title": "Εντολές",
-            "attack": "Επίθεση",
-            "support": "Υποστήριξη",
-            "relocate": "Μεταφορά",
-            "sent": "Αποστολή",
-            "activated": "ενεργοποιήθηκε",
-            "deactivated": "Απενεργοποιημένο",
-            "expired": "Προθεσμία",
-            "removed": "αφαιρέθηκε",
-            "added": "προστέθηκε",
-            "general_clear": "Εκκαθάριση αρχείων καταγραφής",
-            "general_next_command": "Επόμενη εντολή",
-            "add_basics": "Βασικές πληροφορίες",
-            "add_origin": "Συντεταγμένες προέλευσης",
-            "add_selected": "Ενεργό χωριό",
-            "add_target": "Συντεταγμένες στόχου",
-            "add_map_selected": "Επιλεγμένο χωριό σε χάρτη",
-            "date_type_arrive": "Η εντολή φτάνει την ημερομηνία",
-            "date_type_out": "Άδεια εντολής κατά την ημερομηνία",
-            "add_current_date": "Σημερινή ημερομηνία",
-            "add_current_date_plus": "Αύξηση ημερομηνίας σε 100 χιλιοστά του δευτερολέπτου.",
-            "add_current_date_minus": "Μειώστε την ημερομηνία σε 100 χιλιοστά του δευτερολέπτου.",
-            "add_travel_times": "Χρόνος ταξιδιού",
-            "add_date": "Ημερομηνία ώρα",
-            "add_no_village": "επιλέξτε ένα χωριό ...",
-            "add_village_search": "Αναζήτηση χωριού ...",
-            "add_clear": "Εκκαθάριση πεδίων",
-            "add_insert_preset": "Εισαγωγή προεπιλογής",
-            "queue_waiting": "Εντολές αναμονής",
-            "queue_none_added": "Δεν προστέθηκε εντολή.",
-            "queue_sent": "Οι εντολές εστάλησαν",
-            "queue_none_sent": "Δεν εστάλη εντολή.",
-            "queue_expired": "Έληξε εντολές",
-            "queue_none_expired": "Δεν έληξε καμία εντολή.",
-            "queue_remove": "Αφαιρέστε τη λίστα φόρμας εντολών",
-            "queue_filters": "Φίλτρο εντολών",
-            "filters_selected_village": "Εμφάνιση μόνο εντολών από το επιλεγμένο χωριό",
-            "filters_barbarian_target": "Εμφάνιση μόνο εντολών με βάρβαρα χωριά ως στόχο",
-            "filters_attack": "Εμφάνιση επιθέσεων",
-            "filters_support": "Εμφάνιση υποστηρίξεων",
-            "filters_relocate": "Εμφάνιση μεταφορών",
-            "filters_text_match": "Φιλτράρισμα κατά κείμενο ...",
-            "command_out": "Εξω",
-            "command_time_left": "Χρόνος που απομένει",
-            "command_arrive": "Αφιξη",
-            "error_no_units_enough": "Δεν υπάρχουν αρκετές μονάδες για να στείλετε την εντολή!",
-            "error_not_own_village": "Το χωριό προέλευσης δεν σας ανήκει!",
-            "error_origin": "Οι συντεταγμένες του χωριού προέλευσης δεν είναι έγκυρες!",
-            "error_target": "Οι συντεταγμένες στοχευόμενου χωριού δεν είναι έγκυρες!",
-            "error_no_units": "Δεν έχουν καθοριστεί μονάδες!",
-            "error_invalid_date": "Ακυρη ημερομηνία",
-            "error_already_sent_attack": "Αυτή η επίθεση έπρεπε να είχε ήδη φύγει",
-            "error_already_sent_support": "Αυτή η υποστήριξη θα έπρεπε να είχε ήδη φύγει",
-            "error_already_sent_relocate": "Αυτή η μετεγκατάσταση θα έπρεπε να είχε ήδη φύγει",
-            "error_relocate_disabled": "Η μετεγκατάσταση δεν είναι ενεργοποιημένη σε αυτόν τον κόσμο.",
-            "error_no_map_selected_village": "Δεν υπάρχει επιλεγμένο χωριό στον χάρτη.",
-            "error_remove_error": "Σφάλμα κατάργησης εντολής.",
-            "tab_add": "Προσθήκη εντολής",
-            "tab_waiting": "Εντολές ουράς",
-            "tab_logs": "Αρχεία εντολών"
-        },
-        "farm_overflow": {
-            "open_report": "Ανοίξτε την αναφορά",
-            "no_report": "Χωρίς αναφορά",
-            "reports": "Αναφορές",
-            "date": "Σου δίνει",
-            "status_time_limit": "Ο στόχος είναι πολύ μακριά",
-            "status_command_limit": "Όριο εντολών",
-            "status_full_storage": "Ο χώρος αποθήκευσης είναι πλήρης",
-            "status_no_units": "Δεν υπάρχουν διαθέσιμες μονάδες",
-            "status_abandoned_conquered": "Εγκαταλελειμμένο κατακτήθηκε",
-            "status_protected_village": "Ο στόχος προστατεύεται",
-            "status_busy_target": "Ο στόχος είναι επίθεση",
-            "status_no_targets": "Δεν υπάρχουν διαθέσιμοι στόχοι",
-            "status_target_cycle_end": "Ο κύκλος στόχος έληξε",
-            "status_not_allowed_points": "Δεν επιτρέπονται τα σημεία προορισμού",
-            "status_unknown": "Άγνωστη κατάσταση",
-            "status_attacking": "Επίθεση",
-            "status_waiting_cycle": "Κύκλος αναμονής",
-            "status_user_stop": "Διακόπηκε από τον παίκτη",
-            "status_expired_step": "Έληξε εντολή",
-            "not_loaded": "Μη φορτωμένο.",
-            "ignored_targets": "Αγνοημένοι στόχοι",
-            "no_ignored_targets": "Τίποτα δεν αγνοήθηκε",
-            "included_targets": "Συμπεριλαμβανόμενοι στόχοι",
-            "no_included_targets": "Τίποτα δεν περιλαμβάνεται",
-            "farmer_villages": "Χωριά αγροτών",
-            "no_farmer_villages": "Χωρίς χωριά αγροτών",
-            "last_status": "Τελευταία κατάσταση",
-            "attacking": "Επίθεση.",
-            "paused": "Σε παύση",
-            "command_limit": "Έφτασε το όριο των 50 επιθέσεων, περιμένοντας την επιστροφή.",
-            "last_attack": "Τελευταία επίθεση",
-            "village_switch": "Αλλαγή σε χωριό",
-            "no_preset": "Δεν υπάρχουν διαθέσιμες προεπιλογές.",
-            "no_selected_village": "Χωρίς διαθέσιμα χωριά.",
-            "no_units": "Δεν υπάρχουν διαθέσιμες μονάδες στο χωριό, περιμένοντας τις επιθέσεις να επιστρέψουν.",
-            "no_units_no_commands": "Κανένα χωριό δεν έχει επιστρέψει μονάδες ή εντολές.",
-            "no_villages": "Δεν υπάρχουν διαθέσιμα χωριά, περιμένουν να επιστρέψουν οι επιθέσεις.",
-            "preset_first": "Ορίστε πρώτα μια προεπιλογή!",
-            "selected_village": "Το χωριό επιλέχθηκε",
-            "loading_targets": "Φόρτωση στόχων ...",
-            "checking_targets": "Έλεγχος στόχων ...",
-            "restarting_commands": "Επανεκκίνηση εντολών ...",
-            "ignored_village": "προστέθηκε στη λίστα που αγνοήθηκε",
-            "included_village": "προστέθηκε στη λίστα που περιλαμβάνεται",
-            "ignored_village_removed": "καταργήθηκε από τη λίστα που αγνοήθηκε",
-            "included_village_removed": "καταργήθηκε από τη λίστα που περιλαμβάνεται",
-            "priority_target": "προστέθηκε στις προτεραιότητες.",
-            "analyse_targets": "Ανάλυση στόχων.",
-            "step_cycle_restart": "Επανεκκίνηση του κύκλου εντολών ..",
-            "step_cycle_end": "Ο κατάλογος των χωριών έληξε, περιμένοντας την επόμενη διαδρομή.",
-            "step_cycle_end_no_villages": "Δεν υπάρχουν διαθέσιμα χωριά για να ξεκινήσει ο κύκλος.",
-            "step_cycle_next": "Ο κατάλογος των χωριών έχει τελειώσει, τον επόμενο κύκλο: %d.",
-            "step_cycle_next_no_villages": "Δεν υπάρχει διαθέσιμο χωριό για έναρξη του κύκλου, επόμενος κύκλος: %d.",
-            "full_storage": "Η αποθήκη του χωριού είναι πλήρης.",
-            "farm_stopped": "Το FarmOverflow σταμάτησε.",
-            "farm_started": "Ξεκίνησε το FarmOverflow.",
-            "groups_presets": "Ομάδες & προεπιλογές",
-            "presets": "Επίθεση με τις προεπιλογές",
-            "group_ignored": "Αγνοήστε τα χωριά από την ομάδα",
-            "group_include": "Συμπεριλάβετε χωριά από ομάδες",
-            "group_only": "Επιθέσεις μόνο με χωριά από ομάδες",
-            "attack_interval": "Διάστημα μεταξύ επιθέσεων",
-            "preserve_command_slots": "Διατήρηση κουλοχέρη εντολών",
-            "farmer_cycle_interval": "Διάστημα μεταξύ των κύκλων των αγροτών",
-            "ignore_on_loss": "Αγνοήστε το στόχο που προκαλεί απώλεια",
-            "ignore_full_storage": "Μην καλλιεργείτε με χωριά με πλήρη αποθήκη",
-            "step_cycle_header": "Ρυθμίσεις κύκλου βημάτων",
-            "step_cycle": "Ενεργοποίηση κύκλου βημάτων",
-            "step_cycle_notifs": "Ειδοποιήσεις κύκλου",
-            "target_filters": "Φίλτρα προορισμού",
-            "min_distance": "Ελάχιστοι στόχοι απόστασης",
-            "max_distance": "Στοχεύει τη μέγιστη απόσταση",
-            "min_points": "Στοχεύει ελάχιστους πόντους",
-            "max_points": "Στοχεύει τα μέγιστα σημεία",
-            "max_travel_time": "Μέγιστος χρόνος ταξιδιού",
-            "logs_limit": "Μέγιστος αριθμός καταχωρήσεων καταγραφής",
-            "event_attack": "Εμφάνιση αρχείων καταγραφής εργασιών επιθέσεων",
-            "event_village_change": "Εμφάνιση αρχείων καταγραφής εργασιών των αλλαγών του χωριού",
-            "event_priority_add": "Εμφάνιση αρχείων καταγραφής εργασιών στόχων προτεραιότητας",
-            "event_ignored_village": "Εμφάνιση αρχείων καταγραφής εργασιών αγνοημένων χωριών",
-            "settings_saved": "Οι ρυθμίσεις αποθηκεύτηκαν!",
-            "misc": "Διάφορα",
-            "attack": "επίθεση",
-            "no_logs": "Δεν έχουν καταχωρηθεί αρχεία καταγραφής",
-            "clear_logs": "Εκκαθάριση αρχείων καταγραφής",
-            "reseted_logs": "Έγινε επαναφορά των καταχωρημένων αρχείων καταγραφής.",
-            "date_added": "Ημερομηνία προστέθηκε",
-            "multiple_attacks_interval": "Διάστημα μεταξύ επιθέσεων στον ίδιο στόχο",
-            "next_cycle_in": "Ο επόμενος κύκλος ξεκινά στις",
-            "target_limit_per_village": "Όριο στόχων ανά χωριό",
-            "ignore_on_loss_tip": "Αυτή η ρύθμιση λειτουργεί μόνο όταν έχει επιλεγεί μια ομάδα παράβλεψης.",
-            "farmer_behavior": "Οι αγρότες μπορούν να στείλουν",
-            "allow_single_attack_each_target": "Μία επίθεση σε κάθε στόχο",
-            "allow_multiple_attack_each_target": "Πολλαπλές επιθέσεις σε κάθε στόχο",
-            "target_behavior": "Οι στόχοι μπορούν να λάβουν",
-            "targets_allow_single_farmer": "Επιθέσεις από έναν μόνο αγρότη",
-            "targets_allow_multiple_farmers": "Επιθέσεις από πολλούς αγρότες"
-        },
-        "minimap": {
-            "minimap": "Minimap",
-            "highlights": "Highlights",
-            "add": "Add highlight",
-            "remove": "Remove highlight",
-            "very_small": "Very small",
-            "small": "Small",
-            "big": "Big",
-            "very_big": "Very big",
-            "placeholder_search": "Search player/tribe",
-            "highlight_add_success": "Highlight added",
-            "highlight_add_error": "Specify a highlight first",
-            "highlight_update_success": "Highlight updated",
-            "highlight_remove_success": "Highlight removed",
-            "highlight_villages": "Villages",
-            "highlight_players": "Players",
-            "highlight_tribes": "Tribes",
-            "highlight_add_error_exists": "Highlight already exists!",
-            "highlight_add_error_no_entry": "Select a player/tribe first!",
-            "highlight_add_error_invalid_color": "Invalid color!",
-            "village": "Village",
-            "player": "Player",
-            "tribe": "Tribe",
-            "color": "Color (Hex)",
-            "tooltip_pick_color": "Select a color",
-            "misc": "Miscellaneous settings",
-            "colors_misc": "Miscellaneous colors",
-            "colors_diplomacy": "Diplomacy colors",
-            "settings_saved": "Settings saved!",
-            "settings_map_size": "Map size",
-            "settings_right_click_action": "Village's right click action",
-            "highlight_village": "Highlight village",
-            "highlight_player": "Highlight player",
-            "highlight_tribe": "Highlight tribe",
-            "settings_show_floating_minimap": "Show floating minimap",
-            "settings_show_view_reference": "Show view reference",
-            "settings_show_continent_demarcations": "Show continent demarcations",
-            "settings_show_province_demarcations": "Show province demarcations",
-            "settings_show_barbarians": "Show barbarian villages",
-            "settings_show_ghost_villages": "Show non-loaded villages",
-            "settings_show_only_custom_highlights": "Show only custom highlights",
-            "settings_highlight_own": "Highlight own villages",
-            "settings_highlight_selected": "highlight selected village",
-            "settings_highlight_diplomacy": "Auto highlight tribe diplomacies",
-            "settings_colors_background": "Minimap background",
-            "settings_colors_province": "Province demarcation",
-            "settings_colors_continent": "Continent demarcation",
-            "settings_colors_quick_highlight": "Quick highlight",
-            "settings_colors_tribe": "Own tribe",
-            "settings_colors_player": "Own villages",
-            "settings_colors_selected": "Selected village",
-            "settings_colors_ghost": "Non-loaded villages",
-            "settings_colors_ally": "Ally",
-            "settings_colors_pna": "PNA",
-            "settings_colors_enemy": "Enemy",
-            "settings_colors_other": "Other",
-            "settings_colors_barbarian": "Barbarian",
-            "settings_colors_view_reference": "View reference",
-            "settings_reset": "Settings reseted",
-            "tooltip_village": "Village",
-            "tooltip_village_points": "Village points",
-            "tooltip_player": "Player name",
-            "tooltip_player_points": "Player points",
-            "tooltip_tribe": "Tribe",
-            "tooltip_tribe_points": "Tribe points",
-            "tooltip_province": "Province name",
-            "no_highlights": "No highlights created",
-            "reset_confirm_title": "Reset settings",
-            "reset_confirm_text": "All settings gonna be reseted to the default settings.",
-            "reset_confirm_highlights_text": "Also, all highlights are going to be deleted.",
-            "default_village_colors_info": "Color of default villages like abandoned, allies, own tribe, etc. Are altered by the own game's settings panel."
-        },
-        "spy_recruiter": {
-            "enabled_groups": "Recruit spies only on villages with the group",
-            "preserve_wood": "Preserve village's wood",
-            "preserve_clay": "Preserve village's clay",
-            "preserve_iron": "Preserve village's iron",
-            "check_interval": "Interval: Recruit spies every",
-            "recruit_single_spy": "Recruit a single spy on each village every cycle?"
-        },
-        "common": {
-            "start": "Αρχή",
-            "started": "Ξεκίνησε",
-            "pause": "Παύση",
-            "paused": "Σε παύση",
-            "stop": "Να σταματήσει",
-            "stopped": "Διακόπηκε",
-            "status": "Κατάσταση",
-            "none": "Κανένας",
-            "info": "Πληροφορίες",
-            "settings": "Ρυθμίσεις",
-            "others": "Οι υπολοιποι",
-            "village": "Χωριό",
-            "villages": "Χωριά",
-            "building": "Κτίριο",
-            "buildings": "Κτίρια",
-            "level": "Επίπεδο",
-            "registers": "Κούτσουρα",
-            "filters": "Φίλτρα",
-            "add": "Προσθήκη",
-            "waiting": "Αναμονή",
-            "attack": "Επίθεση",
-            "support": "Υποστήριξη",
-            "relocate": "ΜΕΤΑΦΟΡΑ",
-            "activate": "Θέτω εις ενέργειαν",
-            "deactivate": "Καθιστώ ανίκανο",
-            "units": "Μονάδες",
-            "officers": "Αξιωματικοί",
-            "origin": "Προέλευση",
-            "target": [
-                "Στόχος",
-                "Στόχοι"
-            ],
-            "save": "Σώσει",
-            "logs": "Κούτσουρα",
-            "no-results": "Χωρίς αποτέλεσμα ...",
-            "selected": "Επιλεγμένο",
-            "now": "Τώρα",
-            "costs": "Δικαστικά έξοδα",
-            "duration": "Διάρκεια",
-            "points": "Πόντοι",
-            "player": "Παίχτης",
-            "players": "Παίκτες",
-            "next_features": "Επόμενα χαρακτηριστικά",
-            "misc": "Διάφορα",
-            "colors": "Χρωματιστά",
-            "reset": "Επαναφορά",
-            "reset_settings": "Επαναφορά ρυθμίσεων",
-            "reset_settings_confirmation": "Είστε βέβαιοι ότι θέλετε να επαναφέρετε τις ρυθμίσεις;",
-            "here": "εδώ",
-            "disabled": "- Ατομα με ειδικές ανάγκες -",
-            "cancel": "Ματαίωση",
-            "actions": "Ενέργειες",
-            "remove": "Αφαιρώ",
-            "started_at": "Ξεκίνησε στις",
-            "arrive": "Φθάνω",
-            "settings_saved": "Οι ρυθμίσεις αποθηκεύτηκαν",
-            "settings_reseted": "Έγινε επαναφορά των ρυθμίσεων",
-            "discard": "Απορρίπτω",
-            "new_version": "Το TWOverflow ενημερώθηκε στην έκδοση %d",
-            "check_changes": "Κάντε κλικ εδώ για να ελέγξετε τις αλλαγές",
-            "firefox_shill": "Εάν θέλετε το σενάριο να λειτουργεί σωστά στο παρασκήνιο, χρησιμοποιήστε τον Firefox αντί για προγράμματα περιήγησης που βασίζονται στο Chrome.",
-            "error_invalid_interval": "Μη έγκυρη μορφή ώρας για %d.",
-            "readable_time_format": "Παραδείγματα μορφής ώρας: 1 λεπτό, 30 λεπτά, 4 ώρες, 1 ημέρα."
-        }
-    },
     "en_us": {
         "about": {
             "contact": "Contact",
@@ -2208,7 +930,7 @@ define('two/language', [
             "settings_saved": "Settings saved",
             "settings_reseted": "Settings reseted",
             "discard": "Discard",
-            "new_version": "TWOverflow updated to version %d",
+            "new_version": "TW2 Enchanced updated to version %d",
             "check_changes": "Click here to check the changes",
             "firefox_shill": "If you want the script to work properly in the background, use Firefox instead of Chrome based browsers.",
             "error_invalid_interval": "Invalid time format for %d.",
@@ -2902,7 +1624,7 @@ define('two/ui', [
         $menu = document.createElement('div');
         $menu.className = 'two-menu';
         $container.appendChild($menu);
-
+/* Menu billede */
         initialized = true;
         interfaceOverflow.addStyle('.two-window a.select-handler{-webkit-box-shadow:none;box-shadow:none}.two-window .small-select a.select-handler{height:22px;line-height:22px}.two-window .small-select a.select-button{height:22px}.two-window input::placeholder{color:rgba(255,243,208,0.7)}.two-window .green{color:#07770b}.two-window .red{color:#770707}.two-window .blue{color:#074677}#toolbar-left{height:calc(100% - 273px) !important;top:165px !important}.two-menu-container{position:absolute;top:84px;left:0;width:90px;z-index:10}.two-menu-container:hover .two-main-button{background-position:0 -75px}.two-menu-container:hover .two-menu{opacity:1;visibility:visible;transition:opacity .1s ease-in-out}.two-main-button{left:0;width:75px;height:75px;background-image:url("data:image/png;base64,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");background-position:0 0;z-index:10}.two-menu{position:absolute;top:8px;left:0px;width:240px;display:flex;flex-flow:wrap;visibility:hidden;opacity:0;z-index:10;padding-left:85px}.two-menu .button{height:24px;padding:0 15px;line-height:22px;margin-bottom:8px}.two-menu .divisor{height:3px;margin-bottom:5px;background:linear-gradient(90deg, #4e2e1a, transparent);border-radius:10px;width:100%}#wrapper.window-open .two-menu-container{left:713px}#wrapper.window-open.window-fullsize .two-menu-container{display:none !important}input:not([type]){border:none;outline:none}a.link{font-weight:bold;color:#3f2615}a.link:hover{text-shadow:0 1px 0 #000;color:#fff}');
 
@@ -2931,11 +1653,11 @@ define('two/ui', [
 
         if (typeof _tooltip === 'string') {
             $button.addEventListener('mouseenter', function (event) {
-                $rootScope.$broadcast(eventTypeProvider.TOOLTIP_SHOW, 'twoverflow-tooltip', _tooltip, true, event);
+                $rootScope.$broadcast(eventTypeProvider.TOOLTIP_SHOW, 'TW2 Enchanced-tooltip', _tooltip, true, event);
             });
 
             $button.addEventListener('mouseleave', function () {
-                $rootScope.$broadcast(eventTypeProvider.TOOLTIP_HIDE, 'twoverflow-tooltip');
+                $rootScope.$broadcast(eventTypeProvider.TOOLTIP_HIDE, 'TW2 Enchanced-tooltip');
             });
         }
 
@@ -2981,7 +1703,7 @@ require([
 define('Lockr', function (root, Lockr) {
     const [, worldId, characterId] = location.search.match(/world=([a-z0-9]+).*character_id=(\d+)/);
 
-    Lockr.prefix = `${characterId}_twOverflow_${worldId}-`;
+    Lockr.prefix = `${characterId}_TW2 Enchanced_${worldId}-`;
 
     Lockr._getPrefixedKey = function (key, options) {
         options = options || {};
@@ -3032,9 +1754,6 @@ define('Lockr', function (root, Lockr) {
     return Lockr;
 });
 
-/**
- * https://github.com/blakeembrey/node-numbered
- */
 define('numbered', function () {
     const NUMBER_MAP = {
         '.': 'point',
@@ -3113,12 +1832,7 @@ define('numbered', function () {
         WORD_MAP[CARDINAL_MAP[num]] = isNaN(+num) ? num : Math.pow(10, +num);
     });
 
-    /**
-   * Returns the number of significant figures for the number.
-   *
-   * @param  {number} num
-   * @return {number}
-   */
+
     function intervals (num) {
         const match = String(num).match(/e\+(\d+)/);
 
@@ -3127,12 +1841,7 @@ define('numbered', function () {
         return String(num).length - 1;
     }
 
-    /**
-   * Calculate the value of the current stack.
-   *
-   * @param {Array}  stack
-   * @param {number} largest
-   */
+
     function totalStack (stack, largest) {
         const total = stack.reduceRight(function (prev, num, index) {
             if (num > stack[index + 1]) {
@@ -3145,12 +1854,6 @@ define('numbered', function () {
         return total * largest;
     }
 
-    /**
-   * Accepts both a string and number type, and return the opposite.
-   *
-   * @param  {string|number} num
-   * @return {string|number}
-   */
     function numbered (num) {
         if (typeof num === 'string') return numbered.parse(num);
         if (typeof num === 'number') return numbered.stringify(num);
@@ -3158,12 +1861,7 @@ define('numbered', function () {
         throw new Error('Numbered can only parse strings or stringify numbers');
     }
 
-    /**
-   * Turn a number into a string representation.
-   *
-   * @param  {number} num
-   * @return {string}
-   */
+
     numbered.stringify = function (value) {
         const num = Number(value);
         const floor = Math.floor(num);
@@ -3214,11 +1912,7 @@ define('numbered', function () {
         return sentence.join(' ');
     };
 
-    /**
-   * Turns a string representation of a number into a number type
-   * @param  {string} num
-   * @return {number}
-   */
+
     numbered.parse = function (num) {
         let modifier = 1;
         let largest = 0;
@@ -3292,9 +1986,7 @@ define('numbered', function () {
     return numbered;
 });
 
-/**
- * https://github.com/agenda/human-interval
- */
+
 define('humanInterval', [
     'numbered'
 ], function (
@@ -3361,7 +2053,19 @@ define('two/about', [], function () {
 
     return about;
 });
+// Hent version fra toppen af scriptet
+const CURRENT_VERSION = (function() {
+    const scriptContent = document.querySelectorAll('script')[0]?.textContent || '';
+    const match = scriptContent.match(/@version\s+([0-9.]+)/i);
+    return match ? match[1] : '1.0.1';
+})();
 
+// Dagens dato
+const LAST_UPDATED = new Date().toLocaleDateString('da-DK', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+});
 define('two/about/ui', [
     'two/ui'
 ], function (
@@ -3377,10 +2081,10 @@ define('two/about/ui', [
             buildWindow();
         });
 
-        interfaceOverflow.addTemplate('twoverflow_about_window', `
+        interfaceOverflow.addTemplate('TW2 Enchanced_about_window', `
             <div id="two-about" class="win-content">
                 <header class="win-head">
-                    <h3>TW2 Enhanced</h3>
+                    <h3>TW2 Enhanced v${CURRENT_VERSION}</h3>
                     <ul class="list-btn sprite">
                         <li><a href="#" class="btn-red icon-26x26-close" ng-click="closeWindow()"></a></li>
                     </ul>
@@ -3391,23 +2095,35 @@ define('two/about/ui', [
                         <div class="scroll-wrap">
 
                             <div class="logo">
-                                <img src="https://i.imgur.com/0NuESU2.png">
+                                <img src="https://raw.githubusercontent.com/SteffenFriis/TW2-Enhanced/870017eb2adda2ef124ae9bef041dd949cf22129/images/btn-menu.png">
                             </div>
 
-                            <!-- Info -->
-                            <table class="tbl-border-light tbl-content tbl-medium-height">
-                                <tr><th colspan="2">Info</th></tr>
-                                <tr>
-                                    <td>Created by</td>
-                                    <td>Kin0x</td>
-                                </tr>
-                            </table>
+							<!-- Info -->
+							<table class="tbl-border-light tbl-content tbl-medium-height">
+								<tr><th colspan="2">Info</th></tr>
+								<tr>
+									<td>Created by</td>
+									<td>Kin0x</td>
+								</tr>
+								<tr>
+									<td>Version</td>
+									<td>v${CURRENT_VERSION}</td>
+								</tr>
+								<tr>
+									<td>Last check</td>
+									<td>${LAST_UPDATED}</td>
+								</tr>
+								<tr>
+									<td>Last update</td>
+									<td>30. June 2026</td>
+								</tr>
+							</table>
 
                             <!-- Project Links -->
                             <table class="tbl-border-light tbl-content tbl-medium-height">
                                 <tr><th colspan="2">Project Links</th></tr>
                                 <tr>
-                                    <td>Source Code</td>
+                                    <td>Github</td>
                                     <td><a href="https://github.com/SteffenFriis/TW2-Enhanced" target="_blank">https://github.com/SteffenFriis/TW2-Enhanced</a></td>
                                 </tr>
                             </table>
@@ -3418,7 +2134,7 @@ define('two/about/ui', [
 
                 <footer class="win-foot">
                     <ul class="list-btn list-center">
-                        <li><a href="#" class="btn-border btn-red" ng-click="closeWindow()">Luk</a></li>
+                        <li><a href="#" class="btn-border btn-red" ng-click="closeWindow()">Close</a></li>
                     </ul>
                 </footer>
             </div>
@@ -3427,9 +2143,10 @@ define('two/about/ui', [
         interfaceOverflow.addStyle('#two-about{padding:42px 0 0px 0;position:relative;height:100%}#two-about .box-paper a{font-weight:bold;color:#3f2615;text-decoration:none}#two-about .box-paper a:hover{text-shadow:0 1px 0 #000;color:#fff}#two-about .logo{text-align:center;margin-bottom:8px}#two-about table td{padding:0 10px}#two-about table td:first-child{text-align:right;width:20%}');
     };
 
+
     const buildWindow = function () {
         $scope = $rootScope.$new();
-        windowManagerService.getModal('!twoverflow_about_window', $scope);
+        windowManagerService.getModal('!TW2 Enchanced_about_window', $scope);
     };
 
     return init;
@@ -3534,30 +2251,18 @@ define('two/attackView', [
         filterParams.village = filters[FILTER_TYPES.VILLAGE] ? [currentVillageId] : [];
     };
 
-    /**
-     * Command was sent.
-     */
+
     const onCommandIncomming = function () {
         // we can never know if the command is currently visible (because of filters, sorting and stuff) -> reload
         attackView.loadCommands();
     };
 
-    /**
-     * Command was cancelled.
-     *
-     * @param {Object} event unused
-     * @param {Object} data The backend-data
-     */
+
     const onCommandCancelled = function (event, data) {
         eventQueue.trigger(eventTypeProvider.ATTACK_VIEW_COMMAND_CANCELLED, [data.id || data.command_id]);
     };
 
-    /**
-     * Command ignored.
-     *
-     * @param {Object} event unused
-     * @param {Object} data The backend-data
-     */
+
     const onCommandIgnored = function (event, data) {
         for (let i = 0; i < commands.length; i++) {
             if (commands[i].command_id === data.command_id) {
@@ -3568,12 +2273,7 @@ define('two/attackView', [
         eventQueue.trigger(eventTypeProvider.ATTACK_VIEW_COMMAND_IGNORED, [data.command_id]);
     };
 
-    /**
-     * Village name changed.
-     *
-     * @param {Object} event unused
-     * @param {Object} data The backend-data
-     */
+
     const onVillageNameChanged = function (event, data) {
         for (let i = 0; i < commands.length; i++) {
             if (commands[i].target_village_id === data.village_id) {
@@ -3596,10 +2296,7 @@ define('two/attackView', [
         }
     };
 
-    /**
-     * @param {CommandModel} command
-     * @return {String} Slowest unit
-     */
+
     const getSlowestUnit = function (command) {
         const origin = {
             x: command.origin_x,
@@ -3624,13 +2321,7 @@ define('two/attackView', [
         return unitDurationDiff[0].unit;
     };
 
-    /**
-     * Sort a set of villages by distance from a specified village.
-     *
-     * @param {Array[{x: Number, y: Number}]} villages List of village that will be sorted.
-     * @param {VillageModel} origin
-     * @return {Array} Sorted villages
-     */
+
     const sortByDistance = function (villages, origin) {
         return villages.sort(function (villageA, villageB) {
             const distA = math.actualDistance(origin, villageA);
@@ -3707,9 +2398,6 @@ define('two/attackView', [
         });
     };
 
-    /**
-     * @param {Object} data The data-object from the backend
-     */
     const onOverviewIncomming = function (data) {
         commands = data.commands;
 
@@ -3754,12 +2442,7 @@ define('two/attackView', [
         return sorting;
     };
 
-    /**
-     * Toggles the given filter.
-     *
-     * @param {string} type The category of the filter (see FILTER_TYPES)
-     * @param {string} opt_filter The filter to be toggled.
-     */
+
     attackView.toggleFilter = function (type, opt_filter) {
         if (!opt_filter) {
             filters[type] = !filters[type];
@@ -3784,13 +2467,7 @@ define('two/attackView', [
         attackView.loadCommands();
     };
 
-    /**
-     * Set an automatic command with all units from the village
-     * and start the CommandQueue module if it's disabled.
-     *
-     * @param {Object} command Data of the command like origin, target.
-     * @param {String} date Date that the command has to leave.
-     */
+
     attackView.setCommander = function (command, date) {
         closestNonHostileVillage(command.targetVillage, function (closestVillage) {
             const origin = command.targetVillage;
@@ -3907,7 +2584,7 @@ define('two/attackView/ui', [
         const modalScope = $rootScope.$new();
         modalScope.text = $filter('readableDateFilter')(time * 1000, $rootScope.loc.ale, $rootScope.GAME_TIMEZONE, $rootScope.GAME_TIME_OFFSET, 'H:mm:ss:sss dd/MM/yyyy');
         modalScope.title = $filter('i18n')('copy', $rootScope.loc.ale, 'attack_view');
-        windowManagerService.getModal('!twoverflow_attack_view_show_text_modal', modalScope);
+        windowManagerService.getModal('!TW2 Enchanced_attack_view_show_text_modal', modalScope);
     };
 
     const removeTroops = function (command) {
@@ -3968,8 +2645,8 @@ define('two/attackView/ui', [
         $button = interfaceOverflow.addMenuButton('AttackView', 40);
         $button.addEventListener('click', buildWindow);
 
-        interfaceOverflow.addTemplate('twoverflow_attack_view_main', `<div id=\"two-attack-view\" class=\"win-content two-window\"><header class=\"win-head\"><h2>AttackView</h2><ul class=\"list-btn\"><li><a href=\"#\" class=\"size-34x34 btn-orange icon-26x26-double-arrow\" ng-click=\"switchWindowSize()\"></a><li><a href=\"#\" class=\"size-34x34 btn-red icon-26x26-close\" ng-click=\"closeWindow()\"></a></ul></header><div class=\"win-main\" scrollbar=\"\"><div class=\"box-paper\"><div class=\"scroll-wrap rich-text\"><div class=\"filters\"><table class=\"tbl-border-light\"><tr><th>{{ 'village' | i18n:loc.ale:'common' }}<tr><td><div class=\"box-border-dark icon\" ng-class=\"{'active': filters[FILTER_TYPES.VILLAGE]}\" ng-click=\"toggleFilter(FILTER_TYPES.VILLAGE)\" tooltip=\"\" tooltip-content=\"{{ 'current_only_tooltip' | i18n:loc.ale:'attack_view' }}\"><span class=\"icon-34x34-village-info icon-bg-black\"></span></div></table><table class=\"tbl-border-light\"><tr><th>{{ 'filter_types' | i18n:loc.ale:'attack_view' }}<tr><td><div class=\"box-border-dark icon\" ng-class=\"{'active': filters[FILTER_TYPES.COMMAND_TYPES][COMMAND_TYPES.ATTACK]}\" ng-click=\"toggleFilter(FILTER_TYPES.COMMAND_TYPES, COMMAND_TYPES.ATTACK)\" tooltip=\"\" tooltip-content=\"{{ 'filter_show_attacks_tooltip' | i18n:loc.ale:'attack_view' }}\"><span class=\"icon-34x34-attack icon-bg-black\"></span></div><div class=\"box-border-dark icon\" ng-class=\"{'active': filters[FILTER_TYPES.COMMAND_TYPES][COMMAND_TYPES.SUPPORT]}\" ng-click=\"toggleFilter(FILTER_TYPES.COMMAND_TYPES, COMMAND_TYPES.SUPPORT)\" tooltip=\"\" tooltip-content=\"{{ 'filter_show_supports_tooltip' | i18n:loc.ale:'attack_view' }}\"><span class=\"icon-34x34-support icon-bg-black\"></span></div><div class=\"box-border-dark icon\" ng-class=\"{'active': filters[FILTER_TYPES.COMMAND_TYPES][COMMAND_TYPES.RELOCATE]}\" ng-click=\"toggleFilter(FILTER_TYPES.COMMAND_TYPES, COMMAND_TYPES.RELOCATE)\" tooltip=\"\" tooltip-content=\"{{ 'filter_show_relocations_tooltip' | i18n:loc.ale:'attack_view' }}\"><span class=\"icon-34x34-relocate icon-bg-black\"></span></div></table><table class=\"tbl-border-light\"><tr><th>{{ 'filter_incoming_units' | i18n:loc.ale:'attack_view' }}<tr><td><div ng-repeat=\"unit in ::UNIT_SPEED_ORDER\" class=\"box-border-dark icon\" ng-class=\"{'active': filters[FILTER_TYPES.INCOMING_UNITS][unit]}\" ng-click=\"toggleFilter(FILTER_TYPES.INCOMING_UNITS, unit)\" tooltip=\"\" tooltip-content=\"{{ unit | i18n:loc.ale:'unit_names' }}\"><span class=\"icon-34x34-unit-{{ unit }} icon-bg-black\"></span></div></table></div><div class=\"page-wrap\" pagination=\"pagination\"></div><p class=\"text-center\" ng-show=\"!visibleCommands.length\">{{ 'no_incoming' | i18n:loc.ale:'attack_view' }}<table class=\"tbl-border-light commands-table\" ng-show=\"visibleCommands.length\"><col width=\"8%\"><col width=\"14%\"><col><col><col width=\"4%\"><col width=\"15%\"><col width=\"11%\"><thead class=\"sorting\"><tr><th ng-click=\"toggleSorting(COLUMN_TYPES.COMMAND_TYPE)\" tooltip=\"\" tooltip-content=\"{{ 'command_type_tooltip' | i18n:loc.ale:'attack_view' }}\">{{ 'command_type' | i18n:loc.ale:'attack_view' }} <span class=\"arrow\" ng-show=\"sorting.column == COLUMN_TYPES.COMMAND_TYPE\" ng-class=\"{'icon-26x26-normal-arrow-down': sorting.reverse, 'icon-26x26-normal-arrow-up': !sorting.reverse}\"></span><th ng-click=\"toggleSorting(COLUMN_TYPES.ORIGIN_CHARACTER)\">{{ 'player' | i18n:loc.ale:'common' }} <span class=\"arrow\" ng-show=\"sorting.column == COLUMN_TYPES.ORIGIN_CHARACTER\" ng-class=\"{'icon-26x26-normal-arrow-down': sorting.reverse, 'icon-26x26-normal-arrow-up': !sorting.reverse}\"></span><th ng-click=\"toggleSorting(COLUMN_TYPES.ORIGIN_VILLAGE)\">{{ 'origin' | i18n:loc.ale:'common' }} <span class=\"arrow\" ng-show=\"sorting.column == COLUMN_TYPES.ORIGIN_VILLAGE\" ng-class=\"{'icon-26x26-normal-arrow-down': sorting.reverse, 'icon-26x26-normal-arrow-up': !sorting.reverse}\"></span><th ng-click=\"toggleSorting(COLUMN_TYPES.TARGET_VILLAGE)\">{{ 'target' | i18n:loc.ale:'common' }} <span class=\"arrow\" ng-show=\"sorting.column == COLUMN_TYPES.TARGET_VILLAGE\" ng-class=\"{'icon-26x26-normal-arrow-down': sorting.reverse, 'icon-26x26-normal-arrow-up': !sorting.reverse}\"></span><th tooltip=\"\" tooltip-content=\"{{ 'slowest_unit_tooltip' | i18n:loc.ale:'attack_view' }}\">{{ 'slowest_unit' | i18n:loc.ale:'attack_view' }}<th ng-click=\"toggleSorting(COLUMN_TYPES.TIME_COMPLETED)\">{{ 'arrive' | i18n:loc.ale:'common' }} <span class=\"arrow\" ng-show=\"sorting.column == COLUMN_TYPES.TIME_COMPLETED\" ng-class=\"{'icon-26x26-normal-arrow-down': sorting.reverse, 'icon-26x26-normal-arrow-up': !sorting.reverse}\"></span><th>{{ 'actions' | i18n:loc.ale:'attack_view' }}<tbody><tr ng-repeat=\"command in visibleCommands\" class=\"{{ command.command_type }}\" ng-class=\"{'snob': command.slowestUnit === UNIT_TYPES.SNOB}\"><td><span class=\"icon-20x20-{{ command.command_type }}\"></span><td ng-click=\"openCharacterProfile(command.originCharacter.id)\" class=\"character\"><span class=\"name\">{{ command.originCharacter.name }}</span><td ng-class=\"{'selected': command.originVillage.id === selectedVillageId}\" class=\"village\"><span class=\"name\" ng-click=\"openVillageInfo(command.originVillage.id)\">{{ command.originVillage.name }}</span> <span class=\"coords\" ng-click=\"jumpToVillage(command.originVillage.x, command.originVillage.y)\">({{ command.originVillage.x }}|{{ command.originVillage.y }})</span><td ng-class=\"{'selected': command.targetVillage.id === selectedVillageId}\" class=\"village\"><span class=\"name\" ng-click=\"openVillageInfo(command.targetVillage.id)\">{{ command.targetVillage.name }}</span> <span class=\"coords\" ng-click=\"jumpToVillage(command.targetVillage.x, command.targetVillage.y)\">({{ command.targetVillage.x }}|{{ command.targetVillage.y }})</span><td><span class=\"icon-20x20-unit-{{ command.slowestUnit }}\"></span><td><div class=\"progress-wrapper\" tooltip=\"\" tooltip-content=\"{{ command.model.arrivalTime() | readableDateFilter:loc.ale:GAME_TIMEZONE:GAME_TIME_OFFSET }}\"><div class=\"progress-bar\" ng-style=\"{width: command.model.percent() + '%'}\"></div><div class=\"progress-text\"><span>{{ command.model.countdown() }}</span></div></div><td><a ng-click=\"copyTimeModal(command.time_completed)\" class=\"btn btn-orange size-20x20 icon-20x20-arrivetime\" tooltip=\"\" tooltip-content=\"{{ 'commands_copy_arrival_tooltip' | i18n:loc.ale:'attack_view' }}\"></a> <a ng-click=\"copyTimeModal(command.time_completed + (command.time_completed - command.time_start))\" class=\"btn btn-red size-20x20 icon-20x20-backtime\" tooltip=\"\" tooltip-content=\"{{ 'commands_copy_backtime_tooltip' | i18n:loc.ale:'attack_view' }}\"></a> <a ng-if=\"commandQueueEnabled\" ng-click=\"removeTroops(command)\" class=\"btn btn-orange size-20x20 icon-20x20-units-outgoing\" tooltip=\"\" tooltip-content=\"{{ 'commands_set_remove_tooltip' | i18n:loc.ale:'attack_view' }}\"></a></table><div class=\"page-wrap\" pagination=\"pagination\"></div></div></div></div></div>`);
-        interfaceOverflow.addTemplate('twoverflow_attack_view_show_text_modal', `<div id=\"show-text-modal\" class=\"win-content\"><header class=\"win-head\"><h3>{{ title }}</h3><ul class=\"list-btn sprite\"><li><a href=\"#\" class=\"btn-red icon-26x26-close\" ng-click=\"closeWindow()\"></a></ul></header><div class=\"win-main\" scrollbar=\"\"><div class=\"box-paper\"><div class=\"scroll-wrap\"><form ng-submit=\"closeWindow()\"><input class=\"input-border text-center\" ng-model=\"text\"></form></div></div></div><footer class=\"win-foot sprite-fill\"><ul class=\"list-btn list-center\"><li><a href=\"#\" class=\"btn-green btn-border\" ng-click=\"closeWindow()\">OK</a></ul></footer></div>`);
+        interfaceOverflow.addTemplate('TW2 Enchanced_attack_view_main', `<div id=\"two-attack-view\" class=\"win-content two-window\"><header class=\"win-head\"><h2>AttackView</h2><ul class=\"list-btn\"><li><a href=\"#\" class=\"size-34x34 btn-orange icon-26x26-double-arrow\" ng-click=\"switchWindowSize()\"></a><li><a href=\"#\" class=\"size-34x34 btn-red icon-26x26-close\" ng-click=\"closeWindow()\"></a></ul></header><div class=\"win-main\" scrollbar=\"\"><div class=\"box-paper\"><div class=\"scroll-wrap rich-text\"><div class=\"filters\"><table class=\"tbl-border-light\"><tr><th>{{ 'village' | i18n:loc.ale:'common' }}<tr><td><div class=\"box-border-dark icon\" ng-class=\"{'active': filters[FILTER_TYPES.VILLAGE]}\" ng-click=\"toggleFilter(FILTER_TYPES.VILLAGE)\" tooltip=\"\" tooltip-content=\"{{ 'current_only_tooltip' | i18n:loc.ale:'attack_view' }}\"><span class=\"icon-34x34-village-info icon-bg-black\"></span></div></table><table class=\"tbl-border-light\"><tr><th>{{ 'filter_types' | i18n:loc.ale:'attack_view' }}<tr><td><div class=\"box-border-dark icon\" ng-class=\"{'active': filters[FILTER_TYPES.COMMAND_TYPES][COMMAND_TYPES.ATTACK]}\" ng-click=\"toggleFilter(FILTER_TYPES.COMMAND_TYPES, COMMAND_TYPES.ATTACK)\" tooltip=\"\" tooltip-content=\"{{ 'filter_show_attacks_tooltip' | i18n:loc.ale:'attack_view' }}\"><span class=\"icon-34x34-attack icon-bg-black\"></span></div><div class=\"box-border-dark icon\" ng-class=\"{'active': filters[FILTER_TYPES.COMMAND_TYPES][COMMAND_TYPES.SUPPORT]}\" ng-click=\"toggleFilter(FILTER_TYPES.COMMAND_TYPES, COMMAND_TYPES.SUPPORT)\" tooltip=\"\" tooltip-content=\"{{ 'filter_show_supports_tooltip' | i18n:loc.ale:'attack_view' }}\"><span class=\"icon-34x34-support icon-bg-black\"></span></div><div class=\"box-border-dark icon\" ng-class=\"{'active': filters[FILTER_TYPES.COMMAND_TYPES][COMMAND_TYPES.RELOCATE]}\" ng-click=\"toggleFilter(FILTER_TYPES.COMMAND_TYPES, COMMAND_TYPES.RELOCATE)\" tooltip=\"\" tooltip-content=\"{{ 'filter_show_relocations_tooltip' | i18n:loc.ale:'attack_view' }}\"><span class=\"icon-34x34-relocate icon-bg-black\"></span></div></table><table class=\"tbl-border-light\"><tr><th>{{ 'filter_incoming_units' | i18n:loc.ale:'attack_view' }}<tr><td><div ng-repeat=\"unit in ::UNIT_SPEED_ORDER\" class=\"box-border-dark icon\" ng-class=\"{'active': filters[FILTER_TYPES.INCOMING_UNITS][unit]}\" ng-click=\"toggleFilter(FILTER_TYPES.INCOMING_UNITS, unit)\" tooltip=\"\" tooltip-content=\"{{ unit | i18n:loc.ale:'unit_names' }}\"><span class=\"icon-34x34-unit-{{ unit }} icon-bg-black\"></span></div></table></div><div class=\"page-wrap\" pagination=\"pagination\"></div><p class=\"text-center\" ng-show=\"!visibleCommands.length\">{{ 'no_incoming' | i18n:loc.ale:'attack_view' }}<table class=\"tbl-border-light commands-table\" ng-show=\"visibleCommands.length\"><col width=\"8%\"><col width=\"14%\"><col><col><col width=\"4%\"><col width=\"15%\"><col width=\"11%\"><thead class=\"sorting\"><tr><th ng-click=\"toggleSorting(COLUMN_TYPES.COMMAND_TYPE)\" tooltip=\"\" tooltip-content=\"{{ 'command_type_tooltip' | i18n:loc.ale:'attack_view' }}\">{{ 'command_type' | i18n:loc.ale:'attack_view' }} <span class=\"arrow\" ng-show=\"sorting.column == COLUMN_TYPES.COMMAND_TYPE\" ng-class=\"{'icon-26x26-normal-arrow-down': sorting.reverse, 'icon-26x26-normal-arrow-up': !sorting.reverse}\"></span><th ng-click=\"toggleSorting(COLUMN_TYPES.ORIGIN_CHARACTER)\">{{ 'player' | i18n:loc.ale:'common' }} <span class=\"arrow\" ng-show=\"sorting.column == COLUMN_TYPES.ORIGIN_CHARACTER\" ng-class=\"{'icon-26x26-normal-arrow-down': sorting.reverse, 'icon-26x26-normal-arrow-up': !sorting.reverse}\"></span><th ng-click=\"toggleSorting(COLUMN_TYPES.ORIGIN_VILLAGE)\">{{ 'origin' | i18n:loc.ale:'common' }} <span class=\"arrow\" ng-show=\"sorting.column == COLUMN_TYPES.ORIGIN_VILLAGE\" ng-class=\"{'icon-26x26-normal-arrow-down': sorting.reverse, 'icon-26x26-normal-arrow-up': !sorting.reverse}\"></span><th ng-click=\"toggleSorting(COLUMN_TYPES.TARGET_VILLAGE)\">{{ 'target' | i18n:loc.ale:'common' }} <span class=\"arrow\" ng-show=\"sorting.column == COLUMN_TYPES.TARGET_VILLAGE\" ng-class=\"{'icon-26x26-normal-arrow-down': sorting.reverse, 'icon-26x26-normal-arrow-up': !sorting.reverse}\"></span><th tooltip=\"\" tooltip-content=\"{{ 'slowest_unit_tooltip' | i18n:loc.ale:'attack_view' }}\">{{ 'slowest_unit' | i18n:loc.ale:'attack_view' }}<th ng-click=\"toggleSorting(COLUMN_TYPES.TIME_COMPLETED)\">{{ 'arrive' | i18n:loc.ale:'common' }} <span class=\"arrow\" ng-show=\"sorting.column == COLUMN_TYPES.TIME_COMPLETED\" ng-class=\"{'icon-26x26-normal-arrow-down': sorting.reverse, 'icon-26x26-normal-arrow-up': !sorting.reverse}\"></span><th>{{ 'actions' | i18n:loc.ale:'attack_view' }}<tbody><tr ng-repeat=\"command in visibleCommands\" class=\"{{ command.command_type }}\" ng-class=\"{'snob': command.slowestUnit === UNIT_TYPES.SNOB}\"><td><span class=\"icon-20x20-{{ command.command_type }}\"></span><td ng-click=\"openCharacterProfile(command.originCharacter.id)\" class=\"character\"><span class=\"name\">{{ command.originCharacter.name }}</span><td ng-class=\"{'selected': command.originVillage.id === selectedVillageId}\" class=\"village\"><span class=\"name\" ng-click=\"openVillageInfo(command.originVillage.id)\">{{ command.originVillage.name }}</span> <span class=\"coords\" ng-click=\"jumpToVillage(command.originVillage.x, command.originVillage.y)\">({{ command.originVillage.x }}|{{ command.originVillage.y }})</span><td ng-class=\"{'selected': command.targetVillage.id === selectedVillageId}\" class=\"village\"><span class=\"name\" ng-click=\"openVillageInfo(command.targetVillage.id)\">{{ command.targetVillage.name }}</span> <span class=\"coords\" ng-click=\"jumpToVillage(command.targetVillage.x, command.targetVillage.y)\">({{ command.targetVillage.x }}|{{ command.targetVillage.y }})</span><td><span class=\"icon-20x20-unit-{{ command.slowestUnit }}\"></span><td><div class=\"progress-wrapper\" tooltip=\"\" tooltip-content=\"{{ command.model.arrivalTime() | readableDateFilter:loc.ale:GAME_TIMEZONE:GAME_TIME_OFFSET }}\"><div class=\"progress-bar\" ng-style=\"{width: command.model.percent() + '%'}\"></div><div class=\"progress-text\"><span>{{ command.model.countdown() }}</span></div></div><td><a ng-click=\"copyTimeModal(command.time_completed)\" class=\"btn btn-orange size-20x20 icon-20x20-arrivetime\" tooltip=\"\" tooltip-content=\"{{ 'commands_copy_arrival_tooltip' | i18n:loc.ale:'attack_view' }}\"></a> <a ng-click=\"copyTimeModal(command.time_completed + (command.time_completed - command.time_start))\" class=\"btn btn-red size-20x20 icon-20x20-backtime\" tooltip=\"\" tooltip-content=\"{{ 'commands_copy_backtime_tooltip' | i18n:loc.ale:'attack_view' }}\"></a> <a ng-if=\"commandQueueEnabled\" ng-click=\"removeTroops(command)\" class=\"btn btn-orange size-20x20 icon-20x20-units-outgoing\" tooltip=\"\" tooltip-content=\"{{ 'commands_set_remove_tooltip' | i18n:loc.ale:'attack_view' }}\"></a></table><div class=\"page-wrap\" pagination=\"pagination\"></div></div></div></div></div>`);
+        interfaceOverflow.addTemplate('TW2 Enchanced_attack_view_show_text_modal', `<div id=\"show-text-modal\" class=\"win-content\"><header class=\"win-head\"><h3>{{ title }}</h3><ul class=\"list-btn sprite\"><li><a href=\"#\" class=\"btn-red icon-26x26-close\" ng-click=\"closeWindow()\"></a></ul></header><div class=\"win-main\" scrollbar=\"\"><div class=\"box-paper\"><div class=\"scroll-wrap\"><form ng-submit=\"closeWindow()\"><input class=\"input-border text-center\" ng-model=\"text\"></form></div></div></div><footer class=\"win-foot sprite-fill\"><ul class=\"list-btn list-center\"><li><a href=\"#\" class=\"btn-green btn-border\" ng-click=\"closeWindow()\">OK</a></ul></footer></div>`);
         interfaceOverflow.addStyle('#two-attack-view table.commands-table{table-layout:fixed;font-size:13px;margin-bottom:10px}#two-attack-view table.commands-table th{text-align:center;padding:0px}#two-attack-view table.commands-table td{padding:1px 0;min-height:initial;border:none;text-align:center}#two-attack-view table.commands-table tr.attack.snob td{background:#bb8658}#two-attack-view table.commands-table tr.support td,#two-attack-view table.commands-table tr.relocate td{background:#9c9368}#two-attack-view table.commands-table .empty td{height:32px}#two-attack-view table.commands-table .sorting .arrow{margin-top:-4px}#two-attack-view .village .coords{font-size:11px;color:#71471a}#two-attack-view .village .coords:hover{color:#ffde00;text-shadow:0 1px 0 #000}#two-attack-view .village .name:hover{color:#fff;text-shadow:0 1px 0 #000}#two-attack-view .village.selected .name{font-weight:bold}#two-attack-view .character .name:hover{color:#fff;text-shadow:1px 1px 0 #000}#two-attack-view .progress-wrapper{height:20px;margin-bottom:0}#two-attack-view .progress-wrapper .progress-text{position:absolute;width:100%;height:100%;text-align:center;z-index:10;padding:0 5px;line-height:20px;color:#f0ffc9;overflow:hidden}#two-attack-view .filters{height:95px;margin-bottom:10px}#two-attack-view .filters table{width:auto;float:left;margin:5px}#two-attack-view .filters .icon{width:38px;float:left;margin:0 6px}#two-attack-view .filters .icon.active:before{box-shadow:0 0 0 1px #000,-1px -1px 0 2px #ac9c44,0 0 0 3px #ac9c44,0 0 0 4px #000;border-radius:1px;content:"";position:absolute;width:38px;height:38px;left:-1px;top:-1px}#two-attack-view .filters td{padding:6px}#two-attack-view .icon-20x20-backtime{background-image:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABmJLR0QA/wD/AP+gvaeTAAAEMklEQVQ4y42US2xUdRTGf3funZn/PHqnnVdpKZZ2RCWBVESgoZogSAKKEEAlGhVNLMGg0QiJKxYudIdoTEyDj8SFGo2seDUGhEQqRHk/UimDpdAptHMr8+jM3Dv35QJbi9KEszzJ+eU753z5JKYuOQGBUpAa2SLiuPgBPBKGrZAPlSlmoQLYk4ekqUCmEHHL0pslRb7fsNwWF8L/DIz5Fanftey0oogBr65rk8HS3WC6jyY8ckfZdNtfWdX++tzGIDMabAJmArte4my/l/c//vaLoFc6jmP3iCqD41B5Mi0BId1Hk+V6ljfEQlvWL2xZoY/lKOTLGCY01tZhVLMkRJEtqzoeyUvSnN70SNZRXC1iUylDVZmszhQiDmbH9Lrgpta4mKPlCjy95D6Wrn8GAKFEEfEmdG2Qowd+4I0XFrUC7+w7eL5sCu8hdL3imaQuYFl6c9l021vjYk7Y72Xjq4/z1IaNCCVKMRckq+moiQDJ2bN48uV3GbnSx9b1ra1l0223LL05AYF/Vw4S80jyonnN6paq5YTe3LyU2rpaYrFpJGfPItlcTzI1H8R8cC38NTFiaojhSzeJJ8KNJ/4YOmP43GsTCmWLiGG5LTUBb2LuzGm3e3Ij3321m5Hey6A0AVAcPjmhQcSbuDyU5sF6e5phuS2yRWQC6Lj4x62h1vjJ3BwjlUoiYn52ffolmUtnuXj4ADu2b7/DFoN9RVQ1gAthx8U/+Sk4LiGAQtFAHzXIajpr16yiu/tX98euzyWAzrc6Abj8+1G0TIZ8uYx/xJpgjANlWfEKqjaZbIlixQQgdDHDyuULWLFisZTVdBJxQTIVA2uQ+qZ6KoU0nhqV09f+QoIxj4ThAWRVJWLZToNXUaarYR8Hdm+iZBic7N5LbmgI0xclERcAFLIVAHRtkFOHjwBwNHNryK9I/bZCXlFVIk6ZuSbukidmR1Z+/cliAHzRBjKjBTq37bz9gEAAgA+2vQjAjb4j9F6pUCga/Hzm5v6A5KRDFkXF1UnWRcRj256d/vam9zrJXT0GwGc7V+ONRwAwtTwAa9bs4ND+PTy8MMW5az7+vJ7lXKZ4IeiVjsuIgaylVxTHxf/S84+u3bh5Mbmrx/D6Y1hjGtaYBjduH9g0RonNSmH4o/T1j9JzeoBixSRbsi9ktNIuRXJ6vFVbA2ypVoiZNuay+qj62r6u1R0ee4i65Iw7rDEOnLegC4CSqwxf18b23C0cFMenF5wKJzLZfLDtuW/4pWt1Ry6XY8/ug8jRB6gN3GI0k6VtXcq9csvqtm2rTyjS+YDkpGXEgLdq/z++EhA2hYjbmMtMx7P8+4/Wbdj64U89/cP5Xlli2HGcUsAnjziulMGxbrheRu4lYH21QjSarvXQoraZbQC/nUoflzwMyx6hVz26MRVkysROQNhQ8XmqQr1XwH/rb2Du69Eebp25AAAAAElFTkSuQmCC")}#two-attack-view .icon-20x20-arrivetime{background-image:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABmJLR0QA/wD/AP+gvaeTAAAEW0lEQVQ4y4WUWWxUZRiGn7PMnNPOVtvODHQBSlulAUFBoQiEaBHBhCsSFaIhIe6JSyAkRkO8NpErY2KoYuINISkkRFAjEUyAUCQsBSu1BVpKZ2DmTNuZzsyZMz3L70Vbgkjqe/Ul//89//K9eSX+KyUKFcVKQopDxBNoALJE2VXJBUzyBpQA9xG9SA+DbF2vdRxrvqQqLWVHNAkITm8saKo0KBz3hqrqt32WlXkUWHoQZvlpQFbWmLZo//zj7W8ua7JRUoKSz+DOXYVrSZMfjnV/W+mTuvHcs/okIw9DFYAoBCw/DY6QX9yycemer9/p6KiQE7ilIj4vwNXBFIO3M1iFLKta4suNvLUwZzpZTxWZiEvJhMkHgYpf1+cKSazfsnHpnve2rVqYTg2xdvMrPL76JWKNNSxesYB1LyyDiQQ9fWkCmhxzkRuLZTcpVC1lOU4eEDNPDUzitJVc6eUDn6zuSAwl2PDGLqrnx9ECPob6kkxaPiLBEK1LniIaFVz/c4SAJsf6U2ZaEfZwxMOYuaVCJTWypKz68LXV7y6sigWf7thMdfMKkMOgryA2r5pYYwWBaA3FzBhFM8uiRXFOnumn/jGt0SjYl8t+MWzbFABkxSFSdkTTE3F3zkDyBnptw/2J5VMXpwq1gfT1AQ4eOIyi1AHw5II5hCp80bIjmhSHyEyP7Ak0AcFwuIKR/vy/PLVv7156T/1M4u8e9n/1HXqNRnNzjMS9AuGQBlMfF5zxKoA6U2hph5xp0nv+ErX1KVqfXctbH+yk65tOAOa1tolNm56TjIyFNVpmIl8GwBMEHnSzKkuUJUHh8vAYcihMIFQi3hAHZ4T65hq27dyKkbGI1uqS7a/mXO8F+gZGuDZ0j4nClFsU1adj2wrgyq5KTlOlwTOJ8STApVO/Y2VGAJgwSgBEa3VsfzXZZJKLvxyjWC7z8+G3CQf9+FS13nG9ueEwEUBRqmywEfrAvWLF4rqq5fmiwCvcIjuqYCTu8v5nnXQd7+bgoZ/48dduXF8F4ZpaNj0/j60bgly+YLTeNMyUYosxPUhONaBUpeq3K7G7T/Ym2pfWh5ZU1MzBX/0XV/64iVYe4+jR3QD4aqeGaWdylPNjABw9upv9X3R+9GVXwsjmrZQCiJDjOI4scjnTyZZc0ZhKJmM9PcNYlsu4CLJjez3jt65ij45jpZPYhVG8SRNFrcQc7eeZ9evIl9xI96Xh4yqAAaXoJCOW3zuRGjfNwbRob6wNbkkYxTizaDx9B0+pY93rnWdTYxPf+xQ9p0yvCRPciEtJqFpKEfZwyXaupArOYLbM+JK2lS3HDhyRbgwanO6eoPvEaWLxOixLY+WOrrP5onUI4Z2TdMeQZgtYySaGrM6VJVFfmnRjsiwHXEG8KR5p2/fpxjWv7jpyyCd7JxR8v03nY0Fidt2H+z1dcz1LFx7xlctb2gHO9wz1+CS1L2tZSabD4f+Asx7g+a0JbYJJg6lgAPgHUh4QWRIJr4EAAAAASUVORK5CYII=")}');
     };
 
@@ -4005,7 +2682,7 @@ define('two/attackView/ui', [
 
         updateVisibileCommands();
 
-        const eventScope = new EventScope('twoverflow_queue_window', function onWindowClose () {
+        const eventScope = new EventScope('TW2 Enchanced_queue_window', function onWindowClose () {
             timeHelper.timer.remove(checkCommands);
         });
         eventScope.register(eventTypeProvider.MAP_SELECTED_VILLAGE, eventHandlers.onVillageSwitched, true);
@@ -4014,7 +2691,7 @@ define('two/attackView/ui', [
         eventScope.register(eventTypeProvider.ATTACK_VIEW_COMMAND_IGNORED, eventHandlers.updateCommands);
         eventScope.register(eventTypeProvider.ATTACK_VIEW_VILLAGE_RENAMED, eventHandlers.updateCommands);
 
-        windowManagerService.getScreenWithInjectedScope('!twoverflow_attack_view_main', $scope);
+        windowManagerService.getScreenWithInjectedScope('!TW2 Enchanced_attack_view_main', $scope);
 
         timeHelper.timer.add(checkCommands);
     };
@@ -4098,10 +2775,7 @@ define('two/autoCollector', [
 
     const debug = setupDebug('auto_collector');
 
-    /**
-     * Permite que o evento RESOURCE_DEPOSIT_JOB_COLLECTIBLE seja executado
-     * apenas uma vez.
-     */
+
     let recall = true;
 
     /**
@@ -4110,11 +2784,7 @@ define('two/autoCollector', [
     let nextUpdateId = null;
     let nextMilestoneId = null;
 
-    /**
-     * Inicia um trabalho.
-     *
-     * @param {Object} job - Dados do trabalho
-     */
+
     const startJob = function (job) {
         debug(1, 'start job id %s', job.id);
         debug(2, 'job details %o', job);
@@ -4124,11 +2794,7 @@ define('two/autoCollector', [
         });
     };
 
-    /**
-     * Coleta um trabalho.
-     *
-     * @param {Object} job - Dados do trabalho
-     */
+
     const finalizeJob = function (job) {
         debug(1, 'finalize job id %s', job.id);
         debug(2, 'job details %o', job);
@@ -4139,19 +2805,14 @@ define('two/autoCollector', [
         });
     };
 
-    /**
-     * Força a atualização das informações do depósito.
-     */
+
     const updateDepositInfo = function () {
         debug(1, 'update update deposit info');
 
         socketService.emit(routeProvider.RESOURCE_DEPOSIT_GET_INFO, {});
     };
 
-    /**
-     * Faz a analise dos trabalhos sempre que um evento relacionado ao depósito
-     * é disparado.
-     */
+
     const analyse = function () {
         debug(1, 'analyse');
 
@@ -4182,11 +2843,7 @@ define('two/autoCollector', [
         }
     };
 
-    /**
-     * Obtem o trabalho de menor duração.
-     *
-     * @param {Array} jobs - Lista de trabalhos prontos para serem iniciados.
-     */
+
     const getFastestJob = function (jobs) {
         debug(2, 'get fastest job within %o', jobs);
 
@@ -4197,14 +2854,7 @@ define('two/autoCollector', [
         return sorted[0];
     };
 
-    /**
-     * Atualiza o timeout para que seja forçado a atualização das informações
-     * do depósito quando for resetado.
-     * Motivo: só é chamado automaticamente quando um milestone é resetado,
-     * e não o diário.
-     *
-     * @param {Object} data - Os dados recebidos de RESOURCE_DEPOSIT_INFO
-     */
+
     const rerollUpdater = function (data) {
         debug(1, 'reroll updater');
 
@@ -4221,16 +2871,10 @@ define('two/autoCollector', [
         }
     };
 
-    /**
-     * Métodos públicos do AutoCollector.
-     *
-     * @type {Object}
-     */
+
     const autoCollector = {};
 
-    /**
-     * Inicializa o AutoDepois, configura os eventos.
-     */
+
     autoCollector.init = function () {
         initialized = true;
 
@@ -4267,33 +2911,24 @@ define('two/autoCollector', [
         });
     };
 
-    /**
-     * Inicia a analise dos trabalhos.
-     */
+
     autoCollector.start = function () {
         eventQueue.trigger(eventTypeProvider.AUTO_COLLECTOR_STARTED);
         running = true;
         socketService.emit(routeProvider.RESOURCE_DEPOSIT_GET_INFO);
     };
 
-    /**
-     * Para a analise dos trabalhos.
-     */
     autoCollector.stop = function () {
         eventQueue.trigger(eventTypeProvider.AUTO_COLLECTOR_STOPPED);
         running = false;
     };
 
-    /**
-     * Retorna se o modulo está em funcionamento.
-     */
+
     autoCollector.isRunning = function () {
         return running;
     };
 
-    /**
-     * Retorna se o modulo está inicializado.
-     */
+
     autoCollector.isInitialized = function () {
         return initialized;
     };
@@ -4887,7 +3522,7 @@ define('two/autoMinter/ui', [
         $button = interfaceOverflow.addMenuButton('AutoMinter', 51);
         $button.addEventListener('click', buildWindow);
 
-        interfaceOverflow.addTemplate('twoverflow_auto_minter_window', `<div id=\"two-auto-minter\" class=\"win-content two-window\"><header class=\"win-head\"><h2>Auto Coin Minter</h2><ul class=\"list-btn\"><li><a href=\"#\" class=\"size-34x34 btn-red icon-26x26-close\" ng-click=\"closeWindow()\"></a></ul></header><div class=\"win-main\" scrollbar=\"\"><div class=\"tabs tabs-bg\"><div class=\"tabs-one-col\"><div class=\"tab\" ng-click=\"selectTab(TAB_TYPES.SETTINGS)\" ng-class=\"{'tab-active': selectedTab == TAB_TYPES.SETTINGS}\"><div class=\"tab-inner\"><div ng-class=\"{'box-border-light': selectedTab === TAB_TYPES.SETTINGS}\"><a href=\"#\" ng-class=\"{'btn-icon btn-orange': selectedTab !== TAB_TYPES.SETTINGS}\">{{ TAB_TYPES.SETTINGS | i18n:loc.ale:'common' }}</a></div></div></div></div></div><div class=\"box-paper footer\"><div class=\"scroll-wrap\"><div class=\"settings\" ng-show=\"selectedTab === TAB_TYPES.SETTINGS\"><table class=\"tbl-border-light tbl-content tbl-medium-height\"><col><col width=\"200px\"><col width=\"60px\"><tr><td><span class=\"ff-cell-fix\">{{ 'enabled_groups' | i18n:loc.ale:'auto_minter' }}</span><td colspan=\"2\"><div select=\"\" list=\"groups\" selected=\"settings[SETTINGS.ENABLED_GROUPS]\" drop-down=\"true\"></div><tr><td><span class=\"ff-cell-fix\">{{ 'preserve_wood' | i18n:loc.ale:'auto_minter' }}</span><td><div range-slider=\"\" min=\"settingsMap[SETTINGS.PRESERVE_WOOD].min\" max=\"settingsMap[SETTINGS.PRESERVE_WOOD].max\" value=\"settings[SETTINGS.PRESERVE_WOOD]\" enabled=\"true\"></div><td class=\"cell-bottom\"><input class=\"fit textfield-border text-center\" ng-model=\"settings[SETTINGS.PRESERVE_WOOD]\"><tr><td><span class=\"ff-cell-fix\">{{ 'preserve_clay' | i18n:loc.ale:'auto_minter' }}</span><td><div range-slider=\"\" min=\"settingsMap[SETTINGS.PRESERVE_CLAY].min\" max=\"settingsMap[SETTINGS.PRESERVE_CLAY].max\" value=\"settings[SETTINGS.PRESERVE_CLAY]\" enabled=\"true\"></div><td class=\"cell-bottom\"><input class=\"fit textfield-border text-center\" ng-model=\"settings[SETTINGS.PRESERVE_CLAY]\"><tr><td><span class=\"ff-cell-fix\">{{ 'preserve_iron' | i18n:loc.ale:'auto_minter' }}</span><td><div range-slider=\"\" min=\"settingsMap[SETTINGS.PRESERVE_IRON].min\" max=\"settingsMap[SETTINGS.PRESERVE_IRON].max\" value=\"settings[SETTINGS.PRESERVE_IRON]\" enabled=\"true\"></div><td class=\"cell-bottom\"><input class=\"fit textfield-border text-center\" ng-model=\"settings[SETTINGS.PRESERVE_IRON]\"><tr><td><span class=\"ff-cell-fix\">{{ 'check_interval' | i18n:loc.ale:'auto_minter' }}</span><td colspan=\"2\" class=\"cell-bottom\"><input class=\"fit textfield-border text-center\" ng-model=\"settings[SETTINGS.CHECK_INTERVAL]\"></table></div></div></div></div><footer class=\"win-foot\"><ul class=\"list-btn list-center\"><li ng-show=\"selectedTab === TAB_TYPES.SETTINGS\"><a href=\"#\" class=\"btn-border btn-red\" ng-click=\"saveSettings()\">{{ 'save' | i18n:loc.ale:'common' }}</a><li><a href=\"#\" ng-class=\"{false:'btn-green', true:'btn-red'}[running]\" class=\"btn-border\" ng-click=\"switchState()\"><span ng-show=\"running\">{{ 'pause' | i18n:loc.ale:'common' }}</span> <span ng-show=\"!running\">{{ 'start' | i18n:loc.ale:'common' }}</span></a></ul></footer></div>`);
+        interfaceOverflow.addTemplate('TW2 Enchanced_auto_minter_window', `<div id=\"two-auto-minter\" class=\"win-content two-window\"><header class=\"win-head\"><h2>Auto Coin Minter</h2><ul class=\"list-btn\"><li><a href=\"#\" class=\"size-34x34 btn-red icon-26x26-close\" ng-click=\"closeWindow()\"></a></ul></header><div class=\"win-main\" scrollbar=\"\"><div class=\"tabs tabs-bg\"><div class=\"tabs-one-col\"><div class=\"tab\" ng-click=\"selectTab(TAB_TYPES.SETTINGS)\" ng-class=\"{'tab-active': selectedTab == TAB_TYPES.SETTINGS}\"><div class=\"tab-inner\"><div ng-class=\"{'box-border-light': selectedTab === TAB_TYPES.SETTINGS}\"><a href=\"#\" ng-class=\"{'btn-icon btn-orange': selectedTab !== TAB_TYPES.SETTINGS}\">{{ TAB_TYPES.SETTINGS | i18n:loc.ale:'common' }}</a></div></div></div></div></div><div class=\"box-paper footer\"><div class=\"scroll-wrap\"><div class=\"settings\" ng-show=\"selectedTab === TAB_TYPES.SETTINGS\"><table class=\"tbl-border-light tbl-content tbl-medium-height\"><col><col width=\"200px\"><col width=\"60px\"><tr><td><span class=\"ff-cell-fix\">{{ 'enabled_groups' | i18n:loc.ale:'auto_minter' }}</span><td colspan=\"2\"><div select=\"\" list=\"groups\" selected=\"settings[SETTINGS.ENABLED_GROUPS]\" drop-down=\"true\"></div><tr><td><span class=\"ff-cell-fix\">{{ 'preserve_wood' | i18n:loc.ale:'auto_minter' }}</span><td><div range-slider=\"\" min=\"settingsMap[SETTINGS.PRESERVE_WOOD].min\" max=\"settingsMap[SETTINGS.PRESERVE_WOOD].max\" value=\"settings[SETTINGS.PRESERVE_WOOD]\" enabled=\"true\"></div><td class=\"cell-bottom\"><input class=\"fit textfield-border text-center\" ng-model=\"settings[SETTINGS.PRESERVE_WOOD]\"><tr><td><span class=\"ff-cell-fix\">{{ 'preserve_clay' | i18n:loc.ale:'auto_minter' }}</span><td><div range-slider=\"\" min=\"settingsMap[SETTINGS.PRESERVE_CLAY].min\" max=\"settingsMap[SETTINGS.PRESERVE_CLAY].max\" value=\"settings[SETTINGS.PRESERVE_CLAY]\" enabled=\"true\"></div><td class=\"cell-bottom\"><input class=\"fit textfield-border text-center\" ng-model=\"settings[SETTINGS.PRESERVE_CLAY]\"><tr><td><span class=\"ff-cell-fix\">{{ 'preserve_iron' | i18n:loc.ale:'auto_minter' }}</span><td><div range-slider=\"\" min=\"settingsMap[SETTINGS.PRESERVE_IRON].min\" max=\"settingsMap[SETTINGS.PRESERVE_IRON].max\" value=\"settings[SETTINGS.PRESERVE_IRON]\" enabled=\"true\"></div><td class=\"cell-bottom\"><input class=\"fit textfield-border text-center\" ng-model=\"settings[SETTINGS.PRESERVE_IRON]\"><tr><td><span class=\"ff-cell-fix\">{{ 'check_interval' | i18n:loc.ale:'auto_minter' }}</span><td colspan=\"2\" class=\"cell-bottom\"><input class=\"fit textfield-border text-center\" ng-model=\"settings[SETTINGS.CHECK_INTERVAL]\"></table></div></div></div></div><footer class=\"win-foot\"><ul class=\"list-btn list-center\"><li ng-show=\"selectedTab === TAB_TYPES.SETTINGS\"><a href=\"#\" class=\"btn-border btn-red\" ng-click=\"saveSettings()\">{{ 'save' | i18n:loc.ale:'common' }}</a><li><a href=\"#\" ng-class=\"{false:'btn-green', true:'btn-red'}[running]\" class=\"btn-border\" ng-click=\"switchState()\"><span ng-show=\"running\">{{ 'pause' | i18n:loc.ale:'common' }}</span> <span ng-show=\"!running\">{{ 'start' | i18n:loc.ale:'common' }}</span></a></ul></footer></div>`);
         interfaceOverflow.addStyle('#two-auto-minter div[select]{width:100%}#two-auto-minter div[select] .select-handler{line-height:28px}#two-auto-minter div[select] .select-wrapper{width:100%}#two-auto-minter .range-container{width:250px}#two-auto-minter .textfield-border{width:219px;height:34px;margin-bottom:2px;padding-top:2px}#two-auto-minter .textfield-border.fit{width:100%}');
     };
 
@@ -4906,7 +3541,7 @@ define('two/autoMinter/ui', [
         $scope.saveSettings = saveSettings;
         $scope.switchState = switchState;
 
-        const eventScope = new EventScope('twoverflow_auto_minter_window', function onDestroy () {});
+        const eventScope = new EventScope('TW2 Enchanced_auto_minter_window', function onDestroy () {});
 
         eventScope.register(eventTypeProvider.GROUPS_CREATED, eventHandlers.updateGroups, true);
         eventScope.register(eventTypeProvider.GROUPS_DESTROYED, eventHandlers.updateGroups, true);
@@ -4914,7 +3549,7 @@ define('two/autoMinter/ui', [
         eventScope.register(eventTypeProvider.AUTO_MINTER_START, eventHandlers.start);
         eventScope.register(eventTypeProvider.AUTO_MINTER_STOP, eventHandlers.stop);
 
-        windowManagerService.getScreenWithInjectedScope('!twoverflow_auto_minter_window', $scope);
+        windowManagerService.getScreenWithInjectedScope('!TW2 Enchanced_auto_minter_window', $scope);
     };
 
     return init;
@@ -6590,7 +5225,7 @@ define('two/builderQueue/ui', [
             }
         };
 
-        windowManagerService.getModal('!twoverflow_builder_queue_add_building_modal', modalScope);
+        windowManagerService.getModal('!TW2 Enchanced_builder_queue_add_building_modal', modalScope);
     };
 
     editorView.modal.nameSequence = function () {
@@ -6612,7 +5247,7 @@ define('two/builderQueue/ui', [
                 }
             };
 
-            windowManagerService.getModal('!twoverflow_builder_queue_name_sequence_modal', modalScope);
+            windowManagerService.getModal('!TW2 Enchanced_builder_queue_name_sequence_modal', modalScope);
         };
 
         if (unsavedChanges) {
@@ -6684,7 +5319,7 @@ define('two/builderQueue/ui', [
             }
         };
 
-        windowManagerService.getModal('!twoverflow_builder_queue_name_sequence_modal', modalScope);
+        windowManagerService.getModal('!TW2 Enchanced_builder_queue_name_sequence_modal', modalScope);
     };
 
     const selectTab = function (tabType) {
@@ -6830,9 +5465,9 @@ define('two/builderQueue/ui', [
             utils.notif('success', $filter('i18n')('stopped', $rootScope.loc.ale, 'builder_queue'));
         });
 
-        interfaceOverflow.addTemplate('twoverflow_builder_queue_window', `<div id=\"two-builder-queue\" class=\"win-content two-window\"><header class=\"win-head\"><h2>BuilderQueue</h2><ul class=\"list-btn\"><li><a href=\"#\" class=\"size-34x34 btn-red icon-26x26-close\" ng-click=\"closeWindow()\"></a></ul></header><div class=\"win-main small-select\" scrollbar=\"\"><div class=\"tabs tabs-bg\"><div class=\"tabs-three-col\"><div class=\"tab\" ng-click=\"selectTab(TAB_TYPES.SETTINGS)\" ng-class=\"{'tab-active': selectedTab == TAB_TYPES.SETTINGS}\"><div class=\"tab-inner\"><div ng-class=\"{'box-border-light': selectedTab === TAB_TYPES.SETTINGS}\"><a href=\"#\" ng-class=\"{'btn-icon btn-orange': selectedTab !== TAB_TYPES.SETTINGS}\">{{ TAB_TYPES.SETTINGS | i18n:loc.ale:'common' }}</a></div></div></div><div class=\"tab\" ng-click=\"selectTab(TAB_TYPES.SEQUENCES)\" ng-class=\"{'tab-active': selectedTab == TAB_TYPES.SEQUENCES}\"><div class=\"tab-inner\"><div ng-class=\"{'box-border-light': selectedTab === TAB_TYPES.SEQUENCES}\"><a href=\"#\" ng-class=\"{'btn-icon btn-orange': selectedTab !== TAB_TYPES.SEQUENCES}\">{{ TAB_TYPES.SEQUENCES | i18n:loc.ale:'builder_queue' }}</a></div></div></div><div class=\"tab\" ng-click=\"selectTab(TAB_TYPES.LOGS)\" ng-class=\"{'tab-active': selectedTab == TAB_TYPES.LOGS}\"><div class=\"tab-inner\"><div ng-class=\"{'box-border-light': selectedTab === TAB_TYPES.LOGS}\"><a href=\"#\" ng-class=\"{'btn-icon btn-orange': selectedTab !== TAB_TYPES.LOGS}\">{{ TAB_TYPES.LOGS | i18n:loc.ale:'common' }}</a></div></div></div></div></div><div class=\"box-paper footer\"><div class=\"scroll-wrap\"><div ng-show=\"selectedTab === TAB_TYPES.SETTINGS\"><h5 class=\"twx-section\">{{ 'settings' | i18n:loc.ale:'builder_queue' }}</h5><table class=\"settings tbl-border-light tbl-striped\"><col width=\"40%\"><col><col width=\"60px\"><tr><td><span class=\"ff-cell-fix\">{{ 'settings_village_groups' | i18n:loc.ale:'builder_queue' }}</span><td colspan=\"2\" class=\"text-right\"><div select=\"\" list=\"groups\" selected=\"settings[SETTINGS.GROUP_VILLAGES]\" drop-down=\"true\"></div><tr ng-show=\"settingsView.sequencesAvail\"><td><span class=\"ff-cell-fix\">{{ 'settings_building_sequence' | i18n:loc.ale:'builder_queue' }}</span><td colspan=\"2\" class=\"text-right\"><div select=\"\" list=\"sequences\" selected=\"settings[SETTINGS.ACTIVE_SEQUENCE]\" drop-down=\"true\"></div><tr><td><span class=\"ff-cell-fix\">{{ 'settings_preserve_wood' | i18n:loc.ale:'builder_queue' }}</span><td><div range-slider=\"\" min=\"settingsMap[SETTINGS.PRESERVE_WOOD].min\" max=\"settingsMap[SETTINGS.PRESERVE_WOOD].max\" value=\"settings[SETTINGS.PRESERVE_WOOD]\" enabled=\"true\"></div><td><input type=\"number\" class=\"preserve-resource textfield-border text-center\" ng-model=\"settings[SETTINGS.PRESERVE_WOOD]\"><tr><td><span class=\"ff-cell-fix\">{{ 'settings_preserve_clay' | i18n:loc.ale:'builder_queue' }}</span><td><div range-slider=\"\" min=\"settingsMap[SETTINGS.PRESERVE_CLAY].min\" max=\"settingsMap[SETTINGS.PRESERVE_CLAY].max\" value=\"settings[SETTINGS.PRESERVE_CLAY]\" enabled=\"true\"></div><td><input type=\"number\" class=\"preserve-resource textfield-border text-center\" ng-model=\"settings[SETTINGS.PRESERVE_CLAY]\"><tr><td><span class=\"ff-cell-fix\">{{ 'settings_preserve_iron' | i18n:loc.ale:'builder_queue' }}</span><td><div range-slider=\"\" min=\"settingsMap[SETTINGS.PRESERVE_IRON].min\" max=\"settingsMap[SETTINGS.PRESERVE_IRON].max\" value=\"settings[SETTINGS.PRESERVE_IRON]\" enabled=\"true\"></div><td><input type=\"number\" class=\"preserve-resource textfield-border text-center\" ng-model=\"settings[SETTINGS.PRESERVE_IRON]\"><tr><td colspan=\"2\"><span class=\"ff-cell-fix\">{{ 'settings_priorize_farm' | i18n:loc.ale:'builder_queue' }}</span><td class=\"text-center\"><div switch-slider=\"\" enabled=\"true\" border=\"true\" value=\"settings[SETTINGS.PRIORIZE_FARM]\" vertical=\"false\" size=\"'56x28'\"></div></table><h5 class=\"twx-section\">{{ 'settings_building_sequence' | i18n:loc.ale:'builder_queue' }}</h5><p ng-show=\"!settingsView.sequencesAvail\" class=\"text-center\"><a href=\"#\" class=\"btn-orange btn-border create-sequence\" ng-click=\"createSequence()\">{{ 'create_sequence' | i18n:loc.ale:'builder_queue' }}</a><div ng-if=\"settingsView.sequencesAvail && settingsView.visibleBuildingSequence.length\"><div class=\"page-wrap\" pagination=\"pagination.buildingSequence\"></div><table class=\"tbl-border-light header-center building-sequence\"><col width=\"5%\"><col><col width=\"7%\"><col width=\"13%\"><col width=\"8%\"><col width=\"9%\"><col width=\"9%\"><col width=\"9%\"><col width=\"6%\"><tr><th tooltip=\"\" tooltip-content=\"{{ 'position' | i18n:loc.ale:'builder_queue' }}\">#<th>{{ 'building' | i18n:loc.ale:'common' }}<th>{{ 'level' | i18n:loc.ale:'common' }}<th>{{ 'duration' | i18n:loc.ale:'common' }}<th>{{ 'points' | i18n:loc.ale:'common' }}<th><span class=\"icon-26x26-resource-wood\"></span><th><span class=\"icon-26x26-resource-clay\"></span><th><span class=\"icon-26x26-resource-iron\"></span><th><span class=\"icon-26x26-resource-food\"></span><tr ng-repeat=\"item in settingsView.visibleBuildingSequence track by $index\" class=\"{{ item.state }}\"><td>{{ pagination.buildingSequence.offset + $index + 1 }}<td><span class=\"building-icon icon-20x20-building-{{ item.building }}\"></span> {{ item.building | i18n:loc.ale:'building_names' }}<td>{{ item.level }}<td>{{ item.duration }}<td class=\"green\">+{{ item.levelPoints | number }}<td>{{ item.price.wood | number }}<td>{{ item.price.clay | number }}<td>{{ item.price.iron | number }}<td>{{ item.price.food | number }}</table><div class=\"page-wrap\" pagination=\"pagination.buildingSequence\"></div></div><h5 ng-if=\"settingsView.sequencesAvail && settingsView.visibleBuildingSequence.length\" class=\"twx-section\">{{ 'settings_building_sequence_final' | i18n:loc.ale:'builder_queue' }}</h5><table ng-if=\"settingsView.sequencesAvail && settingsView.visibleBuildingSequence.length\" class=\"tbl-border-light tbl-striped header-center building-sequence-final\"><col><col width=\"5%\"><col width=\"12%\"><col width=\"8%\"><col width=\"11%\"><col width=\"11%\"><col width=\"11%\"><col width=\"7%\"><tr><th>{{ 'building' | i18n:loc.ale:'common' }}<th>{{ 'level' | i18n:loc.ale:'common' }}<th>{{ 'duration' | i18n:loc.ale:'common' }}<th>{{ 'points' | i18n:loc.ale:'common' }}<th><span class=\"icon-26x26-resource-wood\"></span><th><span class=\"icon-26x26-resource-clay\"></span><th><span class=\"icon-26x26-resource-iron\"></span><th><span class=\"icon-26x26-resource-food\"></span><tr ng-repeat=\"item in settingsView.buildingSequenceFinal | orderBy:'order'\"><td><span class=\"building-icon icon-20x20-building-{{ item.building }}\"></span> {{ item.building | i18n:loc.ale:'building_names' }}<td>{{ item.level }}<td>{{ item.build_time | readableSecondsFilter }}<td class=\"green\">+{{ item.points | number }}<td>{{ item.resources.wood | number }}<td>{{ item.resources.clay | number }}<td>{{ item.resources.iron | number }}<td>{{ item.resources.food | number }}</table><p ng-show=\"settingsView.sequencesAvail && !settingsView.visibleBuildingSequence.length\" class=\"text-center\">{{ 'empty_sequence' | i18n:loc.ale:'builder_queue' }}</div><div ng-show=\"selectedTab === TAB_TYPES.SEQUENCES\"><h5 class=\"twx-section\">{{ 'sequences_edit_sequence' | i18n:loc.ale:'builder_queue' }}</h5><p ng-show=\"!editorView.sequencesAvail\" class=\"text-center\"><a class=\"btn btn-orange create-sequence\" ng-click=\"createSequence()\">{{ 'create_sequence' | i18n:loc.ale:'builder_queue' }}</a><table ng-if=\"editorView.sequencesAvail\" class=\"tbl-border-light tbl-striped editor-select-sequence\"><tr><td colspan=\"2\"><span class=\"ff-cell-fix\">{{ 'sequences_select_edit' | i18n:loc.ale:'builder_queue' }}</span><td><div class=\"select-sequence-editor\" select=\"\" list=\"sequences\" selected=\"editorView.selectedSequence\" drop-down=\"true\"></div><tr><td class=\"text-center\"><a class=\"btn btn-orange create-sequence\" ng-click=\"createSequence()\">{{ 'create_sequence' | i18n:loc.ale:'builder_queue' }}</a><td class=\"text-center\"><a class=\"btn btn-orange clone-sequence\" ng-click=\"editorView.modal.nameSequence()\">{{ 'clone_sequence' | i18n:loc.ale:'builder_queue' }}</a><td class=\"text-center\"><a class=\"btn btn-red remove-sequence\" ng-click=\"editorView.modal.removeSequence()\">{{ 'remove_sequence' | i18n:loc.ale:'builder_queue' }}</a></table><div ng-if=\"editorView.sequencesAvail\"><div class=\"page-wrap\" pagination=\"pagination.buildingSequenceEditor\"></div><table ng-show=\"editorView.visibleBuildingSequence.length\" class=\"tbl-border-light tbl-striped header-center building-sequence-editor\"><col width=\"5%\"><col width=\"5%\"><col><col width=\"7%\"><col width=\"10%\"><tr><th><th tooltip=\"\" tooltip-content=\"{{ 'position' | i18n:loc.ale:'builder_queue' }}\">#<th>{{ 'building' | i18n:loc.ale:'common' }}<th>{{ 'level' | i18n:loc.ale:'common' }}<th>{{ 'actions' | i18n:loc.ale:'common' }}<tr ng-repeat=\"item in editorView.visibleBuildingSequence track by $index\" ng-class=\"{'selected': item.checked}\"><td><label class=\"size-26x26 btn-orange icon-26x26-checkbox\" ng-class=\"{'icon-26x26-checkbox-checked': item.checked}\"><input type=\"checkbox\" ng-model=\"item.checked\"></label><td>{{ pagination.buildingSequenceEditor.offset + $index + 1 }}<td><span class=\"building-icon icon-20x20-building-{{ item.building }}\"></span> {{ item.building | i18n:loc.ale:'building_names' }}<td>{{ item.level }}<td><a href=\"#\" class=\"size-20x20 btn-red icon-20x20-close\" ng-click=\"editorView.removeBuilding(pagination.buildingSequenceEditor.offset + $index)\" tooltip=\"\" tooltip-content=\"{{ 'remove_building' | i18n:loc.ale:'builder_queue' }}\"></a></table><div class=\"page-wrap\" pagination=\"pagination.buildingSequenceEditor\"></div><p ng-show=\"!editorView.visibleBuildingSequence.length\" class=\"text-center\"><a class=\"btn btn-border btn-orange\" ng-click=\"editorView.modal.addBuilding()\">{{ 'sequences_add_building' | i18n:loc.ale:'builder_queue' }}</a></div></div><div ng-show=\"selectedTab === TAB_TYPES.LOGS\" class=\"rich-text\"><div class=\"page-wrap\" pagination=\"pagination.logs\"></div><p class=\"text-center\" ng-show=\"!logsView.logs.length\">{{ 'logs_no_builds' | i18n:loc.ale:'builder_queue' }}<table class=\"tbl-border-light tbl-striped header-center logs\" ng-show=\"logsView.logs.length\"><col width=\"40%\"><col width=\"30%\"><col width=\"5%\"><col width=\"25%\"><col><thead><tr><th>{{ 'village' | i18n:loc.ale:'common' }}<th>{{ 'building' | i18n:loc.ale:'common' }}<th>{{ 'level' | i18n:loc.ale:'common' }}<th>{{ 'started_at' | i18n:loc.ale:'common' }}<tbody><tr ng-repeat=\"log in logsView.logs\"><td><a class=\"link\" ng-click=\"openVillageInfo(log.villageId)\"><span class=\"icon-20x20-village\"></span> {{ villagesLabel[log.villageId] }}</a><td><span class=\"building-icon icon-20x20-building-{{ log.building }}\"></span> {{ log.building | i18n:loc.ale:'building_names' }}<td>{{ log.level }}<td>{{ log.time | readableDateFilter:loc.ale:GAME_TIMEZONE:GAME_TIME_OFFSET }}</table><div class=\"page-wrap\" pagination=\"pagination.logs\"></div></div></div></div></div><footer class=\"win-foot\"><ul class=\"list-btn list-center\"><li ng-show=\"selectedTab === TAB_TYPES.SETTINGS && settingsView.sequencesAvail\"><a href=\"#\" class=\"btn-border btn-orange\" ng-click=\"saveSettings()\">{{ 'save' | i18n:loc.ale:'common' }}</a><li ng-show=\"selectedTab === TAB_TYPES.SETTINGS && settingsView.sequencesAvail\"><a href=\"#\" ng-class=\"{false:'btn-orange', true:'btn-red'}[running]\" class=\"btn-border\" ng-click=\"switchBuilder()\"><span ng-show=\"running\">{{ 'pause' | i18n:loc.ale:'common' }}</span> <span ng-show=\"!running\">{{ 'start' | i18n:loc.ale:'common' }}</span></a><li ng-show=\"selectedTab === TAB_TYPES.LOGS\"><a href=\"#\" class=\"btn-border btn-orange\" ng-click=\"logsView.clearLogs()\">{{ 'logs_clear' | i18n:loc.ale:'builder_queue' }}</a><li ng-show=\"selectedTab === TAB_TYPES.SEQUENCES && editorView.sequencesAvail\"><a href=\"#\" class=\"btn-border btn-orange\" ng-click=\"editorView.moveUp()\">{{ 'sequences_move_up' | i18n:loc.ale:'builder_queue' }}</a><li ng-show=\"selectedTab === TAB_TYPES.SEQUENCES && editorView.sequencesAvail\"><a href=\"#\" class=\"btn-border btn-orange\" ng-click=\"editorView.moveDown()\">{{ 'sequences_move_down' | i18n:loc.ale:'builder_queue' }}</a><li ng-show=\"selectedTab === TAB_TYPES.SEQUENCES && editorView.sequencesAvail\"><a href=\"#\" class=\"btn-border btn-orange\" ng-click=\"editorView.modal.addBuilding()\">{{ 'sequences_add_building' | i18n:loc.ale:'builder_queue' }}</a><li ng-show=\"selectedTab === TAB_TYPES.SEQUENCES && editorView.sequencesAvail\"><a href=\"#\" class=\"btn-border btn-red\" ng-click=\"editorView.updateBuildingSequence()\">{{ 'save' | i18n:loc.ale:'common' }}</a></ul></footer></div>`);
-        interfaceOverflow.addTemplate('twoverflow_builder_queue_add_building_modal', `<div id=\"add-building-modal\" class=\"win-content\"><header class=\"win-head\"><h3>{{ 'title' | i18n:loc.ale:'builder_queue_add_building_modal' }}</h3><ul class=\"list-btn sprite\"><li><a href=\"#\" class=\"btn-red icon-26x26-close\" ng-click=\"closeWindow()\"></a></ul></header><div class=\"win-main\" scrollbar=\"\"><div class=\"box-paper\"><div class=\"scroll-wrap unit-operate-slider\"><table class=\"tbl-border-light tbl-striped header-center\"><col width=\"15%\"><col><col width=\"15%\"><tr><td>{{ 'building' | i18n:loc.ale:'common' }}<td colspan=\"2\"><div select=\"\" list=\"buildings\" selected=\"selectedBuilding\" drop-down=\"true\"></div><tr><td>{{ 'position' | i18n:loc.ale:'builder_queue' }}<td><div range-slider=\"\" min=\"1\" max=\"indexLimit\" value=\"position\" enabled=\"true\"></div><td><input type=\"number\" class=\"input-border text-center\" ng-model=\"position\"><tr><td>{{ 'amount' | i18n:loc.ale:'builder_queue' }}<td><div range-slider=\"\" min=\"1\" max=\"buildingsData[selectedBuilding.value].max_level\" value=\"amount\" enabled=\"true\"></div><td><input type=\"number\" class=\"input-border text-center\" ng-model=\"amount\"></table></div></div></div><footer class=\"win-foot sprite-fill\"><ul class=\"list-btn list-center\"><li><a href=\"#\" class=\"btn-red btn-border btn-premium\" ng-click=\"closeWindow()\">{{ 'cancel' | i18n:loc.ale:'common' }}</a><li><a href=\"#\" class=\"btn-orange btn-border\" ng-click=\"add()\">{{ 'add' | i18n:loc.ale:'common' }}</a></ul></footer></div>`);
-        interfaceOverflow.addTemplate('twoverflow_builder_queue_name_sequence_modal', `<div id=\"name-sequence-modal\" class=\"win-content\"><header class=\"win-head\"><h3>{{ 'title' | i18n:loc.ale:'builder_queue_name_sequence_modal' }}</h3><ul class=\"list-btn sprite\"><li><a href=\"#\" class=\"btn-red icon-26x26-close\" ng-click=\"closeWindow()\"></a></ul></header><div class=\"win-main\" scrollbar=\"\"><div class=\"box-paper\"><div class=\"scroll-wrap\"><div class=\"box-border-light input-wrapper name_preset\"><form ng-submit=\"submit()\"><input focus=\"true\" ng-model=\"name\" minlength=\"3\"></form></div></div></div></div><footer class=\"win-foot sprite-fill\"><ul class=\"list-btn list-center\"><li><a href=\"#\" class=\"btn-red btn-border btn-premium\" ng-click=\"closeWindow()\">{{ 'cancel' | i18n:loc.ale:'common' }}</a><li><a href=\"#\" class=\"btn-orange btn-border\" ng-click=\"submit()\">{{ 'add' | i18n:loc.ale:'common' }}</a></ul></footer></div>`);
+        interfaceOverflow.addTemplate('TW2 Enchanced_builder_queue_window', `<div id=\"two-builder-queue\" class=\"win-content two-window\"><header class=\"win-head\"><h2>BuilderQueue</h2><ul class=\"list-btn\"><li><a href=\"#\" class=\"size-34x34 btn-red icon-26x26-close\" ng-click=\"closeWindow()\"></a></ul></header><div class=\"win-main small-select\" scrollbar=\"\"><div class=\"tabs tabs-bg\"><div class=\"tabs-three-col\"><div class=\"tab\" ng-click=\"selectTab(TAB_TYPES.SETTINGS)\" ng-class=\"{'tab-active': selectedTab == TAB_TYPES.SETTINGS}\"><div class=\"tab-inner\"><div ng-class=\"{'box-border-light': selectedTab === TAB_TYPES.SETTINGS}\"><a href=\"#\" ng-class=\"{'btn-icon btn-orange': selectedTab !== TAB_TYPES.SETTINGS}\">{{ TAB_TYPES.SETTINGS | i18n:loc.ale:'common' }}</a></div></div></div><div class=\"tab\" ng-click=\"selectTab(TAB_TYPES.SEQUENCES)\" ng-class=\"{'tab-active': selectedTab == TAB_TYPES.SEQUENCES}\"><div class=\"tab-inner\"><div ng-class=\"{'box-border-light': selectedTab === TAB_TYPES.SEQUENCES}\"><a href=\"#\" ng-class=\"{'btn-icon btn-orange': selectedTab !== TAB_TYPES.SEQUENCES}\">{{ TAB_TYPES.SEQUENCES | i18n:loc.ale:'builder_queue' }}</a></div></div></div><div class=\"tab\" ng-click=\"selectTab(TAB_TYPES.LOGS)\" ng-class=\"{'tab-active': selectedTab == TAB_TYPES.LOGS}\"><div class=\"tab-inner\"><div ng-class=\"{'box-border-light': selectedTab === TAB_TYPES.LOGS}\"><a href=\"#\" ng-class=\"{'btn-icon btn-orange': selectedTab !== TAB_TYPES.LOGS}\">{{ TAB_TYPES.LOGS | i18n:loc.ale:'common' }}</a></div></div></div></div></div><div class=\"box-paper footer\"><div class=\"scroll-wrap\"><div ng-show=\"selectedTab === TAB_TYPES.SETTINGS\"><h5 class=\"twx-section\">{{ 'settings' | i18n:loc.ale:'builder_queue' }}</h5><table class=\"settings tbl-border-light tbl-striped\"><col width=\"40%\"><col><col width=\"60px\"><tr><td><span class=\"ff-cell-fix\">{{ 'settings_village_groups' | i18n:loc.ale:'builder_queue' }}</span><td colspan=\"2\" class=\"text-right\"><div select=\"\" list=\"groups\" selected=\"settings[SETTINGS.GROUP_VILLAGES]\" drop-down=\"true\"></div><tr ng-show=\"settingsView.sequencesAvail\"><td><span class=\"ff-cell-fix\">{{ 'settings_building_sequence' | i18n:loc.ale:'builder_queue' }}</span><td colspan=\"2\" class=\"text-right\"><div select=\"\" list=\"sequences\" selected=\"settings[SETTINGS.ACTIVE_SEQUENCE]\" drop-down=\"true\"></div><tr><td><span class=\"ff-cell-fix\">{{ 'settings_preserve_wood' | i18n:loc.ale:'builder_queue' }}</span><td><div range-slider=\"\" min=\"settingsMap[SETTINGS.PRESERVE_WOOD].min\" max=\"settingsMap[SETTINGS.PRESERVE_WOOD].max\" value=\"settings[SETTINGS.PRESERVE_WOOD]\" enabled=\"true\"></div><td><input type=\"number\" class=\"preserve-resource textfield-border text-center\" ng-model=\"settings[SETTINGS.PRESERVE_WOOD]\"><tr><td><span class=\"ff-cell-fix\">{{ 'settings_preserve_clay' | i18n:loc.ale:'builder_queue' }}</span><td><div range-slider=\"\" min=\"settingsMap[SETTINGS.PRESERVE_CLAY].min\" max=\"settingsMap[SETTINGS.PRESERVE_CLAY].max\" value=\"settings[SETTINGS.PRESERVE_CLAY]\" enabled=\"true\"></div><td><input type=\"number\" class=\"preserve-resource textfield-border text-center\" ng-model=\"settings[SETTINGS.PRESERVE_CLAY]\"><tr><td><span class=\"ff-cell-fix\">{{ 'settings_preserve_iron' | i18n:loc.ale:'builder_queue' }}</span><td><div range-slider=\"\" min=\"settingsMap[SETTINGS.PRESERVE_IRON].min\" max=\"settingsMap[SETTINGS.PRESERVE_IRON].max\" value=\"settings[SETTINGS.PRESERVE_IRON]\" enabled=\"true\"></div><td><input type=\"number\" class=\"preserve-resource textfield-border text-center\" ng-model=\"settings[SETTINGS.PRESERVE_IRON]\"><tr><td colspan=\"2\"><span class=\"ff-cell-fix\">{{ 'settings_priorize_farm' | i18n:loc.ale:'builder_queue' }}</span><td class=\"text-center\"><div switch-slider=\"\" enabled=\"true\" border=\"true\" value=\"settings[SETTINGS.PRIORIZE_FARM]\" vertical=\"false\" size=\"'56x28'\"></div></table><h5 class=\"twx-section\">{{ 'settings_building_sequence' | i18n:loc.ale:'builder_queue' }}</h5><p ng-show=\"!settingsView.sequencesAvail\" class=\"text-center\"><a href=\"#\" class=\"btn-orange btn-border create-sequence\" ng-click=\"createSequence()\">{{ 'create_sequence' | i18n:loc.ale:'builder_queue' }}</a><div ng-if=\"settingsView.sequencesAvail && settingsView.visibleBuildingSequence.length\"><div class=\"page-wrap\" pagination=\"pagination.buildingSequence\"></div><table class=\"tbl-border-light header-center building-sequence\"><col width=\"5%\"><col><col width=\"7%\"><col width=\"13%\"><col width=\"8%\"><col width=\"9%\"><col width=\"9%\"><col width=\"9%\"><col width=\"6%\"><tr><th tooltip=\"\" tooltip-content=\"{{ 'position' | i18n:loc.ale:'builder_queue' }}\">#<th>{{ 'building' | i18n:loc.ale:'common' }}<th>{{ 'level' | i18n:loc.ale:'common' }}<th>{{ 'duration' | i18n:loc.ale:'common' }}<th>{{ 'points' | i18n:loc.ale:'common' }}<th><span class=\"icon-26x26-resource-wood\"></span><th><span class=\"icon-26x26-resource-clay\"></span><th><span class=\"icon-26x26-resource-iron\"></span><th><span class=\"icon-26x26-resource-food\"></span><tr ng-repeat=\"item in settingsView.visibleBuildingSequence track by $index\" class=\"{{ item.state }}\"><td>{{ pagination.buildingSequence.offset + $index + 1 }}<td><span class=\"building-icon icon-20x20-building-{{ item.building }}\"></span> {{ item.building | i18n:loc.ale:'building_names' }}<td>{{ item.level }}<td>{{ item.duration }}<td class=\"green\">+{{ item.levelPoints | number }}<td>{{ item.price.wood | number }}<td>{{ item.price.clay | number }}<td>{{ item.price.iron | number }}<td>{{ item.price.food | number }}</table><div class=\"page-wrap\" pagination=\"pagination.buildingSequence\"></div></div><h5 ng-if=\"settingsView.sequencesAvail && settingsView.visibleBuildingSequence.length\" class=\"twx-section\">{{ 'settings_building_sequence_final' | i18n:loc.ale:'builder_queue' }}</h5><table ng-if=\"settingsView.sequencesAvail && settingsView.visibleBuildingSequence.length\" class=\"tbl-border-light tbl-striped header-center building-sequence-final\"><col><col width=\"5%\"><col width=\"12%\"><col width=\"8%\"><col width=\"11%\"><col width=\"11%\"><col width=\"11%\"><col width=\"7%\"><tr><th>{{ 'building' | i18n:loc.ale:'common' }}<th>{{ 'level' | i18n:loc.ale:'common' }}<th>{{ 'duration' | i18n:loc.ale:'common' }}<th>{{ 'points' | i18n:loc.ale:'common' }}<th><span class=\"icon-26x26-resource-wood\"></span><th><span class=\"icon-26x26-resource-clay\"></span><th><span class=\"icon-26x26-resource-iron\"></span><th><span class=\"icon-26x26-resource-food\"></span><tr ng-repeat=\"item in settingsView.buildingSequenceFinal | orderBy:'order'\"><td><span class=\"building-icon icon-20x20-building-{{ item.building }}\"></span> {{ item.building | i18n:loc.ale:'building_names' }}<td>{{ item.level }}<td>{{ item.build_time | readableSecondsFilter }}<td class=\"green\">+{{ item.points | number }}<td>{{ item.resources.wood | number }}<td>{{ item.resources.clay | number }}<td>{{ item.resources.iron | number }}<td>{{ item.resources.food | number }}</table><p ng-show=\"settingsView.sequencesAvail && !settingsView.visibleBuildingSequence.length\" class=\"text-center\">{{ 'empty_sequence' | i18n:loc.ale:'builder_queue' }}</div><div ng-show=\"selectedTab === TAB_TYPES.SEQUENCES\"><h5 class=\"twx-section\">{{ 'sequences_edit_sequence' | i18n:loc.ale:'builder_queue' }}</h5><p ng-show=\"!editorView.sequencesAvail\" class=\"text-center\"><a class=\"btn btn-orange create-sequence\" ng-click=\"createSequence()\">{{ 'create_sequence' | i18n:loc.ale:'builder_queue' }}</a><table ng-if=\"editorView.sequencesAvail\" class=\"tbl-border-light tbl-striped editor-select-sequence\"><tr><td colspan=\"2\"><span class=\"ff-cell-fix\">{{ 'sequences_select_edit' | i18n:loc.ale:'builder_queue' }}</span><td><div class=\"select-sequence-editor\" select=\"\" list=\"sequences\" selected=\"editorView.selectedSequence\" drop-down=\"true\"></div><tr><td class=\"text-center\"><a class=\"btn btn-orange create-sequence\" ng-click=\"createSequence()\">{{ 'create_sequence' | i18n:loc.ale:'builder_queue' }}</a><td class=\"text-center\"><a class=\"btn btn-orange clone-sequence\" ng-click=\"editorView.modal.nameSequence()\">{{ 'clone_sequence' | i18n:loc.ale:'builder_queue' }}</a><td class=\"text-center\"><a class=\"btn btn-red remove-sequence\" ng-click=\"editorView.modal.removeSequence()\">{{ 'remove_sequence' | i18n:loc.ale:'builder_queue' }}</a></table><div ng-if=\"editorView.sequencesAvail\"><div class=\"page-wrap\" pagination=\"pagination.buildingSequenceEditor\"></div><table ng-show=\"editorView.visibleBuildingSequence.length\" class=\"tbl-border-light tbl-striped header-center building-sequence-editor\"><col width=\"5%\"><col width=\"5%\"><col><col width=\"7%\"><col width=\"10%\"><tr><th><th tooltip=\"\" tooltip-content=\"{{ 'position' | i18n:loc.ale:'builder_queue' }}\">#<th>{{ 'building' | i18n:loc.ale:'common' }}<th>{{ 'level' | i18n:loc.ale:'common' }}<th>{{ 'actions' | i18n:loc.ale:'common' }}<tr ng-repeat=\"item in editorView.visibleBuildingSequence track by $index\" ng-class=\"{'selected': item.checked}\"><td><label class=\"size-26x26 btn-orange icon-26x26-checkbox\" ng-class=\"{'icon-26x26-checkbox-checked': item.checked}\"><input type=\"checkbox\" ng-model=\"item.checked\"></label><td>{{ pagination.buildingSequenceEditor.offset + $index + 1 }}<td><span class=\"building-icon icon-20x20-building-{{ item.building }}\"></span> {{ item.building | i18n:loc.ale:'building_names' }}<td>{{ item.level }}<td><a href=\"#\" class=\"size-20x20 btn-red icon-20x20-close\" ng-click=\"editorView.removeBuilding(pagination.buildingSequenceEditor.offset + $index)\" tooltip=\"\" tooltip-content=\"{{ 'remove_building' | i18n:loc.ale:'builder_queue' }}\"></a></table><div class=\"page-wrap\" pagination=\"pagination.buildingSequenceEditor\"></div><p ng-show=\"!editorView.visibleBuildingSequence.length\" class=\"text-center\"><a class=\"btn btn-border btn-orange\" ng-click=\"editorView.modal.addBuilding()\">{{ 'sequences_add_building' | i18n:loc.ale:'builder_queue' }}</a></div></div><div ng-show=\"selectedTab === TAB_TYPES.LOGS\" class=\"rich-text\"><div class=\"page-wrap\" pagination=\"pagination.logs\"></div><p class=\"text-center\" ng-show=\"!logsView.logs.length\">{{ 'logs_no_builds' | i18n:loc.ale:'builder_queue' }}<table class=\"tbl-border-light tbl-striped header-center logs\" ng-show=\"logsView.logs.length\"><col width=\"40%\"><col width=\"30%\"><col width=\"5%\"><col width=\"25%\"><col><thead><tr><th>{{ 'village' | i18n:loc.ale:'common' }}<th>{{ 'building' | i18n:loc.ale:'common' }}<th>{{ 'level' | i18n:loc.ale:'common' }}<th>{{ 'started_at' | i18n:loc.ale:'common' }}<tbody><tr ng-repeat=\"log in logsView.logs\"><td><a class=\"link\" ng-click=\"openVillageInfo(log.villageId)\"><span class=\"icon-20x20-village\"></span> {{ villagesLabel[log.villageId] }}</a><td><span class=\"building-icon icon-20x20-building-{{ log.building }}\"></span> {{ log.building | i18n:loc.ale:'building_names' }}<td>{{ log.level }}<td>{{ log.time | readableDateFilter:loc.ale:GAME_TIMEZONE:GAME_TIME_OFFSET }}</table><div class=\"page-wrap\" pagination=\"pagination.logs\"></div></div></div></div></div><footer class=\"win-foot\"><ul class=\"list-btn list-center\"><li ng-show=\"selectedTab === TAB_TYPES.SETTINGS && settingsView.sequencesAvail\"><a href=\"#\" class=\"btn-border btn-orange\" ng-click=\"saveSettings()\">{{ 'save' | i18n:loc.ale:'common' }}</a><li ng-show=\"selectedTab === TAB_TYPES.SETTINGS && settingsView.sequencesAvail\"><a href=\"#\" ng-class=\"{false:'btn-orange', true:'btn-red'}[running]\" class=\"btn-border\" ng-click=\"switchBuilder()\"><span ng-show=\"running\">{{ 'pause' | i18n:loc.ale:'common' }}</span> <span ng-show=\"!running\">{{ 'start' | i18n:loc.ale:'common' }}</span></a><li ng-show=\"selectedTab === TAB_TYPES.LOGS\"><a href=\"#\" class=\"btn-border btn-orange\" ng-click=\"logsView.clearLogs()\">{{ 'logs_clear' | i18n:loc.ale:'builder_queue' }}</a><li ng-show=\"selectedTab === TAB_TYPES.SEQUENCES && editorView.sequencesAvail\"><a href=\"#\" class=\"btn-border btn-orange\" ng-click=\"editorView.moveUp()\">{{ 'sequences_move_up' | i18n:loc.ale:'builder_queue' }}</a><li ng-show=\"selectedTab === TAB_TYPES.SEQUENCES && editorView.sequencesAvail\"><a href=\"#\" class=\"btn-border btn-orange\" ng-click=\"editorView.moveDown()\">{{ 'sequences_move_down' | i18n:loc.ale:'builder_queue' }}</a><li ng-show=\"selectedTab === TAB_TYPES.SEQUENCES && editorView.sequencesAvail\"><a href=\"#\" class=\"btn-border btn-orange\" ng-click=\"editorView.modal.addBuilding()\">{{ 'sequences_add_building' | i18n:loc.ale:'builder_queue' }}</a><li ng-show=\"selectedTab === TAB_TYPES.SEQUENCES && editorView.sequencesAvail\"><a href=\"#\" class=\"btn-border btn-red\" ng-click=\"editorView.updateBuildingSequence()\">{{ 'save' | i18n:loc.ale:'common' }}</a></ul></footer></div>`);
+        interfaceOverflow.addTemplate('TW2 Enchanced_builder_queue_add_building_modal', `<div id=\"add-building-modal\" class=\"win-content\"><header class=\"win-head\"><h3>{{ 'title' | i18n:loc.ale:'builder_queue_add_building_modal' }}</h3><ul class=\"list-btn sprite\"><li><a href=\"#\" class=\"btn-red icon-26x26-close\" ng-click=\"closeWindow()\"></a></ul></header><div class=\"win-main\" scrollbar=\"\"><div class=\"box-paper\"><div class=\"scroll-wrap unit-operate-slider\"><table class=\"tbl-border-light tbl-striped header-center\"><col width=\"15%\"><col><col width=\"15%\"><tr><td>{{ 'building' | i18n:loc.ale:'common' }}<td colspan=\"2\"><div select=\"\" list=\"buildings\" selected=\"selectedBuilding\" drop-down=\"true\"></div><tr><td>{{ 'position' | i18n:loc.ale:'builder_queue' }}<td><div range-slider=\"\" min=\"1\" max=\"indexLimit\" value=\"position\" enabled=\"true\"></div><td><input type=\"number\" class=\"input-border text-center\" ng-model=\"position\"><tr><td>{{ 'amount' | i18n:loc.ale:'builder_queue' }}<td><div range-slider=\"\" min=\"1\" max=\"buildingsData[selectedBuilding.value].max_level\" value=\"amount\" enabled=\"true\"></div><td><input type=\"number\" class=\"input-border text-center\" ng-model=\"amount\"></table></div></div></div><footer class=\"win-foot sprite-fill\"><ul class=\"list-btn list-center\"><li><a href=\"#\" class=\"btn-red btn-border btn-premium\" ng-click=\"closeWindow()\">{{ 'cancel' | i18n:loc.ale:'common' }}</a><li><a href=\"#\" class=\"btn-orange btn-border\" ng-click=\"add()\">{{ 'add' | i18n:loc.ale:'common' }}</a></ul></footer></div>`);
+        interfaceOverflow.addTemplate('TW2 Enchanced_builder_queue_name_sequence_modal', `<div id=\"name-sequence-modal\" class=\"win-content\"><header class=\"win-head\"><h3>{{ 'title' | i18n:loc.ale:'builder_queue_name_sequence_modal' }}</h3><ul class=\"list-btn sprite\"><li><a href=\"#\" class=\"btn-red icon-26x26-close\" ng-click=\"closeWindow()\"></a></ul></header><div class=\"win-main\" scrollbar=\"\"><div class=\"box-paper\"><div class=\"scroll-wrap\"><div class=\"box-border-light input-wrapper name_preset\"><form ng-submit=\"submit()\"><input focus=\"true\" ng-model=\"name\" minlength=\"3\"></form></div></div></div></div><footer class=\"win-foot sprite-fill\"><ul class=\"list-btn list-center\"><li><a href=\"#\" class=\"btn-red btn-border btn-premium\" ng-click=\"closeWindow()\">{{ 'cancel' | i18n:loc.ale:'common' }}</a><li><a href=\"#\" class=\"btn-orange btn-border\" ng-click=\"submit()\">{{ 'add' | i18n:loc.ale:'common' }}</a></ul></footer></div>`);
         interfaceOverflow.addStyle('#two-builder-queue tr.reached td{background-color:#b9af7e}#two-builder-queue tr.progress td{background-color:#af9d57}#two-builder-queue .building-sequence,#two-builder-queue .building-sequence-final,#two-builder-queue .building-sequence-editor,#two-builder-queue .logs{margin-bottom:10px}#two-builder-queue .building-sequence td,#two-builder-queue .building-sequence-final td,#two-builder-queue .building-sequence-editor td,#two-builder-queue .logs td,#two-builder-queue .building-sequence th,#two-builder-queue .building-sequence-final th,#two-builder-queue .building-sequence-editor th,#two-builder-queue .logs th{text-align:center;line-height:20px}#two-builder-queue .building-sequence-editor .selected td{background-color:#b9af7e}#two-builder-queue .editor-select-sequence{margin-bottom:13px}#two-builder-queue a.btn{height:28px;line-height:28px;padding:0 10px}#two-builder-queue .select-sequence-editor{text-align:center;margin-top:1px}#two-builder-queue .create-sequence{padding:8px 20px 8px 20px}#two-builder-queue table.settings td{padding:1px 5px}#two-builder-queue table.settings td.text-right{text-align:right}#two-builder-queue table.settings div[switch-slider]{display:inline-block;margin-top:2px}#two-builder-queue .small-select a.select-handler{height:28px;line-height:28px}#two-builder-queue .small-select a.select-button{height:28px}#two-builder-queue input.preserve-resource{width:70px;height:32px}#two-builder-queue .icon-26x26-resource-wood,#two-builder-queue .icon-26x26-resource-clay,#two-builder-queue .icon-26x26-resource-iron,#two-builder-queue .icon-26x26-resource-food{transform:scale(.8);top:-1px}#add-building-modal td{text-align:center}#add-building-modal .select-wrapper{width:250px}#add-building-modal input[type="text"]{width:60px}');
     };
 
@@ -6902,7 +5537,7 @@ define('two/builderQueue/ui', [
         settingsView.generateSequences();
         editorView.generateBuildingSequence();
 
-        const eventScope = new EventScope('twoverflow_builder_queue_window');
+        const eventScope = new EventScope('TW2 Enchanced_builder_queue_window');
         eventScope.register(eventTypeProvider.GROUPS_UPDATED, eventHandlers.updateGroups, true);
         eventScope.register(eventTypeProvider.GROUPS_CREATED, eventHandlers.updateGroups, true);
         eventScope.register(eventTypeProvider.GROUPS_DESTROYED, eventHandlers.updateGroups, true);
@@ -6920,7 +5555,7 @@ define('two/builderQueue/ui', [
         eventScope.register(eventTypeProvider.BUILDER_QUEUE_START, eventHandlers.started);
         eventScope.register(eventTypeProvider.BUILDER_QUEUE_STOP, eventHandlers.stopped);
 
-        windowManagerService.getScreenWithInjectedScope('!twoverflow_builder_queue_window', $scope);
+        windowManagerService.getScreenWithInjectedScope('!TW2 Enchanced_builder_queue_window', $scope);
 
         oldCloseWindow = $scope.closeWindow;
         $scope.closeWindow = confirmCloseWindow;
@@ -7974,7 +6609,7 @@ define('two/commandQueue/ui', [
             if(!$timeHelper.timer.remove(command.updateCountdown)) utils.notif('error', 'Error stopping command countdown. Command still removed.');
             updateWaitingCommands();
             updateVisibleCommands();
-            $rootScope.$broadcast(eventTypeProvider.TOOLTIP_HIDE, 'twoverflow-tooltip');
+            $rootScope.$broadcast(eventTypeProvider.TOOLTIP_HIDE, 'TW2 Enchanced-tooltip');
             utils.notif('success', genNotifText(command.type, 'removed'));
         },
         removeError: function () {
@@ -8111,7 +6746,7 @@ define('two/commandQueue/ui', [
         $rootScope.$on(eventTypeProvider.SHOW_CONTEXT_MENU, setMapSelectedVillage);
         $rootScope.$on(eventTypeProvider.DESTROY_CONTEXT_MENU, unsetMapSelectedVillage);
 
-        interfaceOverflow.addTemplate('twoverflow_queue_window', `<div id=\"two-command-queue\" class=\"win-content two-window\"><header class=\"win-head\"><h2>CommandQueue</h2><ul class=\"list-btn\"><li><a href=\"#\" class=\"size-34x34 btn-red icon-26x26-close\" ng-click=\"closeWindow()\"></a></ul></header><div class=\"win-main\" scrollbar=\"\"><div class=\"tabs tabs-bg\"><div class=\"tabs-three-col\"><div class=\"tab\" ng-click=\"selectTab(TAB_TYPES.ADD)\" ng-class=\"{true:'tab-active', false:''}[selectedTab == TAB_TYPES.ADD]\"><div class=\"tab-inner\"><div ng-class=\"{'box-border-light': selectedTab === TAB_TYPES.ADD}\"><a href=\"#\" ng-class=\"{'btn-icon btn-orange': selectedTab !== TAB_TYPES.ADD}\">{{ 'tab_add' | i18n:loc.ale:'command_queue' }}</a></div></div></div><div class=\"tab\" ng-click=\"selectTab(TAB_TYPES.WAITING)\" ng-class=\"{true:'tab-active', false:''}[selectedTab == TAB_TYPES.WAITING]\"><div class=\"tab-inner\"><div ng-class=\"{'box-border-light': selectedTab === TAB_TYPES.WAITING}\"><a href=\"#\" ng-class=\"{'btn-icon btn-orange': selectedTab !== TAB_TYPES.WAITING}\">{{ 'tab_waiting' | i18n:loc.ale:'command_queue' }}</a></div></div></div><div class=\"tab\" ng-click=\"selectTab(TAB_TYPES.LOGS)\" ng-class=\"{true:'tab-active', false:''}[selectedTab == TAB_TYPES.LOGS]\"><div class=\"tab-inner\"><div ng-class=\"{'box-border-light': selectedTab === TAB_TYPES.LOGS}\"><a href=\"#\" ng-class=\"{'btn-icon btn-orange': selectedTab !== TAB_TYPES.LOGS}\">{{ 'tab_logs' | i18n:loc.ale:'command_queue' }}</a></div></div></div></div></div><div class=\"box-paper footer\"><div class=\"scroll-wrap\"><div class=\"add\" ng-show=\"selectedTab === TAB_TYPES.ADD\"><form class=\"addForm\"><div><table class=\"tbl-border-light tbl-striped basic-config\"><col width=\"30%\"><col width=\"5%\"><col><col width=\"25%\"><tr><td><div auto-complete=\"autoCompleteOrigin\"></div><td class=\"text-center\"><span class=\"icon-26x26-rte-village\"></span><td ng-if=\"!commandData.origin\" class=\"command-village\">{{ 'add_no_village' | i18n:loc.ale:'command_queue' }}<td ng-if=\"commandData.origin\" class=\"command-village\">{{ commandData.origin.name }} ({{ commandData.origin.x }}|{{ commandData.origin.y }})<td class=\"actions\"><a class=\"btn btn-orange\" ng-click=\"addSelected()\" tooltip=\"\" tooltip-content=\"{{ 'add_selected' | i18n:loc.ale:'command_queue' }}\">{{ 'selected' | i18n:loc.ale:'common' }}</a><tr><td><div auto-complete=\"autoCompleteTarget\"></div><td class=\"text-center\"><span class=\"icon-26x26-rte-village\"></span><td ng-if=\"!commandData.target\" class=\"command-village\">{{ 'add_no_village' | i18n:loc.ale:'command_queue' }}<td ng-if=\"commandData.target\" class=\"command-village\">{{ commandData.target.name }} ({{ commandData.target.x }}|{{ commandData.target.y }})<td class=\"actions\"><a class=\"btn btn-orange\" ng-click=\"addMapSelected()\" tooltip=\"\" tooltip-content=\"{{ 'add_map_selected' | i18n:loc.ale:'command_queue' }}\">{{ 'selected' | i18n:loc.ale:'common' }}</a><tr><td><input ng-model=\"commandData.date\" class=\"textfield-border date\" pattern=\"\\s*\\d{1,2}:\\d{1,2}:\\d{1,2}(:\\d{1,3})? \\d{1,2}\\/\\d{1,2}\\/\\d{4}\\s*\" placeholder=\"{{ 'add_date' | i18n:loc.ale:'command_queue' }}\" tooltip=\"\" tooltip-content=\"hh:mm:ss:SSS dd/MM/yyyy\"><td class=\"text-center\"><span class=\"icon-26x26-time\"></span><td><div select=\"\" list=\"dateTypes\" selected=\"selectedDateType\" drop-down=\"true\"></div><td class=\"actions\"><a class=\"btn btn-orange\" ng-click=\"reduceDate()\" tooltip=\"\" tooltip-content=\"{{ 'add_current_date_minus' | i18n:loc.ale:'command_queue' }}\">-</a><a class=\"btn btn-orange\" ng-click=\"addCurrentDate()\" tooltip=\"\" tooltip-content=\"{{ 'add_current_date' | i18n:loc.ale:'command_queue' }}\">{{ 'now' | i18n:loc.ale:'common' }}</a><a class=\"btn btn-orange\" ng-click=\"incrementDate()\" tooltip=\"\" tooltip-content=\"{{ 'add_current_date_plus' | i18n:loc.ale:'command_queue' }}\">+</a></table><table ng-show=\"commandData.origin && commandData.target\" class=\"tbl-border-light tbl-units tbl-speed screen-village-info\"><thead><tr><th colspan=\"7\">{{ 'speed_title' | i18n:loc.ale:'screen_village_info' }}<tbody><tr><td class=\"odd\"><div class=\"unit-wrap\"><span class=\"icon icon-34x34-unit-knight\"></span> <span class=\"icon icon-34x34-unit-light_cavalry\"></span> <span class=\"icon icon-34x34-unit-mounted_archer\"></span></div><div><div class=\"box-time-sub-icon time-attack {{ travelTimes.attack.light_cavalry.status }}\"><div class=\"time-icon icon-20x20-attack-check\" tooltip=\"\" tooltip-content=\"{{ 'travel_time_attack' | i18n:loc.ale:'military_operations' }}\"></div>{{ travelTimes.attack.light_cavalry.travelTime }}</div><div class=\"box-time-sub-icon time-support {{ travelTimes.support.light_cavalry.status }}\"><div class=\"time-icon icon-20x20-support-check\" tooltip=\"\" tooltip-content=\"{{ 'travel_time_support' | i18n:loc.ale:'military_operations' }}\"></div>{{ travelTimes.support.light_cavalry.travelTime }}</div><div ng-if=\"relocateEnabled\" class=\"box-time-sub-icon time-relocate {{ travelTimes.relocate.light_cavalry.status }}\"><div class=\"time-icon icon-20x20-relocate\" tooltip=\"\" tooltip-content=\"{{ 'travel_time_relocate' | i18n:loc.ale:'military_operations' }}\"></div>{{ travelTimes.relocate.light_cavalry.travelTime }}</div></div><td><div class=\"unit-wrap\"><span class=\"icon icon-single icon-34x34-unit-heavy_cavalry\"></span></div><div><div class=\"box-time-sub time-attack {{ travelTimes.attack.heavy_cavalry.status }}\">{{ travelTimes.attack.heavy_cavalry.travelTime }}</div><div class=\"box-time-sub time-support {{ travelTimes.support.heavy_cavalry.status }}\">{{ travelTimes.support.heavy_cavalry.travelTime }}</div><div ng-if=\"relocateEnabled\" class=\"box-time-sub time-relocate {{ travelTimes.relocate.heavy_cavalry.status }}\">{{ travelTimes.relocate.heavy_cavalry.travelTime }}</div></div><td class=\"odd\"><div class=\"unit-wrap\"><span class=\"icon icon-34x34-unit-archer\"></span> <span class=\"icon icon-34x34-unit-spear\"></span> <span class=\"icon icon-34x34-unit-axe\"></span> <span class=\"icon icon-34x34-unit-doppelsoldner\"></span></div><div><div class=\"box-time-sub time-attack {{ travelTimes.attack.archer.status }}\">{{ travelTimes.attack.archer.travelTime }}</div><div class=\"box-time-sub time-support {{ travelTimes.support.archer.status }}\">{{ travelTimes.support.archer.travelTime }}</div><div ng-if=\"relocateEnabled\" class=\"box-time-sub time-relocate {{ travelTimes.relocate.archer.status }}\">{{ travelTimes.relocate.archer.travelTime }}</div></div><td><div class=\"unit-wrap\"><span class=\"icon icon-single icon-34x34-unit-sword\"></span></div><div><div class=\"box-time-sub time-attack {{ travelTimes.attack.sword.status }}\">{{ travelTimes.attack.sword.travelTime }}</div><div class=\"box-time-sub time-support {{ travelTimes.support.sword.status }}\">{{ travelTimes.support.sword.travelTime }}</div><div ng-if=\"relocateEnabled\" class=\"box-time-sub time-relocate {{ travelTimes.relocate.sword.status }}\">{{ travelTimes.relocate.sword.travelTime }}</div></div><td class=\"odd\"><div class=\"unit-wrap\"><span class=\"icon icon-34x34-unit-catapult\"></span> <span class=\"icon icon-34x34-unit-ram\"></span></div><div><div class=\"box-time-sub time-attack {{ travelTimes.attack.ram.status }}\">{{ travelTimes.attack.ram.travelTime }}</div><div class=\"box-time-sub time-support {{ travelTimes.support.ram.status }}\">{{ travelTimes.support.ram.travelTime }}</div><div ng-if=\"relocateEnabled\" class=\"box-time-sub time-relocate {{ travelTimes.relocate.ram.status }}\">{{ travelTimes.relocate.ram.travelTime }}</div></div><td><div class=\"unit-wrap\"><span class=\"icon icon-single icon-34x34-unit-snob\"></span></div><div><div class=\"box-time-sub time-attack {{ travelTimes.attack.snob.status }}\">{{ travelTimes.attack.snob.travelTime }}</div><div class=\"box-time-sub time-support {{ travelTimes.support.snob.status }}\">{{ travelTimes.support.snob.travelTime }}</div><div ng-if=\"relocateEnabled\" class=\"box-time-sub time-relocate {{ travelTimes.relocate.snob.status }}\">-</div></div><td class=\"odd\"><div class=\"unit-wrap\"><span class=\"icon icon-single icon-34x34-unit-trebuchet\"></span></div><div><div class=\"box-time-sub time-attack {{ travelTimes.attack.trebuchet.status }}\">{{ travelTimes.attack.trebuchet.travelTime }}</div><div class=\"box-time-sub time-support {{ travelTimes.support.trebuchet.status }}\">{{ travelTimes.support.trebuchet.travelTime }}</div><div ng-if=\"relocateEnabled\" class=\"box-time-sub time-relocate {{ travelTimes.relocate.trebuchet.status }}\">{{ travelTimes.relocate.trebuchet.travelTime }}</div></div></table></div><h5 class=\"twx-section\">{{ 'units' | i18n:loc.ale:'common' }}</h5><table class=\"tbl-border-light tbl-striped\"><col width=\"25%\"><col width=\"25%\"><col width=\"25%\"><col width=\"25%\"><tbody class=\"add-units\"><tr><td colspan=\"4\" class=\"actions\"><ul class=\"list-btn list-center\"><li><div select=\"\" list=\"presets\" selected=\"selectedInsertPreset\" drop-down=\"true\"></div><li><a class=\"clear-units btn btn-orange\" ng-click=\"cleanUnitInputs()\">{{ 'add_clear' | i18n:loc.ale:'command_queue' }}</a></ul><tr ng-repeat=\"i in [] | range:(unitOrder.length / 4);\"><td><span class=\"icon-bg-black\" ng-class=\"'icon-34x34-unit-' + unitOrder[i * 4]\" tooltip=\"\" tooltip-content=\"{{ unitOrder[i * 4] | i18n:loc.ale:'unit_names' }}\"></span> <input remove-zero=\"\" ng-model=\"commandData.units[unitOrder[i * 4]]\" maxlength=\"5\" placeholder=\"{{ commandData.units[unitOrder[i * 4]] }}\" ng-focus=\"onUnitInputFocus(unitOrder[i * 4])\" ng-blur=\"onUnitInputBlur(unitOrder[i * 4])\"><td><span class=\"icon-bg-black\" ng-class=\"'icon-34x34-unit-' + unitOrder[i * 4 + 1]\" tooltip=\"\" tooltip-content=\"{{ unitOrder[i * 4 + 1] | i18n:loc.ale:'unit_names' }}\"></span> <input remove-zero=\"\" ng-model=\"commandData.units[unitOrder[i * 4 + 1]]\" maxlength=\"5\" placeholder=\"{{ commandData.units[unitOrder[i * 4 + 1]] }}\" ng-focus=\"onUnitInputFocus(unitOrder[i * 4 + 1])\" ng-blur=\"onUnitInputBlur(unitOrder[i * 4 + 1])\"><td><span class=\"icon-bg-black\" ng-class=\"'icon-34x34-unit-' + unitOrder[i * 4 + 2]\" tooltip=\"\" tooltip-content=\"{{ unitOrder[i * 4 + 2] | i18n:loc.ale:'unit_names' }}\"></span> <input remove-zero=\"\" ng-model=\"commandData.units[unitOrder[i * 4 + 2]]\" maxlength=\"5\" placeholder=\"{{ commandData.units[unitOrder[i * 4 + 2]] }}\" ng-focus=\"onUnitInputFocus(unitOrder[i * 4 + 2])\" ng-blur=\"onUnitInputBlur(unitOrder[i * 4 + 2])\"><td><span class=\"icon-bg-black\" ng-class=\"'icon-34x34-unit-' + unitOrder[i * 4 + 3]\" tooltip=\"\" tooltip-content=\"{{ unitOrder[i * 4 + 3] | i18n:loc.ale:'unit_names' }}\"></span> <input remove-zero=\"\" ng-model=\"commandData.units[unitOrder[i * 4 + 3]]\" maxlength=\"5\" placeholder=\"{{ commandData.units[unitOrder[i * 4 + 3]] }}\" ng-focus=\"onUnitInputFocus(unitOrder[i * 4 + 3])\" ng-blur=\"onUnitInputBlur(unitOrder[i * 4 + 3])\"><tr><td><span class=\"icon-bg-black icon-34x34-unit-catapult\" tooltip=\"\" tooltip-content=\"{{ 'catapult' | i18n:loc.ale:'unit_names' }}\"></span> <input remove-zero=\"\" ng-model=\"commandData.units.catapult\" maxlength=\"5\" placeholder=\"{{ commandData.units.catapult }}\" ng-keyup=\"catapultTargetVisibility()\" ng-focus=\"onUnitInputFocus('catapult')\" ng-blur=\"onUnitInputBlur('catapult')\"><td colspan=\"3\"><div ng-visible=\"showCatapultSelect\"><div class=\"unit-border box-slider\"><div class=\"height-wrapper\"><div select=\"\" list=\"attackableBuildings\" selected=\"catapultTarget\"></div></div></div></div></table><h5 class=\"twx-section\">{{ 'officers' | i18n:loc.ale:'common' }}</h5><table class=\"add-officers margin-top tbl-border-light tbl-officers\"><tr><td class=\"cell-officers\" ng-repeat=\"officer in officers\"><table class=\"tbl-border-dark tbl-officer\"><tr><td class=\"cell-space\"><span class=\"icon-44x44-premium_officer_{{ officer }}\"></span><td class=\"cell-officer-switch\" rowspan=\"2\"><div switch-slider=\"\" enabled=\"true\" value=\"commandData.officers[officer]\" vertical=\"true\" size=\"'34x66'\"></div><tr><td tooltip=\"\" tooltip-content=\"{{ 'available_officers' | i18n:loc.ale:'modal_preset_edit' }}\"><div class=\"amount\">{{ inventory.getItemAmountByType('premium_officer_' + officer) | number }}</div></table></table></form></div><div class=\"waiting rich-text\" ng-show=\"selectedTab === TAB_TYPES.WAITING\"><div class=\"filters\"><table class=\"tbl-border-light\"><tr><td><div ng-class=\"{'active': activeFilters[FILTER_TYPES.SELECTED_VILLAGE]}\" ng-click=\"toggleFilter(FILTER_TYPES.SELECTED_VILLAGE)\" class=\"box-border-dark icon selectedVillage\" tooltip=\"\" tooltip-content=\"{{ 'filters_selected_village' | i18n:loc.ale:'command_queue' }}\"><span class=\"icon-34x34-village-info icon-bg-black\"></span></div><div ng-class=\"{'active': activeFilters[FILTER_TYPES.BARBARIAN_TARGET]}\" ng-click=\"toggleFilter(FILTER_TYPES.BARBARIAN_TARGET)\" class=\"box-border-dark icon barbarianTarget\" tooltip=\"\" tooltip-content=\"{{ 'filters_barbarian_target' | i18n:loc.ale:'command_queue' }}\"><span class=\"icon-34x34-barbarian-village icon-bg-black\"></span></div><div ng-class=\"{'active': activeFilters[FILTER_TYPES.ATTACK]}\" ng-click=\"toggleFilter(FILTER_TYPES.ATTACK, true)\" class=\"box-border-dark icon allowedTypes\" tooltip=\"\" tooltip-content=\"{{ 'filters_attack' | i18n:loc.ale:'command_queue' }}\"><span class=\"icon-34x34-attack icon-bg-black\"></span></div><div ng-class=\"{'active': activeFilters[FILTER_TYPES.SUPPORT]}\" ng-click=\"toggleFilter(FILTER_TYPES.SUPPORT, true)\" class=\"box-border-dark icon allowedTypes\" tooltip=\"\" tooltip-content=\"{{ 'filters_support' | i18n:loc.ale:'command_queue' }}\"><span class=\"icon-34x34-support icon-bg-black\"></span></div><div ng-if=\"relocateEnabled\" ng-class=\"{'active': activeFilters[FILTER_TYPES.RELOCATE]}\" ng-click=\"toggleFilter(FILTER_TYPES.RELOCATE, true)\" class=\"box-border-dark icon allowedTypes\" tooltip=\"\" tooltip-content=\"{{ 'filters_relocate' | i18n:loc.ale:'command_queue' }}\"><span class=\"icon-34x34-relocate icon-bg-black\"></span></div><div class=\"text\"><input ng-model=\"filtersData[FILTER_TYPES.TEXT_MATCH]\" class=\"box-border-dark\" placeholder=\"{{ 'filters_text_match' | i18n:loc.ale:'command_queue' }}\"></div></table></div><div class=\"queue\"><h5 class=\"twx-section\">{{ 'queue_waiting' | i18n:loc.ale:'command_queue' }}</h5><p class=\"text-center\" ng-show=\"!visibleWaitingCommands.length\">{{ 'queue_none_added' | i18n:loc.ale:'command_queue' }}<table class=\"tbl-border-light\" ng-repeat=\"command in visibleWaitingCommands\"><col width=\"100px\"><tr><th colspan=\"2\"><span ng-class=\"{true: 'icon-bg-red', false:'icon-bg-blue'}[command.type === COMMAND_TYPES.ATTACK]\" class=\"icon-26x26-{{ command.type }}\" tooltip=\"\" tooltip-content=\"{{ command.type | i18n:loc.ale:'common' }}\"></span> <span class=\"size-26x26 icon-bg-black icon-26x26-time-duration\" tooltip=\"\" tooltip-content=\"{{ 'command_time_left' | i18n:loc.ale:'command_queue' }}\"></span> <span class=\"time-left\">{{ command.countdown | readableMillisecondsFilter }}</span> <span class=\"size-26x26 icon-bg-black icon-20x20-units-outgoing\" tooltip=\"\" tooltip-content=\"{{ 'command_out' | i18n:loc.ale:'command_queue' }}\"></span> <span class=\"sent-time\">{{ command.sendTime | readableDateFilter:loc.ale }}</span> <span class=\"size-26x26 icon-bg-black icon-20x20-time-arrival\" tooltip=\"\" tooltip-content=\"{{ 'command_arrive' | i18n:loc.ale:'command_queue' }}\"></span> <span class=\"arrive-time\">{{ command.arriveTime | readableDateFilter:loc.ale }}</span> <a href=\"#\" class=\"remove-command size-20x20 btn-red icon-20x20-close\" ng-click=\"removeCommand(command, EVENT_CODES.COMMAND_REMOVED)\" tooltip=\"\" tooltip-content=\"{{ 'queue_remove' | i18n:loc.ale:'command_queue' }}\"></a><tr><td>{{ 'villages' | i18n:loc.ale:'common' }}<td><a class=\"origin\"><span class=\"village-link img-link icon-20x20-village btn btn-orange padded\" ng-click=\"openVillageInfo(command.origin.id)\">{{ command.origin.name }} ({{ command.origin.x }}|{{ command.origin.y }})</span></a> <span class=\"size-20x20 icon-26x26-{{ command.type }}\"></span> <a class=\"target\"><span class=\"village-link img-link icon-20x20-village btn btn-orange padded\" ng-click=\"openVillageInfo(command.target.id)\">{{ command.target.name }} ({{ command.target.x }}|{{ command.target.y }})</span></a><tr><td>{{ 'units' | i18n:loc.ale:'common' }}<td class=\"units\"><div class=\"unit\" ng-repeat=\"(unit, amount) in command.units\"><span class=\"icon-34x34-unit-{{ unit }} icon\"></span> <span class=\"amount\">{{ amount }}</span> <span ng-if=\"unit === 'catapult' && command.type === COMMAND_TYPES.ATTACK\">({{ command.catapultTarget | i18n:loc.ale:'building_names' }})</span></div><div class=\"officer\" ng-repeat=\"(officer, enabled) in command.officers\"><span class=\"icon-34x34-premium_officer_{{ officer }}\"></span></div></table></div></div><div class=\"logs rich-text\" ng-show=\"selectedTab === TAB_TYPES.LOGS\"><h5 class=\"twx-section\">{{ 'queue_sent' | i18n:loc.ale:'command_queue' }}</h5><p class=\"text-center\" ng-show=\"!sentCommands.length\">{{ 'queue_none_sent' | i18n:loc.ale:'command_queue' }}<table class=\"tbl-border-light\" ng-repeat=\"command in sentCommands track by $index\"><col width=\"100px\"><tr><th colspan=\"2\"><span ng-class=\"{true: 'icon-bg-red', false:'icon-bg-blue'}[command.type === COMMAND_TYPES.ATTACK]\" class=\"icon-26x26-{{ command.type }}\" tooltip=\"\" tooltip-content=\"{{ command.type | i18n:loc.ale:'common' }}\"></span> <span class=\"size-26x26 icon-bg-black icon-20x20-units-outgoing\" tooltip=\"\" tooltip-content=\"{{ 'command_out' | i18n:loc.ale:'command_queue' }}\"></span> <span class=\"sent-time\">{{ command.sendTime | readableDateFilter:loc.ale }}</span> <span class=\"size-26x26 icon-bg-black icon-20x20-time-arrival\" tooltip=\"\" tooltip-content=\"{{ 'command_arrive' | i18n:loc.ale:'command_queue' }}\"></span> <span class=\"arrive-time\">{{ command.arriveTime | readableDateFilter:loc.ale }}</span><tr><td>{{ 'villages' | i18n:loc.ale:'common' }}<td><a class=\"origin\"><span class=\"village-link img-link icon-20x20-village btn btn-orange padded\" ng-click=\"openVillageInfo(command.origin.id)\">{{ command.origin.name }} ({{ command.origin.x }}|{{ command.origin.y }})</span></a> <span class=\"size-20x20 icon-26x26-{{ command.type }}\"></span> <a class=\"target\"><span class=\"village-link img-link icon-20x20-village btn btn-orange padded\" ng-click=\"openVillageInfo(command.target.id)\">{{ command.target.name }} ({{ command.target.x }}|{{ command.target.y }})</span></a><tr><td>{{ 'units' | i18n:loc.ale:'common' }}<td class=\"units\"><div class=\"unit\" ng-repeat=\"(unit, amount) in command.units\"><span class=\"icon-34x34-unit-{{ unit }} icon\"></span> <span class=\"amount\">{{ amount }}</span> <span ng-if=\"unit === 'catapult' && command.type === COMMAND_TYPES.ATTACK\">({{ command.catapultTarget | i18n:loc.ale:'common' }})</span></div><div class=\"officer\" ng-repeat=\"(officer, enabled) in command.officers\"><span class=\"icon-34x34-premium_officer_{{ officer }}\"></span></div></table><h5 class=\"twx-section\">{{ 'queue_expired' | i18n:loc.ale:'command_queue' }}</h5><p class=\"text-center\" ng-show=\"!expiredCommands.length\">{{ 'queue_none_expired' | i18n:loc.ale:'command_queue' }}<table class=\"tbl-border-light\" ng-repeat=\"command in expiredCommands track by $index\"><col width=\"100px\"><tr><th colspan=\"2\"><span ng-class=\"{true: 'icon-bg-red', false:'icon-bg-blue'}[command.type === COMMAND_TYPES.ATTACK]\" class=\"icon-26x26-{{ command.type }}\" tooltip=\"\" tooltip-content=\"{{ command.type | i18n:loc.ale:'common' }}\"></span> <span class=\"size-26x26 icon-bg-black icon-20x20-units-outgoing\" tooltip=\"\" tooltip-content=\"{{ 'command_out' | i18n:loc.ale:'command_queue' }}\"></span> <span class=\"sent-time\">{{ command.sendTime | readableDateFilter:loc.ale }}</span> <span class=\"size-26x26 icon-bg-black icon-20x20-time-arrival\" tooltip=\"\" tooltip-content=\"{{ 'command_arrive' | i18n:loc.ale:'command_queue' }}\"></span> <span class=\"arrive-time\">{{ command.arriveTime | readableDateFilter:loc.ale }}</span><tr><td>{{ 'villages' | i18n:loc.ale:'common' }}<td><a class=\"origin\"><span class=\"village-link img-link icon-20x20-village btn btn-orange padded\" ng-click=\"openVillageInfo(command.origin.id)\">{{ command.origin.name }} ({{ command.origin.x }}|{{ command.origin.y }})</span></a> <span class=\"size-20x20 icon-26x26-{{ command.type }}\"></span> <a class=\"target\"><span class=\"village-link img-link icon-20x20-village btn btn-orange padded\" ng-click=\"openVillageInfo(command.target.id)\">{{ command.target.name }} ({{ command.target.x }}|{{ command.target.y }})</span></a><tr><td>{{ 'units' | i18n:loc.ale:'common' }}<td class=\"units\"><div class=\"unit\" ng-repeat=\"(unit, amount) in command.units\"><span class=\"icon-34x34-unit-{{ unit }} icon\"></span> <span class=\"amount\">{{ amount }}</span> <span ng-if=\"unit === 'catapult' && command.type === COMMAND_TYPES.ATTACK\">({{ command.catapultTarget | i18n:loc.ale:'common' }})</span></div><div class=\"officer\" ng-repeat=\"(officer, enabled) in command.officers\"><span class=\"icon-34x34-premium_officer_{{ officer }}\"></span></div></table></div></div></div></div><footer class=\"win-foot\"><ul class=\"list-btn list-center\"><li ng-show=\"selectedTab === TAB_TYPES.LOGS\"><a class=\"btn-orange btn-border\" ng-click=\"clearRegisters()\">{{ 'general_clear' | i18n:loc.ale:'command_queue' }}</a><li ng-show=\"selectedTab === TAB_TYPES.ADD\"><a class=\"btn-orange btn-border add\" ng-click=\"addCommand(COMMAND_TYPES.ATTACK)\"><span class=\"icon-26x26-attack-small\"></span> {{ COMMAND_TYPES.ATTACK | i18n:loc.ale:'common' }}</a><li ng-show=\"selectedTab === TAB_TYPES.ADD\"><a class=\"btn-orange btn-border add\" ng-click=\"addCommand(COMMAND_TYPES.SUPPORT)\"><span class=\"icon-26x26-support\"></span> {{ COMMAND_TYPES.SUPPORT | i18n:loc.ale:'common' }}</a><li ng-show=\"relocateEnabled && selectedTab === TAB_TYPES.ADD\"><a class=\"btn-orange btn-border add\" ng-click=\"addCommand(COMMAND_TYPES.RELOCATE)\"><span class=\"icon-26x26-relocate\"></span> {{ COMMAND_TYPES.RELOCATE | i18n:loc.ale:'common' }}</a><li><a href=\"#\" ng-class=\"{false:'btn-green', true:'btn-red'}[running]\" class=\"btn-border\" ng-click=\"switchCommandQueue()\"><span ng-show=\"running\">{{ 'deactivate' | i18n:loc.ale:'common' }}</span> <span ng-show=\"!running\">{{ 'activate' | i18n:loc.ale:'common' }}</span></a></ul></footer></div>`);
+        interfaceOverflow.addTemplate('TW2 Enchanced_queue_window', `<div id=\"two-command-queue\" class=\"win-content two-window\"><header class=\"win-head\"><h2>CommandQueue</h2><ul class=\"list-btn\"><li><a href=\"#\" class=\"size-34x34 btn-red icon-26x26-close\" ng-click=\"closeWindow()\"></a></ul></header><div class=\"win-main\" scrollbar=\"\"><div class=\"tabs tabs-bg\"><div class=\"tabs-three-col\"><div class=\"tab\" ng-click=\"selectTab(TAB_TYPES.ADD)\" ng-class=\"{true:'tab-active', false:''}[selectedTab == TAB_TYPES.ADD]\"><div class=\"tab-inner\"><div ng-class=\"{'box-border-light': selectedTab === TAB_TYPES.ADD}\"><a href=\"#\" ng-class=\"{'btn-icon btn-orange': selectedTab !== TAB_TYPES.ADD}\">{{ 'tab_add' | i18n:loc.ale:'command_queue' }}</a></div></div></div><div class=\"tab\" ng-click=\"selectTab(TAB_TYPES.WAITING)\" ng-class=\"{true:'tab-active', false:''}[selectedTab == TAB_TYPES.WAITING]\"><div class=\"tab-inner\"><div ng-class=\"{'box-border-light': selectedTab === TAB_TYPES.WAITING}\"><a href=\"#\" ng-class=\"{'btn-icon btn-orange': selectedTab !== TAB_TYPES.WAITING}\">{{ 'tab_waiting' | i18n:loc.ale:'command_queue' }}</a></div></div></div><div class=\"tab\" ng-click=\"selectTab(TAB_TYPES.LOGS)\" ng-class=\"{true:'tab-active', false:''}[selectedTab == TAB_TYPES.LOGS]\"><div class=\"tab-inner\"><div ng-class=\"{'box-border-light': selectedTab === TAB_TYPES.LOGS}\"><a href=\"#\" ng-class=\"{'btn-icon btn-orange': selectedTab !== TAB_TYPES.LOGS}\">{{ 'tab_logs' | i18n:loc.ale:'command_queue' }}</a></div></div></div></div></div><div class=\"box-paper footer\"><div class=\"scroll-wrap\"><div class=\"add\" ng-show=\"selectedTab === TAB_TYPES.ADD\"><form class=\"addForm\"><div><table class=\"tbl-border-light tbl-striped basic-config\"><col width=\"30%\"><col width=\"5%\"><col><col width=\"25%\"><tr><td><div auto-complete=\"autoCompleteOrigin\"></div><td class=\"text-center\"><span class=\"icon-26x26-rte-village\"></span><td ng-if=\"!commandData.origin\" class=\"command-village\">{{ 'add_no_village' | i18n:loc.ale:'command_queue' }}<td ng-if=\"commandData.origin\" class=\"command-village\">{{ commandData.origin.name }} ({{ commandData.origin.x }}|{{ commandData.origin.y }})<td class=\"actions\"><a class=\"btn btn-orange\" ng-click=\"addSelected()\" tooltip=\"\" tooltip-content=\"{{ 'add_selected' | i18n:loc.ale:'command_queue' }}\">{{ 'selected' | i18n:loc.ale:'common' }}</a><tr><td><div auto-complete=\"autoCompleteTarget\"></div><td class=\"text-center\"><span class=\"icon-26x26-rte-village\"></span><td ng-if=\"!commandData.target\" class=\"command-village\">{{ 'add_no_village' | i18n:loc.ale:'command_queue' }}<td ng-if=\"commandData.target\" class=\"command-village\">{{ commandData.target.name }} ({{ commandData.target.x }}|{{ commandData.target.y }})<td class=\"actions\"><a class=\"btn btn-orange\" ng-click=\"addMapSelected()\" tooltip=\"\" tooltip-content=\"{{ 'add_map_selected' | i18n:loc.ale:'command_queue' }}\">{{ 'selected' | i18n:loc.ale:'common' }}</a><tr><td><input ng-model=\"commandData.date\" class=\"textfield-border date\" pattern=\"\\s*\\d{1,2}:\\d{1,2}:\\d{1,2}(:\\d{1,3})? \\d{1,2}\\/\\d{1,2}\\/\\d{4}\\s*\" placeholder=\"{{ 'add_date' | i18n:loc.ale:'command_queue' }}\" tooltip=\"\" tooltip-content=\"hh:mm:ss:SSS dd/MM/yyyy\"><td class=\"text-center\"><span class=\"icon-26x26-time\"></span><td><div select=\"\" list=\"dateTypes\" selected=\"selectedDateType\" drop-down=\"true\"></div><td class=\"actions\"><a class=\"btn btn-orange\" ng-click=\"reduceDate()\" tooltip=\"\" tooltip-content=\"{{ 'add_current_date_minus' | i18n:loc.ale:'command_queue' }}\">-</a><a class=\"btn btn-orange\" ng-click=\"addCurrentDate()\" tooltip=\"\" tooltip-content=\"{{ 'add_current_date' | i18n:loc.ale:'command_queue' }}\">{{ 'now' | i18n:loc.ale:'common' }}</a><a class=\"btn btn-orange\" ng-click=\"incrementDate()\" tooltip=\"\" tooltip-content=\"{{ 'add_current_date_plus' | i18n:loc.ale:'command_queue' }}\">+</a></table><table ng-show=\"commandData.origin && commandData.target\" class=\"tbl-border-light tbl-units tbl-speed screen-village-info\"><thead><tr><th colspan=\"7\">{{ 'speed_title' | i18n:loc.ale:'screen_village_info' }}<tbody><tr><td class=\"odd\"><div class=\"unit-wrap\"><span class=\"icon icon-34x34-unit-knight\"></span> <span class=\"icon icon-34x34-unit-light_cavalry\"></span> <span class=\"icon icon-34x34-unit-mounted_archer\"></span></div><div><div class=\"box-time-sub-icon time-attack {{ travelTimes.attack.light_cavalry.status }}\"><div class=\"time-icon icon-20x20-attack-check\" tooltip=\"\" tooltip-content=\"{{ 'travel_time_attack' | i18n:loc.ale:'military_operations' }}\"></div>{{ travelTimes.attack.light_cavalry.travelTime }}</div><div class=\"box-time-sub-icon time-support {{ travelTimes.support.light_cavalry.status }}\"><div class=\"time-icon icon-20x20-support-check\" tooltip=\"\" tooltip-content=\"{{ 'travel_time_support' | i18n:loc.ale:'military_operations' }}\"></div>{{ travelTimes.support.light_cavalry.travelTime }}</div><div ng-if=\"relocateEnabled\" class=\"box-time-sub-icon time-relocate {{ travelTimes.relocate.light_cavalry.status }}\"><div class=\"time-icon icon-20x20-relocate\" tooltip=\"\" tooltip-content=\"{{ 'travel_time_relocate' | i18n:loc.ale:'military_operations' }}\"></div>{{ travelTimes.relocate.light_cavalry.travelTime }}</div></div><td><div class=\"unit-wrap\"><span class=\"icon icon-single icon-34x34-unit-heavy_cavalry\"></span></div><div><div class=\"box-time-sub time-attack {{ travelTimes.attack.heavy_cavalry.status }}\">{{ travelTimes.attack.heavy_cavalry.travelTime }}</div><div class=\"box-time-sub time-support {{ travelTimes.support.heavy_cavalry.status }}\">{{ travelTimes.support.heavy_cavalry.travelTime }}</div><div ng-if=\"relocateEnabled\" class=\"box-time-sub time-relocate {{ travelTimes.relocate.heavy_cavalry.status }}\">{{ travelTimes.relocate.heavy_cavalry.travelTime }}</div></div><td class=\"odd\"><div class=\"unit-wrap\"><span class=\"icon icon-34x34-unit-archer\"></span> <span class=\"icon icon-34x34-unit-spear\"></span> <span class=\"icon icon-34x34-unit-axe\"></span> <span class=\"icon icon-34x34-unit-doppelsoldner\"></span></div><div><div class=\"box-time-sub time-attack {{ travelTimes.attack.archer.status }}\">{{ travelTimes.attack.archer.travelTime }}</div><div class=\"box-time-sub time-support {{ travelTimes.support.archer.status }}\">{{ travelTimes.support.archer.travelTime }}</div><div ng-if=\"relocateEnabled\" class=\"box-time-sub time-relocate {{ travelTimes.relocate.archer.status }}\">{{ travelTimes.relocate.archer.travelTime }}</div></div><td><div class=\"unit-wrap\"><span class=\"icon icon-single icon-34x34-unit-sword\"></span></div><div><div class=\"box-time-sub time-attack {{ travelTimes.attack.sword.status }}\">{{ travelTimes.attack.sword.travelTime }}</div><div class=\"box-time-sub time-support {{ travelTimes.support.sword.status }}\">{{ travelTimes.support.sword.travelTime }}</div><div ng-if=\"relocateEnabled\" class=\"box-time-sub time-relocate {{ travelTimes.relocate.sword.status }}\">{{ travelTimes.relocate.sword.travelTime }}</div></div><td class=\"odd\"><div class=\"unit-wrap\"><span class=\"icon icon-34x34-unit-catapult\"></span> <span class=\"icon icon-34x34-unit-ram\"></span></div><div><div class=\"box-time-sub time-attack {{ travelTimes.attack.ram.status }}\">{{ travelTimes.attack.ram.travelTime }}</div><div class=\"box-time-sub time-support {{ travelTimes.support.ram.status }}\">{{ travelTimes.support.ram.travelTime }}</div><div ng-if=\"relocateEnabled\" class=\"box-time-sub time-relocate {{ travelTimes.relocate.ram.status }}\">{{ travelTimes.relocate.ram.travelTime }}</div></div><td><div class=\"unit-wrap\"><span class=\"icon icon-single icon-34x34-unit-snob\"></span></div><div><div class=\"box-time-sub time-attack {{ travelTimes.attack.snob.status }}\">{{ travelTimes.attack.snob.travelTime }}</div><div class=\"box-time-sub time-support {{ travelTimes.support.snob.status }}\">{{ travelTimes.support.snob.travelTime }}</div><div ng-if=\"relocateEnabled\" class=\"box-time-sub time-relocate {{ travelTimes.relocate.snob.status }}\">-</div></div><td class=\"odd\"><div class=\"unit-wrap\"><span class=\"icon icon-single icon-34x34-unit-trebuchet\"></span></div><div><div class=\"box-time-sub time-attack {{ travelTimes.attack.trebuchet.status }}\">{{ travelTimes.attack.trebuchet.travelTime }}</div><div class=\"box-time-sub time-support {{ travelTimes.support.trebuchet.status }}\">{{ travelTimes.support.trebuchet.travelTime }}</div><div ng-if=\"relocateEnabled\" class=\"box-time-sub time-relocate {{ travelTimes.relocate.trebuchet.status }}\">{{ travelTimes.relocate.trebuchet.travelTime }}</div></div></table></div><h5 class=\"twx-section\">{{ 'units' | i18n:loc.ale:'common' }}</h5><table class=\"tbl-border-light tbl-striped\"><col width=\"25%\"><col width=\"25%\"><col width=\"25%\"><col width=\"25%\"><tbody class=\"add-units\"><tr><td colspan=\"4\" class=\"actions\"><ul class=\"list-btn list-center\"><li><div select=\"\" list=\"presets\" selected=\"selectedInsertPreset\" drop-down=\"true\"></div><li><a class=\"clear-units btn btn-orange\" ng-click=\"cleanUnitInputs()\">{{ 'add_clear' | i18n:loc.ale:'command_queue' }}</a></ul><tr ng-repeat=\"i in [] | range:(unitOrder.length / 4);\"><td><span class=\"icon-bg-black\" ng-class=\"'icon-34x34-unit-' + unitOrder[i * 4]\" tooltip=\"\" tooltip-content=\"{{ unitOrder[i * 4] | i18n:loc.ale:'unit_names' }}\"></span> <input remove-zero=\"\" ng-model=\"commandData.units[unitOrder[i * 4]]\" maxlength=\"5\" placeholder=\"{{ commandData.units[unitOrder[i * 4]] }}\" ng-focus=\"onUnitInputFocus(unitOrder[i * 4])\" ng-blur=\"onUnitInputBlur(unitOrder[i * 4])\"><td><span class=\"icon-bg-black\" ng-class=\"'icon-34x34-unit-' + unitOrder[i * 4 + 1]\" tooltip=\"\" tooltip-content=\"{{ unitOrder[i * 4 + 1] | i18n:loc.ale:'unit_names' }}\"></span> <input remove-zero=\"\" ng-model=\"commandData.units[unitOrder[i * 4 + 1]]\" maxlength=\"5\" placeholder=\"{{ commandData.units[unitOrder[i * 4 + 1]] }}\" ng-focus=\"onUnitInputFocus(unitOrder[i * 4 + 1])\" ng-blur=\"onUnitInputBlur(unitOrder[i * 4 + 1])\"><td><span class=\"icon-bg-black\" ng-class=\"'icon-34x34-unit-' + unitOrder[i * 4 + 2]\" tooltip=\"\" tooltip-content=\"{{ unitOrder[i * 4 + 2] | i18n:loc.ale:'unit_names' }}\"></span> <input remove-zero=\"\" ng-model=\"commandData.units[unitOrder[i * 4 + 2]]\" maxlength=\"5\" placeholder=\"{{ commandData.units[unitOrder[i * 4 + 2]] }}\" ng-focus=\"onUnitInputFocus(unitOrder[i * 4 + 2])\" ng-blur=\"onUnitInputBlur(unitOrder[i * 4 + 2])\"><td><span class=\"icon-bg-black\" ng-class=\"'icon-34x34-unit-' + unitOrder[i * 4 + 3]\" tooltip=\"\" tooltip-content=\"{{ unitOrder[i * 4 + 3] | i18n:loc.ale:'unit_names' }}\"></span> <input remove-zero=\"\" ng-model=\"commandData.units[unitOrder[i * 4 + 3]]\" maxlength=\"5\" placeholder=\"{{ commandData.units[unitOrder[i * 4 + 3]] }}\" ng-focus=\"onUnitInputFocus(unitOrder[i * 4 + 3])\" ng-blur=\"onUnitInputBlur(unitOrder[i * 4 + 3])\"><tr><td><span class=\"icon-bg-black icon-34x34-unit-catapult\" tooltip=\"\" tooltip-content=\"{{ 'catapult' | i18n:loc.ale:'unit_names' }}\"></span> <input remove-zero=\"\" ng-model=\"commandData.units.catapult\" maxlength=\"5\" placeholder=\"{{ commandData.units.catapult }}\" ng-keyup=\"catapultTargetVisibility()\" ng-focus=\"onUnitInputFocus('catapult')\" ng-blur=\"onUnitInputBlur('catapult')\"><td colspan=\"3\"><div ng-visible=\"showCatapultSelect\"><div class=\"unit-border box-slider\"><div class=\"height-wrapper\"><div select=\"\" list=\"attackableBuildings\" selected=\"catapultTarget\"></div></div></div></div></table><h5 class=\"twx-section\">{{ 'officers' | i18n:loc.ale:'common' }}</h5><table class=\"add-officers margin-top tbl-border-light tbl-officers\"><tr><td class=\"cell-officers\" ng-repeat=\"officer in officers\"><table class=\"tbl-border-dark tbl-officer\"><tr><td class=\"cell-space\"><span class=\"icon-44x44-premium_officer_{{ officer }}\"></span><td class=\"cell-officer-switch\" rowspan=\"2\"><div switch-slider=\"\" enabled=\"true\" value=\"commandData.officers[officer]\" vertical=\"true\" size=\"'34x66'\"></div><tr><td tooltip=\"\" tooltip-content=\"{{ 'available_officers' | i18n:loc.ale:'modal_preset_edit' }}\"><div class=\"amount\">{{ inventory.getItemAmountByType('premium_officer_' + officer) | number }}</div></table></table></form></div><div class=\"waiting rich-text\" ng-show=\"selectedTab === TAB_TYPES.WAITING\"><div class=\"filters\"><table class=\"tbl-border-light\"><tr><td><div ng-class=\"{'active': activeFilters[FILTER_TYPES.SELECTED_VILLAGE]}\" ng-click=\"toggleFilter(FILTER_TYPES.SELECTED_VILLAGE)\" class=\"box-border-dark icon selectedVillage\" tooltip=\"\" tooltip-content=\"{{ 'filters_selected_village' | i18n:loc.ale:'command_queue' }}\"><span class=\"icon-34x34-village-info icon-bg-black\"></span></div><div ng-class=\"{'active': activeFilters[FILTER_TYPES.BARBARIAN_TARGET]}\" ng-click=\"toggleFilter(FILTER_TYPES.BARBARIAN_TARGET)\" class=\"box-border-dark icon barbarianTarget\" tooltip=\"\" tooltip-content=\"{{ 'filters_barbarian_target' | i18n:loc.ale:'command_queue' }}\"><span class=\"icon-34x34-barbarian-village icon-bg-black\"></span></div><div ng-class=\"{'active': activeFilters[FILTER_TYPES.ATTACK]}\" ng-click=\"toggleFilter(FILTER_TYPES.ATTACK, true)\" class=\"box-border-dark icon allowedTypes\" tooltip=\"\" tooltip-content=\"{{ 'filters_attack' | i18n:loc.ale:'command_queue' }}\"><span class=\"icon-34x34-attack icon-bg-black\"></span></div><div ng-class=\"{'active': activeFilters[FILTER_TYPES.SUPPORT]}\" ng-click=\"toggleFilter(FILTER_TYPES.SUPPORT, true)\" class=\"box-border-dark icon allowedTypes\" tooltip=\"\" tooltip-content=\"{{ 'filters_support' | i18n:loc.ale:'command_queue' }}\"><span class=\"icon-34x34-support icon-bg-black\"></span></div><div ng-if=\"relocateEnabled\" ng-class=\"{'active': activeFilters[FILTER_TYPES.RELOCATE]}\" ng-click=\"toggleFilter(FILTER_TYPES.RELOCATE, true)\" class=\"box-border-dark icon allowedTypes\" tooltip=\"\" tooltip-content=\"{{ 'filters_relocate' | i18n:loc.ale:'command_queue' }}\"><span class=\"icon-34x34-relocate icon-bg-black\"></span></div><div class=\"text\"><input ng-model=\"filtersData[FILTER_TYPES.TEXT_MATCH]\" class=\"box-border-dark\" placeholder=\"{{ 'filters_text_match' | i18n:loc.ale:'command_queue' }}\"></div></table></div><div class=\"queue\"><h5 class=\"twx-section\">{{ 'queue_waiting' | i18n:loc.ale:'command_queue' }}</h5><p class=\"text-center\" ng-show=\"!visibleWaitingCommands.length\">{{ 'queue_none_added' | i18n:loc.ale:'command_queue' }}<table class=\"tbl-border-light\" ng-repeat=\"command in visibleWaitingCommands\"><col width=\"100px\"><tr><th colspan=\"2\"><span ng-class=\"{true: 'icon-bg-red', false:'icon-bg-blue'}[command.type === COMMAND_TYPES.ATTACK]\" class=\"icon-26x26-{{ command.type }}\" tooltip=\"\" tooltip-content=\"{{ command.type | i18n:loc.ale:'common' }}\"></span> <span class=\"size-26x26 icon-bg-black icon-26x26-time-duration\" tooltip=\"\" tooltip-content=\"{{ 'command_time_left' | i18n:loc.ale:'command_queue' }}\"></span> <span class=\"time-left\">{{ command.countdown | readableMillisecondsFilter }}</span> <span class=\"size-26x26 icon-bg-black icon-20x20-units-outgoing\" tooltip=\"\" tooltip-content=\"{{ 'command_out' | i18n:loc.ale:'command_queue' }}\"></span> <span class=\"sent-time\">{{ command.sendTime | readableDateFilter:loc.ale }}</span> <span class=\"size-26x26 icon-bg-black icon-20x20-time-arrival\" tooltip=\"\" tooltip-content=\"{{ 'command_arrive' | i18n:loc.ale:'command_queue' }}\"></span> <span class=\"arrive-time\">{{ command.arriveTime | readableDateFilter:loc.ale }}</span> <a href=\"#\" class=\"remove-command size-20x20 btn-red icon-20x20-close\" ng-click=\"removeCommand(command, EVENT_CODES.COMMAND_REMOVED)\" tooltip=\"\" tooltip-content=\"{{ 'queue_remove' | i18n:loc.ale:'command_queue' }}\"></a><tr><td>{{ 'villages' | i18n:loc.ale:'common' }}<td><a class=\"origin\"><span class=\"village-link img-link icon-20x20-village btn btn-orange padded\" ng-click=\"openVillageInfo(command.origin.id)\">{{ command.origin.name }} ({{ command.origin.x }}|{{ command.origin.y }})</span></a> <span class=\"size-20x20 icon-26x26-{{ command.type }}\"></span> <a class=\"target\"><span class=\"village-link img-link icon-20x20-village btn btn-orange padded\" ng-click=\"openVillageInfo(command.target.id)\">{{ command.target.name }} ({{ command.target.x }}|{{ command.target.y }})</span></a><tr><td>{{ 'units' | i18n:loc.ale:'common' }}<td class=\"units\"><div class=\"unit\" ng-repeat=\"(unit, amount) in command.units\"><span class=\"icon-34x34-unit-{{ unit }} icon\"></span> <span class=\"amount\">{{ amount }}</span> <span ng-if=\"unit === 'catapult' && command.type === COMMAND_TYPES.ATTACK\">({{ command.catapultTarget | i18n:loc.ale:'building_names' }})</span></div><div class=\"officer\" ng-repeat=\"(officer, enabled) in command.officers\"><span class=\"icon-34x34-premium_officer_{{ officer }}\"></span></div></table></div></div><div class=\"logs rich-text\" ng-show=\"selectedTab === TAB_TYPES.LOGS\"><h5 class=\"twx-section\">{{ 'queue_sent' | i18n:loc.ale:'command_queue' }}</h5><p class=\"text-center\" ng-show=\"!sentCommands.length\">{{ 'queue_none_sent' | i18n:loc.ale:'command_queue' }}<table class=\"tbl-border-light\" ng-repeat=\"command in sentCommands track by $index\"><col width=\"100px\"><tr><th colspan=\"2\"><span ng-class=\"{true: 'icon-bg-red', false:'icon-bg-blue'}[command.type === COMMAND_TYPES.ATTACK]\" class=\"icon-26x26-{{ command.type }}\" tooltip=\"\" tooltip-content=\"{{ command.type | i18n:loc.ale:'common' }}\"></span> <span class=\"size-26x26 icon-bg-black icon-20x20-units-outgoing\" tooltip=\"\" tooltip-content=\"{{ 'command_out' | i18n:loc.ale:'command_queue' }}\"></span> <span class=\"sent-time\">{{ command.sendTime | readableDateFilter:loc.ale }}</span> <span class=\"size-26x26 icon-bg-black icon-20x20-time-arrival\" tooltip=\"\" tooltip-content=\"{{ 'command_arrive' | i18n:loc.ale:'command_queue' }}\"></span> <span class=\"arrive-time\">{{ command.arriveTime | readableDateFilter:loc.ale }}</span><tr><td>{{ 'villages' | i18n:loc.ale:'common' }}<td><a class=\"origin\"><span class=\"village-link img-link icon-20x20-village btn btn-orange padded\" ng-click=\"openVillageInfo(command.origin.id)\">{{ command.origin.name }} ({{ command.origin.x }}|{{ command.origin.y }})</span></a> <span class=\"size-20x20 icon-26x26-{{ command.type }}\"></span> <a class=\"target\"><span class=\"village-link img-link icon-20x20-village btn btn-orange padded\" ng-click=\"openVillageInfo(command.target.id)\">{{ command.target.name }} ({{ command.target.x }}|{{ command.target.y }})</span></a><tr><td>{{ 'units' | i18n:loc.ale:'common' }}<td class=\"units\"><div class=\"unit\" ng-repeat=\"(unit, amount) in command.units\"><span class=\"icon-34x34-unit-{{ unit }} icon\"></span> <span class=\"amount\">{{ amount }}</span> <span ng-if=\"unit === 'catapult' && command.type === COMMAND_TYPES.ATTACK\">({{ command.catapultTarget | i18n:loc.ale:'common' }})</span></div><div class=\"officer\" ng-repeat=\"(officer, enabled) in command.officers\"><span class=\"icon-34x34-premium_officer_{{ officer }}\"></span></div></table><h5 class=\"twx-section\">{{ 'queue_expired' | i18n:loc.ale:'command_queue' }}</h5><p class=\"text-center\" ng-show=\"!expiredCommands.length\">{{ 'queue_none_expired' | i18n:loc.ale:'command_queue' }}<table class=\"tbl-border-light\" ng-repeat=\"command in expiredCommands track by $index\"><col width=\"100px\"><tr><th colspan=\"2\"><span ng-class=\"{true: 'icon-bg-red', false:'icon-bg-blue'}[command.type === COMMAND_TYPES.ATTACK]\" class=\"icon-26x26-{{ command.type }}\" tooltip=\"\" tooltip-content=\"{{ command.type | i18n:loc.ale:'common' }}\"></span> <span class=\"size-26x26 icon-bg-black icon-20x20-units-outgoing\" tooltip=\"\" tooltip-content=\"{{ 'command_out' | i18n:loc.ale:'command_queue' }}\"></span> <span class=\"sent-time\">{{ command.sendTime | readableDateFilter:loc.ale }}</span> <span class=\"size-26x26 icon-bg-black icon-20x20-time-arrival\" tooltip=\"\" tooltip-content=\"{{ 'command_arrive' | i18n:loc.ale:'command_queue' }}\"></span> <span class=\"arrive-time\">{{ command.arriveTime | readableDateFilter:loc.ale }}</span><tr><td>{{ 'villages' | i18n:loc.ale:'common' }}<td><a class=\"origin\"><span class=\"village-link img-link icon-20x20-village btn btn-orange padded\" ng-click=\"openVillageInfo(command.origin.id)\">{{ command.origin.name }} ({{ command.origin.x }}|{{ command.origin.y }})</span></a> <span class=\"size-20x20 icon-26x26-{{ command.type }}\"></span> <a class=\"target\"><span class=\"village-link img-link icon-20x20-village btn btn-orange padded\" ng-click=\"openVillageInfo(command.target.id)\">{{ command.target.name }} ({{ command.target.x }}|{{ command.target.y }})</span></a><tr><td>{{ 'units' | i18n:loc.ale:'common' }}<td class=\"units\"><div class=\"unit\" ng-repeat=\"(unit, amount) in command.units\"><span class=\"icon-34x34-unit-{{ unit }} icon\"></span> <span class=\"amount\">{{ amount }}</span> <span ng-if=\"unit === 'catapult' && command.type === COMMAND_TYPES.ATTACK\">({{ command.catapultTarget | i18n:loc.ale:'common' }})</span></div><div class=\"officer\" ng-repeat=\"(officer, enabled) in command.officers\"><span class=\"icon-34x34-premium_officer_{{ officer }}\"></span></div></table></div></div></div></div><footer class=\"win-foot\"><ul class=\"list-btn list-center\"><li ng-show=\"selectedTab === TAB_TYPES.LOGS\"><a class=\"btn-orange btn-border\" ng-click=\"clearRegisters()\">{{ 'general_clear' | i18n:loc.ale:'command_queue' }}</a><li ng-show=\"selectedTab === TAB_TYPES.ADD\"><a class=\"btn-orange btn-border add\" ng-click=\"addCommand(COMMAND_TYPES.ATTACK)\"><span class=\"icon-26x26-attack-small\"></span> {{ COMMAND_TYPES.ATTACK | i18n:loc.ale:'common' }}</a><li ng-show=\"selectedTab === TAB_TYPES.ADD\"><a class=\"btn-orange btn-border add\" ng-click=\"addCommand(COMMAND_TYPES.SUPPORT)\"><span class=\"icon-26x26-support\"></span> {{ COMMAND_TYPES.SUPPORT | i18n:loc.ale:'common' }}</a><li ng-show=\"relocateEnabled && selectedTab === TAB_TYPES.ADD\"><a class=\"btn-orange btn-border add\" ng-click=\"addCommand(COMMAND_TYPES.RELOCATE)\"><span class=\"icon-26x26-relocate\"></span> {{ COMMAND_TYPES.RELOCATE | i18n:loc.ale:'common' }}</a><li><a href=\"#\" ng-class=\"{false:'btn-green', true:'btn-red'}[running]\" class=\"btn-border\" ng-click=\"switchCommandQueue()\"><span ng-show=\"running\">{{ 'deactivate' | i18n:loc.ale:'common' }}</span> <span ng-show=\"!running\">{{ 'activate' | i18n:loc.ale:'common' }}</span></a></ul></footer></div>`);
         interfaceOverflow.addStyle('#two-command-queue input.unit{width:80px;height:34px}#two-command-queue form .padded{padding:2px 8px}#two-command-queue .basic-config input{width:200px;height:28px;font-weight:bold;padding:1px 8px 0 8px;outline:none;border:none;color:#000;resize:none}#two-command-queue span.select-wrapper{height:27px}#two-command-queue span.select-wrapper a.select-button{height:23px}#two-command-queue span.select-wrapper a.select-handler{-webkit-box-shadow:none;box-shadow:none;height:23px;line-height:23px;margin-bottom:-1px}#two-command-queue .custom-select{width:240px}#two-command-queue .originVillage,#two-command-queue .targetVillage{padding:0 7px}#two-command-queue a.btn{height:28px;line-height:28px;padding:0 10px}#two-command-queue .actions{text-align:center;user-select:none}#two-command-queue .command-village{padding-left:5px;padding-right:5px}#two-command-queue .add-units td{padding:2px 0;text-align:center}#two-command-queue .add-units .unit-icon{top:-1px}#two-command-queue .add-units span[class*="icon-34x34"]{margin-top:-2px !important}#two-command-queue .add-units input{height:34px;color:#fff3d0;border:none;outline:none;font-size:14px;background:url(data:image/png;base64,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) top left #b89064;box-shadow:inset 0 0 0 1px #000,inset 0 0 0 2px #a2682c,inset 0 0 0 3px #000,inset -3px -3px 2px 0 #fff,inset 0 0 9px 5px rgba(99,54,0,0.5);text-align:center;width:80px}#two-command-queue .add-officers .cell-officers{padding:7px 11px 5px 11px}#two-command-queue .add-officers .amount{color:#fff;text-align:center}#two-command-queue .command{margin-bottom:10px}#two-command-queue .command .time-left{width:93px;display:inline-block;padding:0 0 0 3px}#two-command-queue .command .sent-time,#two-command-queue .command .arrive-time{width:160px;display:inline-block;padding:0 0 0 5px}#two-command-queue .command td{padding:3px 6px}#two-command-queue .officers td{width:111px;text-align:center}#two-command-queue .officers label{margin-left:5px}#two-command-queue .officers span{margin-left:2px}#two-command-queue .units div.unit{float:left}#two-command-queue .units div.unit span.icon{transform:scale(.7);width:25px;height:25px}#two-command-queue .units div.unit span.amount{vertical-align:-2px;margin:0 5px 0 2px}#two-command-queue .units div.officer{float:left;margin:0 2px}#two-command-queue .units div.officer span{transform:scale(.7);width:25px;height:25px}#two-command-queue .remove-command{float:right;margin-top:3px}#two-command-queue .tbl-units td{text-align:center}#two-command-queue .tbl-speed{margin-top:10px}#two-command-queue .tbl-speed th{text-align:center}#two-command-queue .tbl-speed td{font-size:12px}#two-command-queue .tbl-speed .box-time-sub-icon{position:relative}#two-command-queue .tbl-speed .box-time-sub-icon .time-icon{position:absolute;top:-3px;left:27px;transform:scale(.7)}#two-command-queue .tbl-speed .box-time-sub-icon.time-relocate .time-icon{top:-6px;left:26px}#two-command-queue .tbl-speed .valid{color:#16600a}#two-command-queue .tbl-speed .invalid{color:#a1251f}#two-command-queue .tbl-speed .neutral{color:#000}#two-command-queue .dateType{width:200px}#two-command-queue .dateType .custom-select-handler{text-align:left}#two-command-queue .filters .icon{width:38px;float:left;margin:0 6px}#two-command-queue .filters .icon.active:before{box-shadow:0 0 0 1px #000,-1px -1px 0 2px #ac9c44,0 0 0 3px #ac9c44,0 0 0 4px #000;border-radius:1px;content:"";position:absolute;width:38px;height:38px;left:-1px;top:-1px}#two-command-queue .filters .text{margin-left:262px}#two-command-queue .filters .text input{height:36px;margin-top:1px;width:100%;text-align:left;padding:0 5px}#two-command-queue .filters .text input::placeholder{color:white}#two-command-queue .filters .text input:focus::placeholder{color:transparent}#two-command-queue .filters td{padding:6px}#two-command-queue .icon-34x34-barbarian-village:before{filter:grayscale(100%);background-image:url(https://i.imgur.com/ozI4k0h.png);background-position:-220px -906px}#two-command-queue .icon-20x20-time-arrival:before{transform:scale(.8);background-image:url(https://i.imgur.com/ozI4k0h.png);background-position:-529px -454px}#two-command-queue .icon-20x20-attack:before{transform:scale(.8);background-image:url(https://i.imgur.com/ozI4k0h.png);background-position:-546px -1086px;width:26px;height:26px}#two-command-queue .icon-20x20-support:before{transform:scale(.8);background-image:url(https://i.imgur.com/ozI4k0h.png);background-position:-462px -360px;width:26px;height:26px}#two-command-queue .icon-20x20-relocate:before{transform:scale(.8);background-image:url(https://i.imgur.com/ozI4k0h.png);background-position:-1090px -130px;width:26px;height:26px}#two-command-queue .icon-26x26-attack:before{background-image:url(https://i.imgur.com/ozI4k0h.png);background-position:-546px -1086px}');
     };
 
@@ -8227,7 +6862,7 @@ define('two/commandQueue/ui', [
             setupCountdownForCommand(command);
         });
 
-        const eventScope = new EventScope('twoverflow_queue_window', function () {
+        const eventScope = new EventScope('TW2 Enchanced_queue_window', function () {
             clearInterval(travelTimesTimer);
             eventHandlers.clearCountdownUpdates();
         });
@@ -8244,7 +6879,7 @@ define('two/commandQueue/ui', [
         eventScope.register(eventTypeProvider.COMMAND_QUEUE_START, eventHandlers.start);
         eventScope.register(eventTypeProvider.COMMAND_QUEUE_STOP, eventHandlers.stop);
 
-        windowManagerService.getScreenWithInjectedScope('!twoverflow_queue_window', $scope);
+        windowManagerService.getScreenWithInjectedScope('!TW2 Enchanced_queue_window', $scope);
     };
 
     return init;
@@ -10193,7 +8828,7 @@ define('two/farmOverflow/ui', [
             $button.classList.add('btn-orange');
         });
 
-        interfaceOverflow.addTemplate('twoverflow_farm_overflow_window', `<div id=\"two-farmoverflow\" class=\"win-content two-window\"><header class=\"win-head\"><h2>FarmOverflow</h2><ul class=\"list-btn\"><li><a href=\"#\" class=\"size-34x34 btn-red icon-26x26-close\" ng-click=\"closeWindow()\"></a></ul></header><div class=\"win-main\" scrollbar=\"\"><div class=\"tabs tabs-bg\"><div class=\"tabs-three-col\"><div class=\"tab\" ng-click=\"selectTab(TAB_TYPES.SETTINGS)\" ng-class=\"{'tab-active': selectedTab == TAB_TYPES.SETTINGS}\"><div class=\"tab-inner\"><div ng-class=\"{'box-border-light': selectedTab === TAB_TYPES.SETTINGS}\"><a href=\"#\" ng-class=\"{'btn-icon btn-orange': selectedTab !== TAB_TYPES.SETTINGS}\">{{ TAB_TYPES.SETTINGS | i18n:loc.ale:'common' }}</a></div></div></div><div class=\"tab\" ng-click=\"selectTab(TAB_TYPES.VILLAGES)\" ng-class=\"{'tab-active': selectedTab == TAB_TYPES.VILLAGES}\"><div class=\"tab-inner\"><div ng-class=\"{'box-border-light': selectedTab === TAB_TYPES.VILLAGES}\"><a href=\"#\" ng-class=\"{'btn-icon btn-orange': selectedTab !== TAB_TYPES.VILLAGES}\">{{ TAB_TYPES.VILLAGES | i18n:loc.ale:'common' }}</a></div></div></div><div class=\"tab\" ng-click=\"selectTab(TAB_TYPES.LOGS)\" ng-class=\"{'tab-active': selectedTab == TAB_TYPES.LOGS}\"><div class=\"tab-inner\"><div ng-class=\"{'box-border-light': selectedTab === TAB_TYPES.LOGS}\"><a href=\"#\" ng-class=\"{'btn-icon btn-orange': selectedTab !== TAB_TYPES.LOGS}\">{{ TAB_TYPES.LOGS | i18n:loc.ale:'common' }}</a></div></div></div></div></div><div class=\"box-paper footer\"><div class=\"scroll-wrap\"><div class=\"settings\" ng-show=\"selectedTab === TAB_TYPES.SETTINGS\"><table class=\"tbl-border-light tbl-content tbl-medium-height\"><col width=\"*\"><col width=\"270px\"><tr><th colspan=\"2\">{{ 'step_cycle_header' | i18n:loc.ale:'farm_overflow' }}<tr><td><span class=\"ff-cell-fix\">{{ 'farmer_behavior' | i18n:loc.ale:'farm_overflow' }}</span><td><div select=\"\" list=\"farmerBehaviorList\" selected=\"selectedFarmerBehavior\" drop-down=\"true\"></div><tr><td><span class=\"ff-cell-fix\">{{ 'target_behavior' | i18n:loc.ale:'farm_overflow' }}</span><td><div select=\"\" list=\"targetBehaviorList\" selected=\"selectedTargetBehavior\" drop-down=\"true\"></div><tr><td><span class=\"ff-cell-fix\">{{ 'multiple_attacks_interval' | i18n:loc.ale:'farm_overflow' }}</span><td><input class=\"fit textfield-border text-center\" ng-model=\"settings[SETTINGS.MULTIPLE_ATTACKS_INTERVAL]\" tooltip=\"\" tooltip-content=\"{{ 'readable_time_format' | i18n:loc.ale:'common' }}\"></table><table class=\"tbl-border-light tbl-content tbl-medium-height\"><col width=\"*\"><col width=\"270px\"><tr><th colspan=\"2\">{{ 'groups_presets' | i18n:loc.ale:'farm_overflow' }}<tr><td><span class=\"ff-cell-fix\">{{ 'presets' | i18n:loc.ale:'farm_overflow' }}</span><td><div select=\"\" list=\"presets\" selected=\"settings[SETTINGS.PRESETS]\" drop-down=\"true\"></div><tr><td><span class=\"ff-cell-fix\">{{ 'group_ignored' | i18n:loc.ale:'farm_overflow' }}</span><td class=\"snowflake\"><div select=\"\" list=\"groupsWithDisabled\" selected=\"settings[SETTINGS.GROUP_IGNORE]\" drop-down=\"true\"></div><tr><td><span class=\"ff-cell-fix\">{{ 'group_include' | i18n:loc.ale:'farm_overflow' }}</span><td><div select=\"\" list=\"groups\" selected=\"settings[SETTINGS.GROUP_INCLUDE]\" drop-down=\"true\"></div><tr><td><span class=\"ff-cell-fix\">{{ 'group_only' | i18n:loc.ale:'farm_overflow' }}</span><td><div select=\"\" list=\"groups\" selected=\"settings[SETTINGS.GROUP_ONLY]\" drop-down=\"true\"></div></table><table class=\"tbl-border-light tbl-content tbl-medium-height\"><col><col width=\"200px\"><col width=\"60px\"><tr><th colspan=\"3\">{{ 'misc' | i18n:loc.ale:'farm_overflow' }}<tr><td><span class=\"ff-cell-fix\">{{ 'attack_interval' | i18n:loc.ale:'farm_overflow' }}</span><td colspan=\"2\"><input class=\"fit textfield-border text-center\" ng-model=\"settings[SETTINGS.ATTACK_INTERVAL]\" tooltip=\"\" tooltip-content=\"{{ 'readable_time_format' | i18n:loc.ale:'common' }}\"><tr><td><span class=\"ff-cell-fix\">{{ 'farmer_cycle_interval' | i18n:loc.ale:'farm_overflow' }}</span><td colspan=\"2\"><input class=\"fit textfield-border text-center\" ng-model=\"settings[SETTINGS.FARMER_CYCLE_INTERVAL]\" tooltip=\"\" tooltip-content=\"{{ 'readable_time_format' | i18n:loc.ale:'common' }}\"><tr><td><span class=\"ff-cell-fix\">{{ 'preserve_command_slots' | i18n:loc.ale:'farm_overflow' }}</span><td><div range-slider=\"\" min=\"settingsMap[SETTINGS.PRESERVE_COMMAND_SLOTS].min\" max=\"settingsMap[SETTINGS.PRESERVE_COMMAND_SLOTS].max\" value=\"settings[SETTINGS.PRESERVE_COMMAND_SLOTS]\" enabled=\"true\"></div><td class=\"cell-bottom\"><input class=\"fit textfield-border text-center\" ng-model=\"settings[SETTINGS.PRESERVE_COMMAND_SLOTS]\"><tr><td colspan=\"2\"><span class=\"ff-cell-fix\">{{ 'ignore_on_loss' | i18n:loc.ale:'farm_overflow' }}</span><td><div switch-slider=\"\" enabled=\"settings[SETTINGS.GROUP_IGNORE].value\" border=\"true\" value=\"settings[SETTINGS.IGNORE_ON_LOSS]\" vertical=\"false\" size=\"'56x28'\" tooltip=\"\" tooltip-content=\"{{ 'ignore_on_loss_tip' | i18n:loc.ale:'farm_overflow' }}\"></div><tr><td colspan=\"2\"><span class=\"ff-cell-fix\">{{ 'ignore_full_storage' | i18n:loc.ale:'farm_overflow' }}</span><td><div switch-slider=\"\" enabled=\"true\" border=\"true\" value=\"settings[SETTINGS.IGNORE_FULL_STORAGE]\" vertical=\"false\" size=\"'56x28'\"></div><tr><td><span class=\"ff-cell-fix\">{{ 'target_limit_per_village' | i18n:loc.ale:'farm_overflow' }}</span><td><div range-slider=\"\" min=\"settingsMap[SETTINGS.TARGET_LIMIT].min\" max=\"settingsMap[SETTINGS.TARGET_LIMIT].max\" value=\"settings[SETTINGS.TARGET_LIMIT]\" enabled=\"true\"></div><td class=\"cell-bottom\"><input class=\"fit textfield-border text-center\" ng-model=\"settings[SETTINGS.TARGET_LIMIT]\"></table><table class=\"tbl-border-light tbl-content tbl-medium-height\"><col><col width=\"200px\"><col width=\"60px\"><tr><th colspan=\"3\">{{ 'target_filters' | i18n:loc.ale:'farm_overflow' }}<tr><td><span class=\"ff-cell-fix\">{{ 'min_distance' | i18n:loc.ale:'farm_overflow' }}</span><td><div range-slider=\"\" min=\"settingsMap[SETTINGS.MIN_DISTANCE].min\" max=\"settingsMap[SETTINGS.MIN_DISTANCE].max\" value=\"settings[SETTINGS.MIN_DISTANCE]\" enabled=\"true\"></div><td class=\"cell-bottom\"><input class=\"fit textfield-border text-center\" ng-model=\"settings[SETTINGS.MIN_DISTANCE]\"><tr><td><span class=\"ff-cell-fix\">{{ 'max_distance' | i18n:loc.ale:'farm_overflow' }}</span><td><div range-slider=\"\" min=\"settingsMap[SETTINGS.MAX_DISTANCE].min\" max=\"settingsMap[SETTINGS.MAX_DISTANCE].max\" value=\"settings[SETTINGS.MAX_DISTANCE]\" enabled=\"true\"></div><td class=\"cell-bottom\"><input class=\"fit textfield-border text-center\" ng-model=\"settings[SETTINGS.MAX_DISTANCE]\"><tr><td><span class=\"ff-cell-fix\">{{ 'min_points' | i18n:loc.ale:'farm_overflow' }}</span><td><div range-slider=\"\" min=\"settingsMap[SETTINGS.MIN_POINTS].min\" max=\"settingsMap[SETTINGS.MIN_POINTS].max\" value=\"settings[SETTINGS.MIN_POINTS]\" enabled=\"true\"></div><td class=\"cell-bottom\"><input class=\"fit textfield-border text-center\" ng-model=\"settings[SETTINGS.MIN_POINTS]\"><tr><td><span class=\"ff-cell-fix\">{{ 'max_points' | i18n:loc.ale:'farm_overflow' }}</span><td><div range-slider=\"\" min=\"settingsMap[SETTINGS.MAX_POINTS].min\" max=\"settingsMap[SETTINGS.MAX_POINTS].max\" value=\"settings[SETTINGS.MAX_POINTS]\" enabled=\"true\"></div><td class=\"cell-bottom\"><input class=\"fit textfield-border text-center\" ng-model=\"settings[SETTINGS.MAX_POINTS]\"><tr><td><span class=\"ff-cell-fix\">{{ 'max_travel_time' | i18n:loc.ale:'farm_overflow' }}</span><td colspan=\"2\"><input class=\"fit textfield-border text-center\" ng-model=\"settings[SETTINGS.MAX_TRAVEL_TIME]\" tooltip=\"\" tooltip-content=\"{{ 'readable_time_format' | i18n:loc.ale:'common' }}\"></table><table class=\"tbl-border-light tbl-content tbl-medium-height\"><col><col width=\"200px\"><col width=\"60px\"><tr><th colspan=\"3\">{{ 'others' | i18n:loc.ale:'common' }}<tr><td><span class=\"ff-cell-fix\">{{ 'logs_limit' | i18n:loc.ale:'farm_overflow' }}</span><td><div range-slider=\"\" min=\"settingsMap[SETTINGS.LOGS_LIMIT].min\" max=\"settingsMap[SETTINGS.LOGS_LIMIT].max\" value=\"settings[SETTINGS.LOGS_LIMIT]\" enabled=\"true\"></div><td class=\"cell-bottom\"><input class=\"fit textfield-border text-center\" ng-model=\"settings[SETTINGS.LOGS_LIMIT]\"></table></div><div class=\"villages rich-text\" ng-show=\"selectedTab === TAB_TYPES.VILLAGES\"><p ng-show=\"showCycleTimer\" class=\"text-center\">{{ 'next_cycle_in' | i18n:loc.ale:'farm_overflow' }}: {{ nextCycleCountdown | readableMillisecondsFilter }}<h5 class=\"twx-section\">{{ 'farmer_villages' | i18n:loc.ale:'farm_overflow' }}</h5><p ng-show=\"!farmers.length\" class=\"text-center\">{{ 'no_farmer_villages' | i18n:loc.ale:'farm_overflow' }}<table class=\"tbl-border-light tbl-striped\" ng-show=\"farmers.length\"><col><col width=\"40%\"><col width=\"20%\"><tr><th>{{ 'villages' | i18n:loc.ale:'common' }}<th>{{ 'last_status' | i18n:loc.ale:'farm_overflow' }}<th>{{ 'target' | i18n:loc.ale:'common':2 }}<tr ng-repeat=\"farmer in farmers\"><td><span ng-class=\"{true:'icon-20x20-queue-indicator-long', false:'icon-20x20-queue-indicator-short'}[farmer.isRunning()]\"></span> <a class=\"link\" ng-click=\"openVillageInfo(farmer.getVillage().getId())\"><span class=\"icon-20x20-village\"></span> {{ farmer.getVillage().getName() }} ({{ farmer.getVillage().getX() }}|{{ farmer.getVillage().getY() }})</a><td>{{ 'status_' + farmer.getStatus() | i18n:loc.ale:'farm_overflow' }}<td ng-if=\"farmer.getTargets()\"><span ng-if=\"farmer.isRunning()\">{{ farmer.getIndex() }} / </span><span>{{ farmer.getTargets().length }}</span><td ng-if=\"!farmer.getTargets()\">{{ 'not_loaded' | i18n:loc.ale:'farm_overflow' }}</table><h5 class=\"twx-section\">{{ 'ignored_targets' | i18n:loc.ale:'farm_overflow' }}</h5><p ng-if=\"!exceptionVillages.ignored.length\" class=\"text-center\">{{ 'no_ignored_targets' | i18n:loc.ale:'farm_overflow' }}<table class=\"ignored-villages tbl-border-light tbl-striped\" ng-show=\"exceptionVillages.ignored.length\"><col><col width=\"15%\"><col width=\"15%\"><col width=\"30px\"><tr><th>{{ 'villages' | i18n:loc.ale:'common' }}<th>{{ 'date' | i18n:loc.ale:'farm_overflow' }}<th>{{ 'reports' | i18n:loc.ale:'farm_overflow' }}<th><tr ng-repeat=\"villageId in exceptionVillages.ignored track by $index\"><td><a class=\"link\" ng-click=\"openVillageInfo(villageId)\"><span class=\"icon-20x20-village\"></span> {{ villagesLabel[villageId] }}</a><td>{{ exceptionLogs[villageId].time | readableDateFilter:loc.ale:GAME_TIMEZONE:GAME_TIME_OFFSET }}<td><span ng-if=\"exceptionLogs[villageId].report\"><a class=\"link\" ng-click=\"showReport(exceptionLogs[villageId].report.id)\" tooltip=\"\" tooltip-content=\"{{ exceptionLogs[villageId].report.title }}\"><span class=\"icon-20x20-report\"></span> {{ 'open_report' | i18n:loc.ale:'farm_overflow' }}</a> <span ng-class=\"{2:'icon-20x20-queue-indicator-medium', 3:'icon-20x20-queue-indicator-short'}[exceptionLogs[villageId].report.result]\"></span> <span ng-class=\"{'full': 'icon-26x26-capacity', 'partial':'icon-26x26-capacity-low', 'none':'hidden'}[exceptionLogs[villageId].report.haul]\"></span> </span><span ng-if=\"!exceptionLogs[villageId].report\">{{ 'no_report' | i18n:loc.ale:'farm_overflow' }}</span><td><a href=\"#\" class=\"size-20x20 btn-red icon-20x20-close\" ng-click=\"removeIgnored(villageId)\" tooltip=\"\" tooltip-content=\"\"></a></table><h5 class=\"twx-section\">{{ 'included_targets' | i18n:loc.ale:'farm_overflow' }}</h5><p ng-if=\"!exceptionVillages.included.length\" class=\"text-center\">{{ 'no_included_targets' | i18n:loc.ale:'farm_overflow' }}<table class=\"tbl-border-light tbl-striped\" ng-show=\"exceptionVillages.included.length\"><col><col width=\"15%\"><col width=\"30px\"><tr><th>{{ 'villages' | i18n:loc.ale:'common' }}<th>{{ 'date' | i18n:loc.ale:'farm_overflow' }}<th><tr ng-repeat=\"villageId in exceptionVillages.included track by $index\"><td><a class=\"link\" ng-click=\"openVillageInfo(villageId)\"><span class=\"icon-20x20-village\"></span> {{ villagesLabel[villageId] }}</a><td>{{ exceptionLogs[villageId].time | readableDateFilter:loc.ale:GAME_TIMEZONE:GAME_TIME_OFFSET }}<td><a href=\"#\" class=\"size-20x20 btn-red icon-20x20-close\" ng-click=\"removeIncluded(villageId)\" tooltip=\"\" tooltip-content=\"\"></a></table></div><div class=\"logs rich-text\" ng-show=\"selectedTab === TAB_TYPES.LOGS\"><div class=\"page-wrap\" pagination=\"pagination\"></div><p class=\"text-center\" ng-show=\"!visibleLogs.length\">{{ 'no_logs' | i18n:loc.ale:'farm_overflow' }}<table class=\"log-list tbl-border-light tbl-striped\" ng-show=\"visibleLogs.length\"><col width=\"100px\"><col width=\"30px\"><col><tr ng-repeat=\"log in visibleLogs track by $index\"><td>{{ log.time | readableDateFilter:loc.ale:GAME_TIMEZONE:GAME_TIME_OFFSET }}<td><span class=\"icon-bg-black\" ng-class=\"{
+        interfaceOverflow.addTemplate('TW2 Enchanced_farm_overflow_window', `<div id=\"two-farmoverflow\" class=\"win-content two-window\"><header class=\"win-head\"><h2>FarmOverflow</h2><ul class=\"list-btn\"><li><a href=\"#\" class=\"size-34x34 btn-red icon-26x26-close\" ng-click=\"closeWindow()\"></a></ul></header><div class=\"win-main\" scrollbar=\"\"><div class=\"tabs tabs-bg\"><div class=\"tabs-three-col\"><div class=\"tab\" ng-click=\"selectTab(TAB_TYPES.SETTINGS)\" ng-class=\"{'tab-active': selectedTab == TAB_TYPES.SETTINGS}\"><div class=\"tab-inner\"><div ng-class=\"{'box-border-light': selectedTab === TAB_TYPES.SETTINGS}\"><a href=\"#\" ng-class=\"{'btn-icon btn-orange': selectedTab !== TAB_TYPES.SETTINGS}\">{{ TAB_TYPES.SETTINGS | i18n:loc.ale:'common' }}</a></div></div></div><div class=\"tab\" ng-click=\"selectTab(TAB_TYPES.VILLAGES)\" ng-class=\"{'tab-active': selectedTab == TAB_TYPES.VILLAGES}\"><div class=\"tab-inner\"><div ng-class=\"{'box-border-light': selectedTab === TAB_TYPES.VILLAGES}\"><a href=\"#\" ng-class=\"{'btn-icon btn-orange': selectedTab !== TAB_TYPES.VILLAGES}\">{{ TAB_TYPES.VILLAGES | i18n:loc.ale:'common' }}</a></div></div></div><div class=\"tab\" ng-click=\"selectTab(TAB_TYPES.LOGS)\" ng-class=\"{'tab-active': selectedTab == TAB_TYPES.LOGS}\"><div class=\"tab-inner\"><div ng-class=\"{'box-border-light': selectedTab === TAB_TYPES.LOGS}\"><a href=\"#\" ng-class=\"{'btn-icon btn-orange': selectedTab !== TAB_TYPES.LOGS}\">{{ TAB_TYPES.LOGS | i18n:loc.ale:'common' }}</a></div></div></div></div></div><div class=\"box-paper footer\"><div class=\"scroll-wrap\"><div class=\"settings\" ng-show=\"selectedTab === TAB_TYPES.SETTINGS\"><table class=\"tbl-border-light tbl-content tbl-medium-height\"><col width=\"*\"><col width=\"270px\"><tr><th colspan=\"2\">{{ 'step_cycle_header' | i18n:loc.ale:'farm_overflow' }}<tr><td><span class=\"ff-cell-fix\">{{ 'farmer_behavior' | i18n:loc.ale:'farm_overflow' }}</span><td><div select=\"\" list=\"farmerBehaviorList\" selected=\"selectedFarmerBehavior\" drop-down=\"true\"></div><tr><td><span class=\"ff-cell-fix\">{{ 'target_behavior' | i18n:loc.ale:'farm_overflow' }}</span><td><div select=\"\" list=\"targetBehaviorList\" selected=\"selectedTargetBehavior\" drop-down=\"true\"></div><tr><td><span class=\"ff-cell-fix\">{{ 'multiple_attacks_interval' | i18n:loc.ale:'farm_overflow' }}</span><td><input class=\"fit textfield-border text-center\" ng-model=\"settings[SETTINGS.MULTIPLE_ATTACKS_INTERVAL]\" tooltip=\"\" tooltip-content=\"{{ 'readable_time_format' | i18n:loc.ale:'common' }}\"></table><table class=\"tbl-border-light tbl-content tbl-medium-height\"><col width=\"*\"><col width=\"270px\"><tr><th colspan=\"2\">{{ 'groups_presets' | i18n:loc.ale:'farm_overflow' }}<tr><td><span class=\"ff-cell-fix\">{{ 'presets' | i18n:loc.ale:'farm_overflow' }}</span><td><div select=\"\" list=\"presets\" selected=\"settings[SETTINGS.PRESETS]\" drop-down=\"true\"></div><tr><td><span class=\"ff-cell-fix\">{{ 'group_ignored' | i18n:loc.ale:'farm_overflow' }}</span><td class=\"snowflake\"><div select=\"\" list=\"groupsWithDisabled\" selected=\"settings[SETTINGS.GROUP_IGNORE]\" drop-down=\"true\"></div><tr><td><span class=\"ff-cell-fix\">{{ 'group_include' | i18n:loc.ale:'farm_overflow' }}</span><td><div select=\"\" list=\"groups\" selected=\"settings[SETTINGS.GROUP_INCLUDE]\" drop-down=\"true\"></div><tr><td><span class=\"ff-cell-fix\">{{ 'group_only' | i18n:loc.ale:'farm_overflow' }}</span><td><div select=\"\" list=\"groups\" selected=\"settings[SETTINGS.GROUP_ONLY]\" drop-down=\"true\"></div></table><table class=\"tbl-border-light tbl-content tbl-medium-height\"><col><col width=\"200px\"><col width=\"60px\"><tr><th colspan=\"3\">{{ 'misc' | i18n:loc.ale:'farm_overflow' }}<tr><td><span class=\"ff-cell-fix\">{{ 'attack_interval' | i18n:loc.ale:'farm_overflow' }}</span><td colspan=\"2\"><input class=\"fit textfield-border text-center\" ng-model=\"settings[SETTINGS.ATTACK_INTERVAL]\" tooltip=\"\" tooltip-content=\"{{ 'readable_time_format' | i18n:loc.ale:'common' }}\"><tr><td><span class=\"ff-cell-fix\">{{ 'farmer_cycle_interval' | i18n:loc.ale:'farm_overflow' }}</span><td colspan=\"2\"><input class=\"fit textfield-border text-center\" ng-model=\"settings[SETTINGS.FARMER_CYCLE_INTERVAL]\" tooltip=\"\" tooltip-content=\"{{ 'readable_time_format' | i18n:loc.ale:'common' }}\"><tr><td><span class=\"ff-cell-fix\">{{ 'preserve_command_slots' | i18n:loc.ale:'farm_overflow' }}</span><td><div range-slider=\"\" min=\"settingsMap[SETTINGS.PRESERVE_COMMAND_SLOTS].min\" max=\"settingsMap[SETTINGS.PRESERVE_COMMAND_SLOTS].max\" value=\"settings[SETTINGS.PRESERVE_COMMAND_SLOTS]\" enabled=\"true\"></div><td class=\"cell-bottom\"><input class=\"fit textfield-border text-center\" ng-model=\"settings[SETTINGS.PRESERVE_COMMAND_SLOTS]\"><tr><td colspan=\"2\"><span class=\"ff-cell-fix\">{{ 'ignore_on_loss' | i18n:loc.ale:'farm_overflow' }}</span><td><div switch-slider=\"\" enabled=\"settings[SETTINGS.GROUP_IGNORE].value\" border=\"true\" value=\"settings[SETTINGS.IGNORE_ON_LOSS]\" vertical=\"false\" size=\"'56x28'\" tooltip=\"\" tooltip-content=\"{{ 'ignore_on_loss_tip' | i18n:loc.ale:'farm_overflow' }}\"></div><tr><td colspan=\"2\"><span class=\"ff-cell-fix\">{{ 'ignore_full_storage' | i18n:loc.ale:'farm_overflow' }}</span><td><div switch-slider=\"\" enabled=\"true\" border=\"true\" value=\"settings[SETTINGS.IGNORE_FULL_STORAGE]\" vertical=\"false\" size=\"'56x28'\"></div><tr><td><span class=\"ff-cell-fix\">{{ 'target_limit_per_village' | i18n:loc.ale:'farm_overflow' }}</span><td><div range-slider=\"\" min=\"settingsMap[SETTINGS.TARGET_LIMIT].min\" max=\"settingsMap[SETTINGS.TARGET_LIMIT].max\" value=\"settings[SETTINGS.TARGET_LIMIT]\" enabled=\"true\"></div><td class=\"cell-bottom\"><input class=\"fit textfield-border text-center\" ng-model=\"settings[SETTINGS.TARGET_LIMIT]\"></table><table class=\"tbl-border-light tbl-content tbl-medium-height\"><col><col width=\"200px\"><col width=\"60px\"><tr><th colspan=\"3\">{{ 'target_filters' | i18n:loc.ale:'farm_overflow' }}<tr><td><span class=\"ff-cell-fix\">{{ 'min_distance' | i18n:loc.ale:'farm_overflow' }}</span><td><div range-slider=\"\" min=\"settingsMap[SETTINGS.MIN_DISTANCE].min\" max=\"settingsMap[SETTINGS.MIN_DISTANCE].max\" value=\"settings[SETTINGS.MIN_DISTANCE]\" enabled=\"true\"></div><td class=\"cell-bottom\"><input class=\"fit textfield-border text-center\" ng-model=\"settings[SETTINGS.MIN_DISTANCE]\"><tr><td><span class=\"ff-cell-fix\">{{ 'max_distance' | i18n:loc.ale:'farm_overflow' }}</span><td><div range-slider=\"\" min=\"settingsMap[SETTINGS.MAX_DISTANCE].min\" max=\"settingsMap[SETTINGS.MAX_DISTANCE].max\" value=\"settings[SETTINGS.MAX_DISTANCE]\" enabled=\"true\"></div><td class=\"cell-bottom\"><input class=\"fit textfield-border text-center\" ng-model=\"settings[SETTINGS.MAX_DISTANCE]\"><tr><td><span class=\"ff-cell-fix\">{{ 'min_points' | i18n:loc.ale:'farm_overflow' }}</span><td><div range-slider=\"\" min=\"settingsMap[SETTINGS.MIN_POINTS].min\" max=\"settingsMap[SETTINGS.MIN_POINTS].max\" value=\"settings[SETTINGS.MIN_POINTS]\" enabled=\"true\"></div><td class=\"cell-bottom\"><input class=\"fit textfield-border text-center\" ng-model=\"settings[SETTINGS.MIN_POINTS]\"><tr><td><span class=\"ff-cell-fix\">{{ 'max_points' | i18n:loc.ale:'farm_overflow' }}</span><td><div range-slider=\"\" min=\"settingsMap[SETTINGS.MAX_POINTS].min\" max=\"settingsMap[SETTINGS.MAX_POINTS].max\" value=\"settings[SETTINGS.MAX_POINTS]\" enabled=\"true\"></div><td class=\"cell-bottom\"><input class=\"fit textfield-border text-center\" ng-model=\"settings[SETTINGS.MAX_POINTS]\"><tr><td><span class=\"ff-cell-fix\">{{ 'max_travel_time' | i18n:loc.ale:'farm_overflow' }}</span><td colspan=\"2\"><input class=\"fit textfield-border text-center\" ng-model=\"settings[SETTINGS.MAX_TRAVEL_TIME]\" tooltip=\"\" tooltip-content=\"{{ 'readable_time_format' | i18n:loc.ale:'common' }}\"></table><table class=\"tbl-border-light tbl-content tbl-medium-height\"><col><col width=\"200px\"><col width=\"60px\"><tr><th colspan=\"3\">{{ 'others' | i18n:loc.ale:'common' }}<tr><td><span class=\"ff-cell-fix\">{{ 'logs_limit' | i18n:loc.ale:'farm_overflow' }}</span><td><div range-slider=\"\" min=\"settingsMap[SETTINGS.LOGS_LIMIT].min\" max=\"settingsMap[SETTINGS.LOGS_LIMIT].max\" value=\"settings[SETTINGS.LOGS_LIMIT]\" enabled=\"true\"></div><td class=\"cell-bottom\"><input class=\"fit textfield-border text-center\" ng-model=\"settings[SETTINGS.LOGS_LIMIT]\"></table></div><div class=\"villages rich-text\" ng-show=\"selectedTab === TAB_TYPES.VILLAGES\"><p ng-show=\"showCycleTimer\" class=\"text-center\">{{ 'next_cycle_in' | i18n:loc.ale:'farm_overflow' }}: {{ nextCycleCountdown | readableMillisecondsFilter }}<h5 class=\"twx-section\">{{ 'farmer_villages' | i18n:loc.ale:'farm_overflow' }}</h5><p ng-show=\"!farmers.length\" class=\"text-center\">{{ 'no_farmer_villages' | i18n:loc.ale:'farm_overflow' }}<table class=\"tbl-border-light tbl-striped\" ng-show=\"farmers.length\"><col><col width=\"40%\"><col width=\"20%\"><tr><th>{{ 'villages' | i18n:loc.ale:'common' }}<th>{{ 'last_status' | i18n:loc.ale:'farm_overflow' }}<th>{{ 'target' | i18n:loc.ale:'common':2 }}<tr ng-repeat=\"farmer in farmers\"><td><span ng-class=\"{true:'icon-20x20-queue-indicator-long', false:'icon-20x20-queue-indicator-short'}[farmer.isRunning()]\"></span> <a class=\"link\" ng-click=\"openVillageInfo(farmer.getVillage().getId())\"><span class=\"icon-20x20-village\"></span> {{ farmer.getVillage().getName() }} ({{ farmer.getVillage().getX() }}|{{ farmer.getVillage().getY() }})</a><td>{{ 'status_' + farmer.getStatus() | i18n:loc.ale:'farm_overflow' }}<td ng-if=\"farmer.getTargets()\"><span ng-if=\"farmer.isRunning()\">{{ farmer.getIndex() }} / </span><span>{{ farmer.getTargets().length }}</span><td ng-if=\"!farmer.getTargets()\">{{ 'not_loaded' | i18n:loc.ale:'farm_overflow' }}</table><h5 class=\"twx-section\">{{ 'ignored_targets' | i18n:loc.ale:'farm_overflow' }}</h5><p ng-if=\"!exceptionVillages.ignored.length\" class=\"text-center\">{{ 'no_ignored_targets' | i18n:loc.ale:'farm_overflow' }}<table class=\"ignored-villages tbl-border-light tbl-striped\" ng-show=\"exceptionVillages.ignored.length\"><col><col width=\"15%\"><col width=\"15%\"><col width=\"30px\"><tr><th>{{ 'villages' | i18n:loc.ale:'common' }}<th>{{ 'date' | i18n:loc.ale:'farm_overflow' }}<th>{{ 'reports' | i18n:loc.ale:'farm_overflow' }}<th><tr ng-repeat=\"villageId in exceptionVillages.ignored track by $index\"><td><a class=\"link\" ng-click=\"openVillageInfo(villageId)\"><span class=\"icon-20x20-village\"></span> {{ villagesLabel[villageId] }}</a><td>{{ exceptionLogs[villageId].time | readableDateFilter:loc.ale:GAME_TIMEZONE:GAME_TIME_OFFSET }}<td><span ng-if=\"exceptionLogs[villageId].report\"><a class=\"link\" ng-click=\"showReport(exceptionLogs[villageId].report.id)\" tooltip=\"\" tooltip-content=\"{{ exceptionLogs[villageId].report.title }}\"><span class=\"icon-20x20-report\"></span> {{ 'open_report' | i18n:loc.ale:'farm_overflow' }}</a> <span ng-class=\"{2:'icon-20x20-queue-indicator-medium', 3:'icon-20x20-queue-indicator-short'}[exceptionLogs[villageId].report.result]\"></span> <span ng-class=\"{'full': 'icon-26x26-capacity', 'partial':'icon-26x26-capacity-low', 'none':'hidden'}[exceptionLogs[villageId].report.haul]\"></span> </span><span ng-if=\"!exceptionLogs[villageId].report\">{{ 'no_report' | i18n:loc.ale:'farm_overflow' }}</span><td><a href=\"#\" class=\"size-20x20 btn-red icon-20x20-close\" ng-click=\"removeIgnored(villageId)\" tooltip=\"\" tooltip-content=\"\"></a></table><h5 class=\"twx-section\">{{ 'included_targets' | i18n:loc.ale:'farm_overflow' }}</h5><p ng-if=\"!exceptionVillages.included.length\" class=\"text-center\">{{ 'no_included_targets' | i18n:loc.ale:'farm_overflow' }}<table class=\"tbl-border-light tbl-striped\" ng-show=\"exceptionVillages.included.length\"><col><col width=\"15%\"><col width=\"30px\"><tr><th>{{ 'villages' | i18n:loc.ale:'common' }}<th>{{ 'date' | i18n:loc.ale:'farm_overflow' }}<th><tr ng-repeat=\"villageId in exceptionVillages.included track by $index\"><td><a class=\"link\" ng-click=\"openVillageInfo(villageId)\"><span class=\"icon-20x20-village\"></span> {{ villagesLabel[villageId] }}</a><td>{{ exceptionLogs[villageId].time | readableDateFilter:loc.ale:GAME_TIMEZONE:GAME_TIME_OFFSET }}<td><a href=\"#\" class=\"size-20x20 btn-red icon-20x20-close\" ng-click=\"removeIncluded(villageId)\" tooltip=\"\" tooltip-content=\"\"></a></table></div><div class=\"logs rich-text\" ng-show=\"selectedTab === TAB_TYPES.LOGS\"><div class=\"page-wrap\" pagination=\"pagination\"></div><p class=\"text-center\" ng-show=\"!visibleLogs.length\">{{ 'no_logs' | i18n:loc.ale:'farm_overflow' }}<table class=\"log-list tbl-border-light tbl-striped\" ng-show=\"visibleLogs.length\"><col width=\"100px\"><col width=\"30px\"><col><tr ng-repeat=\"log in visibleLogs track by $index\"><td>{{ log.time | readableDateFilter:loc.ale:GAME_TIMEZONE:GAME_TIME_OFFSET }}<td><span class=\"icon-bg-black\" ng-class=\"{
                                 'icon-26x26-dot-green': log.type === LOG_TYPES.FARM_START,
                                 'icon-26x26-dot-red': log.type === LOG_TYPES.FARM_STOP,
                                 'icon-26x26-check-negative': log.type === LOG_TYPES.IGNORED_VILLAGE || log.type === LOG_TYPES.INCLUDED_VILLAGE_REMOVED,
@@ -10265,7 +8900,7 @@ define('two/farmOverflow/ui', [
         $scope.removeIgnored = removeIgnored;
         $scope.removeIncluded = removeIncluded;
 
-        const eventScope = new EventScope('twoverflow_farm_overflow_window', function onDestroy () {
+        const eventScope = new EventScope('TW2 Enchanced_farm_overflow_window', function onDestroy () {
             clearInterval(cycleCountdownTimer);
         });
 
@@ -10283,7 +8918,7 @@ define('two/farmOverflow/ui', [
         eventScope.register(eventTypeProvider.FARM_OVERFLOW_CYCLE_BEGIN, eventHandlers.onCycleBegin);
         eventScope.register(eventTypeProvider.FARM_OVERFLOW_CYCLE_END, eventHandlers.onCycleEnd);
 
-        windowManagerService.getScreenWithInjectedScope('!twoverflow_farm_overflow_window', $scope);
+        windowManagerService.getScreenWithInjectedScope('!TW2 Enchanced_farm_overflow_window', $scope);
 
         const unsavedSettingsState = (updates = 0) => function () {
             if (updates++) {
@@ -11865,7 +10500,7 @@ define('two/minimap/ui', [
             minimap.setCurrentPosition(current.x, current.y);
         });
 
-        interfaceOverflow.addTemplate('twoverflow_minimap_window', `<div id=\"two-minimap\" class=\"win-content two-window\"><header class=\"win-head\"><h2>Minimap</h2><ul class=\"list-btn\"><li><a href=\"#\" class=\"size-34x34 btn-red icon-26x26-close\" ng-click=\"closeWindow()\"></a></ul></header><div class=\"win-main small-select\" scrollbar=\"\"><div class=\"tabs tabs-bg\"><div class=\"tabs-three-col\"><div class=\"tab\" ng-click=\"selectTab(TAB_TYPES.MINIMAP)\" ng-class=\"{'tab-active': selectedTab == TAB_TYPES.MINIMAP}\"><div class=\"tab-inner\"><div ng-class=\"{'box-border-light': selectedTab === TAB_TYPES.MINIMAP}\"><a href=\"#\" ng-class=\"{'btn-icon btn-orange': selectedTab !== TAB_TYPES.MINIMAP}\">{{ 'minimap' | i18n:loc.ale:'minimap' }}</a></div></div></div><div class=\"tab\" ng-click=\"selectTab(TAB_TYPES.HIGHLIGHTS)\" ng-class=\"{'tab-active': selectedTab == TAB_TYPES.HIGHLIGHTS}\"><div class=\"tab-inner\"><div ng-class=\"{'box-border-light': selectedTab === TAB_TYPES.HIGHLIGHTS}\"><a href=\"#\" ng-class=\"{'btn-icon btn-orange': selectedTab !== TAB_TYPES.HIGHLIGHTS}\">{{ 'highlights' | i18n:loc.ale:'minimap' }}</a></div></div></div><div class=\"tab\" ng-click=\"selectTab(TAB_TYPES.SETTINGS)\" ng-class=\"{'tab-active': selectedTab == TAB_TYPES.SETTINGS}\"><div class=\"tab-inner\"><div ng-class=\"{'box-border-light': selectedTab === TAB_TYPES.SETTINGS}\"><a href=\"#\" ng-class=\"{'btn-icon btn-orange': selectedTab !== TAB_TYPES.SETTINGS}\">{{ 'settings' | i18n:loc.ale:'common' }}</a></div></div></div></div></div><div ng-show=\"selectedTab === TAB_TYPES.MINIMAP\" class=\"minimap-container\"></div><div class=\"box-paper\" ng-class=\"{'footer': selectedTab == TAB_TYPES.SETTINGS}\"><div class=\"scroll-wrap\"><div ng-show=\"selectedTab == TAB_TYPES.HIGHLIGHTS\"><h5 class=\"twx-section\">{{ 'add' | i18n:loc.ale:'minimap' }}</h5><table class=\"tbl-border-light tbl-striped add-highlight\"><col width=\"40%\"><col><col width=\"4%\"><col width=\"4%\"><tr><td><div auto-complete=\"autoComplete\"></div><td class=\"text-center\"><span ng-show=\"selectedHighlight\" class=\"icon-26x26-rte-{{ selectedHighlight.type }}\"></span> {{ selectedHighlight.name }}<td><div class=\"color-container box-border-dark\" ng-click=\"openColorPalette('add_custom_highlight')\" ng-style=\"{'background-color': addHighlightColor }\" tooltip=\"\" tooltip-content=\"{{ 'tooltip_pick_color' | i18n:loc.ale:'minimap' }}\"></div><td><span class=\"btn-orange icon-26x26-plus\" ng-click=\"addCustomHighlight()\" tooltip=\"\" tooltip-content=\"{{ 'add' | i18n:loc.ale:'minimap' }}\"></span></table><h5 class=\"twx-section\">{{ TAB_TYPES.HIGHLIGHTS | i18n:loc.ale:'minimap' }}</h5><p class=\"text-center\" ng-show=\"!highlightsCount()\">{{ 'no_highlights' | i18n:loc.ale:'minimap' }}<table class=\"highlights tbl-border-light tbl-striped\" ng-show=\"highlightsCount()\"><col width=\"4%\"><col><col width=\"4%\"><col width=\"4%\"><tr ng-repeat=\"(id, color) in highlights.character\"><td><span class=\"icon-26x26-rte-character\"></span><td><span class=\"open-profile\" ng-click=\"openProfile('character', id)\">{{ highlightNames.character[id] }}</span><td><div class=\"color-container box-border-dark\" ng-click=\"openColorPalette('edit_custom_highlight', 'character', id)\" ng-style=\"{'background-color': color }\"></div><td><a class=\"size-26x26 btn-red icon-20x20-close\" ng-click=\"removeHighlight('character', id)\" tooltip=\"\" tooltip-content=\"{{ 'remove' | i18n:loc.ale:'minimap' }}\"></a><tr ng-repeat=\"(id, color) in highlights.tribe\"><td><span class=\"icon-26x26-rte-tribe\"></span><td><span class=\"open-profile\" ng-click=\"openProfile('tribe', id)\">{{ highlightNames.tribe[id] }}</span><td><div class=\"color-container box-border-dark\" ng-click=\"openColorPalette('edit_custom_highlight', 'tribe', id)\" ng-style=\"{'background-color': color }\"></div><td><a class=\"size-26x26 btn-red icon-20x20-close\" ng-click=\"removeHighlight('tribe', id)\" tooltip=\"\" tooltip-content=\"{{ 'remove' | i18n:loc.ale:'minimap' }}\"></a></table></div><div class=\"settings\" ng-show=\"selectedTab == TAB_TYPES.SETTINGS\"><table class=\"tbl-border-light tbl-striped\"><col width=\"60%\"><col><col width=\"56px\"><tr><th colspan=\"3\">{{ 'misc' | i18n:loc.ale:'minimap' }}<tr><td>{{ 'settings_map_size' | i18n:loc.ale:'minimap' }}<td colspan=\"3\"><div select=\"\" list=\"mapSizes\" selected=\"settings[SETTINGS.MAP_SIZE]\" drop-down=\"true\"></div><tr><td>{{ 'settings_right_click_action' | i18n:loc.ale:'minimap' }}<td colspan=\"3\"><div select=\"\" list=\"actionTypes\" selected=\"settings[SETTINGS.RIGHT_CLICK_ACTION]\" drop-down=\"true\"></div><tr><td colspan=\"2\">{{ 'settings_show_view_reference' | i18n:loc.ale:'minimap' }}<td><div switch-slider=\"\" value=\"settings[SETTINGS.SHOW_VIEW_REFERENCE]\" vertical=\"false\" size=\"'56x28'\" enabled=\"true\"></div><tr><td colspan=\"2\">{{ 'settings_show_continent_demarcations' | i18n:loc.ale:'minimap' }}<td><div switch-slider=\"\" value=\"settings[SETTINGS.SHOW_CONTINENT_DEMARCATIONS]\" vertical=\"false\" size=\"'56x28'\" enabled=\"true\"></div><tr><td colspan=\"2\">{{ 'settings_show_province_demarcations' | i18n:loc.ale:'minimap' }}<td><div switch-slider=\"\" value=\"settings[SETTINGS.SHOW_PROVINCE_DEMARCATIONS]\" vertical=\"false\" size=\"'56x28'\" enabled=\"true\"></div><tr><td colspan=\"2\">{{ 'settings_show_barbarians' | i18n:loc.ale:'minimap' }}<td><div switch-slider=\"\" value=\"settings[SETTINGS.SHOW_BARBARIANS]\" vertical=\"false\" size=\"'56x28'\" enabled=\"true\"></div><tr><td colspan=\"2\">{{ 'settings_show_only_custom_highlights' | i18n:loc.ale:'minimap' }}<td><div switch-slider=\"\" value=\"settings[SETTINGS.SHOW_ONLY_CUSTOM_HIGHLIGHTS]\" vertical=\"false\" size=\"'56x28'\" enabled=\"true\"></div><tr><td colspan=\"2\">{{ 'settings_highlight_own' | i18n:loc.ale:'minimap' }}<td><div switch-slider=\"\" value=\"settings[SETTINGS.HIGHLIGHT_OWN]\" vertical=\"false\" size=\"'56x28'\" enabled=\"true\"></div><tr><td colspan=\"2\">{{ 'settings_highlight_selected' | i18n:loc.ale:'minimap' }}<td><div switch-slider=\"\" value=\"settings[SETTINGS.HIGHLIGHT_SELECTED]\" vertical=\"false\" size=\"'56x28'\" enabled=\"true\"></div><tr><td colspan=\"2\">{{ 'settings_highlight_diplomacy' | i18n:loc.ale:'minimap' }}<td><div switch-slider=\"\" value=\"settings[SETTINGS.HIGHLIGHT_DIPLOMACY]\" vertical=\"false\" size=\"'56x28'\" enabled=\"true\"></div></table><table class=\"tbl-border-light tbl-striped\"><col><col width=\"29px\"><tr><th colspan=\"2\">{{ 'colors_misc' | i18n:loc.ale:'minimap' }}<tr><td>{{ 'settings_colors_background' | i18n:loc.ale:'minimap' }}<td><div class=\"color-container box-border-dark\" ng-click=\"openColorPalette('setting', SETTINGS.COLOR_BACKGROUND)\" ng-style=\"{'background-color': settings[SETTINGS.COLOR_BACKGROUND] }\"></div><tr><td>{{ 'settings_colors_province' | i18n:loc.ale:'minimap' }}<td><div class=\"color-container box-border-dark\" ng-click=\"openColorPalette('setting', SETTINGS.COLOR_PROVINCE)\" ng-style=\"{'background-color': settings[SETTINGS.COLOR_PROVINCE] }\"></div><tr><td>{{ 'settings_colors_continent' | i18n:loc.ale:'minimap' }}<td><div class=\"color-container box-border-dark\" ng-click=\"openColorPalette('setting', SETTINGS.COLOR_CONTINENT)\" ng-style=\"{'background-color': settings[SETTINGS.COLOR_CONTINENT] }\"></div><tr><td>{{ 'settings_colors_view_reference' | i18n:loc.ale:'minimap' }}<td><div class=\"color-container box-border-dark\" ng-click=\"openColorPalette('setting', SETTINGS.COLOR_VIEW_REFERENCE)\" ng-style=\"{'background-color': settings[SETTINGS.COLOR_VIEW_REFERENCE] }\"></div><tr><td>{{ 'settings_colors_quick_highlight' | i18n:loc.ale:'minimap' }}<td><div class=\"color-container box-border-dark\" ng-click=\"openColorPalette('setting', SETTINGS.COLOR_QUICK_HIGHLIGHT)\" ng-style=\"{'background-color': settings[SETTINGS.COLOR_QUICK_HIGHLIGHT] }\"></div></table><p class=\"text-center\">{{ 'default_village_colors_info'| i18n:loc.ale:'minimap' }}</div></div></div></div><footer class=\"win-foot\" ng-show=\"selectedTab === TAB_TYPES.SETTINGS\"><ul class=\"list-btn list-center\"><li><a href=\"#\" class=\"btn-border btn-red\" ng-click=\"resetSettings()\">{{ 'reset' | i18n:loc.ale:'common' }}</a><li><a href=\"#\" class=\"btn-border btn-green\" ng-click=\"saveSettings()\">{{ 'save' | i18n:loc.ale:'common' }}</a></ul></footer></div>`);
+        interfaceOverflow.addTemplate('TW2 Enchanced_minimap_window', `<div id=\"two-minimap\" class=\"win-content two-window\"><header class=\"win-head\"><h2>Minimap</h2><ul class=\"list-btn\"><li><a href=\"#\" class=\"size-34x34 btn-red icon-26x26-close\" ng-click=\"closeWindow()\"></a></ul></header><div class=\"win-main small-select\" scrollbar=\"\"><div class=\"tabs tabs-bg\"><div class=\"tabs-three-col\"><div class=\"tab\" ng-click=\"selectTab(TAB_TYPES.MINIMAP)\" ng-class=\"{'tab-active': selectedTab == TAB_TYPES.MINIMAP}\"><div class=\"tab-inner\"><div ng-class=\"{'box-border-light': selectedTab === TAB_TYPES.MINIMAP}\"><a href=\"#\" ng-class=\"{'btn-icon btn-orange': selectedTab !== TAB_TYPES.MINIMAP}\">{{ 'minimap' | i18n:loc.ale:'minimap' }}</a></div></div></div><div class=\"tab\" ng-click=\"selectTab(TAB_TYPES.HIGHLIGHTS)\" ng-class=\"{'tab-active': selectedTab == TAB_TYPES.HIGHLIGHTS}\"><div class=\"tab-inner\"><div ng-class=\"{'box-border-light': selectedTab === TAB_TYPES.HIGHLIGHTS}\"><a href=\"#\" ng-class=\"{'btn-icon btn-orange': selectedTab !== TAB_TYPES.HIGHLIGHTS}\">{{ 'highlights' | i18n:loc.ale:'minimap' }}</a></div></div></div><div class=\"tab\" ng-click=\"selectTab(TAB_TYPES.SETTINGS)\" ng-class=\"{'tab-active': selectedTab == TAB_TYPES.SETTINGS}\"><div class=\"tab-inner\"><div ng-class=\"{'box-border-light': selectedTab === TAB_TYPES.SETTINGS}\"><a href=\"#\" ng-class=\"{'btn-icon btn-orange': selectedTab !== TAB_TYPES.SETTINGS}\">{{ 'settings' | i18n:loc.ale:'common' }}</a></div></div></div></div></div><div ng-show=\"selectedTab === TAB_TYPES.MINIMAP\" class=\"minimap-container\"></div><div class=\"box-paper\" ng-class=\"{'footer': selectedTab == TAB_TYPES.SETTINGS}\"><div class=\"scroll-wrap\"><div ng-show=\"selectedTab == TAB_TYPES.HIGHLIGHTS\"><h5 class=\"twx-section\">{{ 'add' | i18n:loc.ale:'minimap' }}</h5><table class=\"tbl-border-light tbl-striped add-highlight\"><col width=\"40%\"><col><col width=\"4%\"><col width=\"4%\"><tr><td><div auto-complete=\"autoComplete\"></div><td class=\"text-center\"><span ng-show=\"selectedHighlight\" class=\"icon-26x26-rte-{{ selectedHighlight.type }}\"></span> {{ selectedHighlight.name }}<td><div class=\"color-container box-border-dark\" ng-click=\"openColorPalette('add_custom_highlight')\" ng-style=\"{'background-color': addHighlightColor }\" tooltip=\"\" tooltip-content=\"{{ 'tooltip_pick_color' | i18n:loc.ale:'minimap' }}\"></div><td><span class=\"btn-orange icon-26x26-plus\" ng-click=\"addCustomHighlight()\" tooltip=\"\" tooltip-content=\"{{ 'add' | i18n:loc.ale:'minimap' }}\"></span></table><h5 class=\"twx-section\">{{ TAB_TYPES.HIGHLIGHTS | i18n:loc.ale:'minimap' }}</h5><p class=\"text-center\" ng-show=\"!highlightsCount()\">{{ 'no_highlights' | i18n:loc.ale:'minimap' }}<table class=\"highlights tbl-border-light tbl-striped\" ng-show=\"highlightsCount()\"><col width=\"4%\"><col><col width=\"4%\"><col width=\"4%\"><tr ng-repeat=\"(id, color) in highlights.character\"><td><span class=\"icon-26x26-rte-character\"></span><td><span class=\"open-profile\" ng-click=\"openProfile('character', id)\">{{ highlightNames.character[id] }}</span><td><div class=\"color-container box-border-dark\" ng-click=\"openColorPalette('edit_custom_highlight', 'character', id)\" ng-style=\"{'background-color': color }\"></div><td><a class=\"size-26x26 btn-red icon-20x20-close\" ng-click=\"removeHighlight('character', id)\" tooltip=\"\" tooltip-content=\"{{ 'remove' | i18n:loc.ale:'minimap' }}\"></a><tr ng-repeat=\"(id, color) in highlights.tribe\"><td><span class=\"icon-26x26-rte-tribe\"></span><td><span class=\"open-profile\" ng-click=\"openProfile('tribe', id)\">{{ highlightNames.tribe[id] }}</span><td><div class=\"color-container box-border-dark\" ng-click=\"openColorPalette('edit_custom_highlight', 'tribe', id)\" ng-style=\"{'background-color': color }\"></div><td><a class=\"size-26x26 btn-red icon-20x20-close\" ng-click=\"removeHighlight('tribe', id)\" tooltip=\"\" tooltip-content=\"{{ 'remove' | i18n:loc.ale:'minimap' }}\"></a></table></div><div class=\"settings\" ng-show=\"selectedTab == TAB_TYPES.SETTINGS\"><table class=\"tbl-border-light tbl-striped\"><col width=\"60%\"><col><col width=\"56px\"><tr><th colspan=\"3\">{{ 'misc' | i18n:loc.ale:'minimap' }}<tr><td>{{ 'settings_map_size' | i18n:loc.ale:'minimap' }}<td colspan=\"3\"><div select=\"\" list=\"mapSizes\" selected=\"settings[SETTINGS.MAP_SIZE]\" drop-down=\"true\"></div><tr><td>{{ 'settings_right_click_action' | i18n:loc.ale:'minimap' }}<td colspan=\"3\"><div select=\"\" list=\"actionTypes\" selected=\"settings[SETTINGS.RIGHT_CLICK_ACTION]\" drop-down=\"true\"></div><tr><td colspan=\"2\">{{ 'settings_show_view_reference' | i18n:loc.ale:'minimap' }}<td><div switch-slider=\"\" value=\"settings[SETTINGS.SHOW_VIEW_REFERENCE]\" vertical=\"false\" size=\"'56x28'\" enabled=\"true\"></div><tr><td colspan=\"2\">{{ 'settings_show_continent_demarcations' | i18n:loc.ale:'minimap' }}<td><div switch-slider=\"\" value=\"settings[SETTINGS.SHOW_CONTINENT_DEMARCATIONS]\" vertical=\"false\" size=\"'56x28'\" enabled=\"true\"></div><tr><td colspan=\"2\">{{ 'settings_show_province_demarcations' | i18n:loc.ale:'minimap' }}<td><div switch-slider=\"\" value=\"settings[SETTINGS.SHOW_PROVINCE_DEMARCATIONS]\" vertical=\"false\" size=\"'56x28'\" enabled=\"true\"></div><tr><td colspan=\"2\">{{ 'settings_show_barbarians' | i18n:loc.ale:'minimap' }}<td><div switch-slider=\"\" value=\"settings[SETTINGS.SHOW_BARBARIANS]\" vertical=\"false\" size=\"'56x28'\" enabled=\"true\"></div><tr><td colspan=\"2\">{{ 'settings_show_only_custom_highlights' | i18n:loc.ale:'minimap' }}<td><div switch-slider=\"\" value=\"settings[SETTINGS.SHOW_ONLY_CUSTOM_HIGHLIGHTS]\" vertical=\"false\" size=\"'56x28'\" enabled=\"true\"></div><tr><td colspan=\"2\">{{ 'settings_highlight_own' | i18n:loc.ale:'minimap' }}<td><div switch-slider=\"\" value=\"settings[SETTINGS.HIGHLIGHT_OWN]\" vertical=\"false\" size=\"'56x28'\" enabled=\"true\"></div><tr><td colspan=\"2\">{{ 'settings_highlight_selected' | i18n:loc.ale:'minimap' }}<td><div switch-slider=\"\" value=\"settings[SETTINGS.HIGHLIGHT_SELECTED]\" vertical=\"false\" size=\"'56x28'\" enabled=\"true\"></div><tr><td colspan=\"2\">{{ 'settings_highlight_diplomacy' | i18n:loc.ale:'minimap' }}<td><div switch-slider=\"\" value=\"settings[SETTINGS.HIGHLIGHT_DIPLOMACY]\" vertical=\"false\" size=\"'56x28'\" enabled=\"true\"></div></table><table class=\"tbl-border-light tbl-striped\"><col><col width=\"29px\"><tr><th colspan=\"2\">{{ 'colors_misc' | i18n:loc.ale:'minimap' }}<tr><td>{{ 'settings_colors_background' | i18n:loc.ale:'minimap' }}<td><div class=\"color-container box-border-dark\" ng-click=\"openColorPalette('setting', SETTINGS.COLOR_BACKGROUND)\" ng-style=\"{'background-color': settings[SETTINGS.COLOR_BACKGROUND] }\"></div><tr><td>{{ 'settings_colors_province' | i18n:loc.ale:'minimap' }}<td><div class=\"color-container box-border-dark\" ng-click=\"openColorPalette('setting', SETTINGS.COLOR_PROVINCE)\" ng-style=\"{'background-color': settings[SETTINGS.COLOR_PROVINCE] }\"></div><tr><td>{{ 'settings_colors_continent' | i18n:loc.ale:'minimap' }}<td><div class=\"color-container box-border-dark\" ng-click=\"openColorPalette('setting', SETTINGS.COLOR_CONTINENT)\" ng-style=\"{'background-color': settings[SETTINGS.COLOR_CONTINENT] }\"></div><tr><td>{{ 'settings_colors_view_reference' | i18n:loc.ale:'minimap' }}<td><div class=\"color-container box-border-dark\" ng-click=\"openColorPalette('setting', SETTINGS.COLOR_VIEW_REFERENCE)\" ng-style=\"{'background-color': settings[SETTINGS.COLOR_VIEW_REFERENCE] }\"></div><tr><td>{{ 'settings_colors_quick_highlight' | i18n:loc.ale:'minimap' }}<td><div class=\"color-container box-border-dark\" ng-click=\"openColorPalette('setting', SETTINGS.COLOR_QUICK_HIGHLIGHT)\" ng-style=\"{'background-color': settings[SETTINGS.COLOR_QUICK_HIGHLIGHT] }\"></div></table><p class=\"text-center\">{{ 'default_village_colors_info'| i18n:loc.ale:'minimap' }}</div></div></div></div><footer class=\"win-foot\" ng-show=\"selectedTab === TAB_TYPES.SETTINGS\"><ul class=\"list-btn list-center\"><li><a href=\"#\" class=\"btn-border btn-red\" ng-click=\"resetSettings()\">{{ 'reset' | i18n:loc.ale:'common' }}</a><li><a href=\"#\" class=\"btn-border btn-green\" ng-click=\"saveSettings()\">{{ 'save' | i18n:loc.ale:'common' }}</a></ul></footer></div>`);
         interfaceOverflow.addStyle('#map-tooltip{z-index:1000}#two-minimap .minimap{position:absolute;left:0;top:38px;z-index:5}#two-minimap .cross{position:absolute;left:0;top:38px;z-index:6}#two-minimap .box-paper:not(.footer) .scroll-wrap{margin-bottom:40px}#two-minimap span.select-wrapper{width:100%}#two-minimap .add-highlight input{width:100%}#two-minimap .open-profile{font-weight:500;color:#5d3b17;padding:0 5px}#two-minimap .open-profile:hover{text-shadow:-1px 1px 0 #e0cc97}#two-minimap .settings td:first-child{padding:0 5px}#two-minimap .highlights .color-container{margin:1px}');
     };
 
@@ -11906,7 +10541,7 @@ define('two/minimap/ui', [
             textObject: 'minimap'
         });
 
-        const eventScope = new EventScope('twoverflow_minimap_window', function onClose () {
+        const eventScope = new EventScope('TW2 Enchanced_minimap_window', function onClose () {
             minimap.disableRendering();
         });
 
@@ -11920,7 +10555,7 @@ define('two/minimap/ui', [
         eventScope.register(eventTypeProvider.MINIMAP_START_MOVE, eventHandlers.onMouseMoveMinimap);
         eventScope.register(eventTypeProvider.MINIMAP_STOP_MOVE, eventHandlers.onMouseStopMoveMinimap);
 
-        windowManagerService.getScreenWithInjectedScope('!twoverflow_minimap_window', $scope);
+        windowManagerService.getScreenWithInjectedScope('!TW2 Enchanced_minimap_window', $scope);
         updateHighlightNames();
         appendCanvas();
         minimap.enableRendering();
@@ -12459,7 +11094,7 @@ define('two/spy_recruiter/ui', [
         $button = interfaceOverflow.addMenuButton('AutoSpyRecruiter', 51);
         $button.addEventListener('click', buildWindow);
 
-        interfaceOverflow.addTemplate('twoverflow_spy_recruiter_window', `<div id=\"two-spy_recruiter\" class=\"win-content two-window\"><header class=\"win-head\"><h2>AutoSpyRecruiter</h2><ul class=\"list-btn\"><li><a href=\"#\" class=\"size-34x34 btn-red icon-26x26-close\" ng-click=\"closeWindow()\"></a></ul></header><div class=\"win-main\" scrollbar=\"\"><div class=\"tabs tabs-bg\"><div class=\"tabs-one-col\"><div class=\"tab\" ng-click=\"selectTab(TAB_TYPES.SETTINGS)\" ng-class=\"{'tab-active': selectedTab == TAB_TYPES.SETTINGS}\"><div class=\"tab-inner\"><div ng-class=\"{'box-border-light': selectedTab === TAB_TYPES.SETTINGS}\"><a href=\"#\" ng-class=\"{'btn-icon btn-orange': selectedTab !== TAB_TYPES.SETTINGS}\">{{ TAB_TYPES.SETTINGS | i18n:loc.ale:'common' }}</a></div></div></div></div></div><div class=\"box-paper footer\"><div class=\"scroll-wrap\"><div class=\"settings\" ng-show=\"selectedTab === TAB_TYPES.SETTINGS\"><table class=\"tbl-border-light tbl-content tbl-medium-height\"><col><col width=\"200px\"><col width=\"60px\"><tr><td><span class=\"ff-cell-fix\">{{ 'enabled_groups' | i18n:loc.ale:'spy_recruiter' }}</span><td colspan=\"2\"><div select=\"\" list=\"groups\" selected=\"settings[SETTINGS.ENABLED_GROUPS]\" drop-down=\"true\"></div><tr><td><span class=\"ff-cell-fix\">{{ 'preserve_wood' | i18n:loc.ale:'spy_recruiter' }}</span><td><div range-slider=\"\" min=\"settingsMap[SETTINGS.PRESERVE_WOOD].min\" max=\"settingsMap[SETTINGS.PRESERVE_WOOD].max\" value=\"settings[SETTINGS.PRESERVE_WOOD]\" enabled=\"true\"></div><td class=\"cell-bottom\"><input class=\"fit textfield-border text-center\" ng-model=\"settings[SETTINGS.PRESERVE_WOOD]\"><tr><td><span class=\"ff-cell-fix\">{{ 'preserve_clay' | i18n:loc.ale:'spy_recruiter' }}</span><td><div range-slider=\"\" min=\"settingsMap[SETTINGS.PRESERVE_CLAY].min\" max=\"settingsMap[SETTINGS.PRESERVE_CLAY].max\" value=\"settings[SETTINGS.PRESERVE_CLAY]\" enabled=\"true\"></div><td class=\"cell-bottom\"><input class=\"fit textfield-border text-center\" ng-model=\"settings[SETTINGS.PRESERVE_CLAY]\"><tr><td><span class=\"ff-cell-fix\">{{ 'preserve_iron' | i18n:loc.ale:'spy_recruiter' }}</span><td><div range-slider=\"\" min=\"settingsMap[SETTINGS.PRESERVE_IRON].min\" max=\"settingsMap[SETTINGS.PRESERVE_IRON].max\" value=\"settings[SETTINGS.PRESERVE_IRON]\" enabled=\"true\"></div><td class=\"cell-bottom\"><input class=\"fit textfield-border text-center\" ng-model=\"settings[SETTINGS.PRESERVE_IRON]\"><tr><td colspan=\"2\"><span class=\"ff-cell-fix\">{{ 'recruit_single_spy' | i18n:loc.ale:'spy_recruiter' }}</span><td><div switch-slider=\"\" enabled=\"true\" border=\"true\" value=\"settings[SETTINGS.RECRUIT_SINGLE_SPY]\" vertical=\"false\" size=\"'56x28'\"></div><tr><td><span class=\"ff-cell-fix\">{{ 'check_interval' | i18n:loc.ale:'spy_recruiter' }}</span><td colspan=\"2\" class=\"cell-bottom\"><input class=\"fit textfield-border text-center\" ng-model=\"settings[SETTINGS.CHECK_INTERVAL]\"></table></div></div></div></div><footer class=\"win-foot\"><ul class=\"list-btn list-center\"><li ng-show=\"selectedTab === TAB_TYPES.SETTINGS\"><a href=\"#\" class=\"btn-border btn-red\" ng-click=\"saveSettings()\">{{ 'save' | i18n:loc.ale:'common' }}</a><li><a href=\"#\" ng-class=\"{false:'btn-green', true:'btn-red'}[running]\" class=\"btn-border\" ng-click=\"switchState()\"><span ng-show=\"running\">{{ 'pause' | i18n:loc.ale:'common' }}</span> <span ng-show=\"!running\">{{ 'start' | i18n:loc.ale:'common' }}</span></a></ul></footer></div>`);
+        interfaceOverflow.addTemplate('TW2 Enchanced_spy_recruiter_window', `<div id=\"two-spy_recruiter\" class=\"win-content two-window\"><header class=\"win-head\"><h2>AutoSpyRecruiter</h2><ul class=\"list-btn\"><li><a href=\"#\" class=\"size-34x34 btn-red icon-26x26-close\" ng-click=\"closeWindow()\"></a></ul></header><div class=\"win-main\" scrollbar=\"\"><div class=\"tabs tabs-bg\"><div class=\"tabs-one-col\"><div class=\"tab\" ng-click=\"selectTab(TAB_TYPES.SETTINGS)\" ng-class=\"{'tab-active': selectedTab == TAB_TYPES.SETTINGS}\"><div class=\"tab-inner\"><div ng-class=\"{'box-border-light': selectedTab === TAB_TYPES.SETTINGS}\"><a href=\"#\" ng-class=\"{'btn-icon btn-orange': selectedTab !== TAB_TYPES.SETTINGS}\">{{ TAB_TYPES.SETTINGS | i18n:loc.ale:'common' }}</a></div></div></div></div></div><div class=\"box-paper footer\"><div class=\"scroll-wrap\"><div class=\"settings\" ng-show=\"selectedTab === TAB_TYPES.SETTINGS\"><table class=\"tbl-border-light tbl-content tbl-medium-height\"><col><col width=\"200px\"><col width=\"60px\"><tr><td><span class=\"ff-cell-fix\">{{ 'enabled_groups' | i18n:loc.ale:'spy_recruiter' }}</span><td colspan=\"2\"><div select=\"\" list=\"groups\" selected=\"settings[SETTINGS.ENABLED_GROUPS]\" drop-down=\"true\"></div><tr><td><span class=\"ff-cell-fix\">{{ 'preserve_wood' | i18n:loc.ale:'spy_recruiter' }}</span><td><div range-slider=\"\" min=\"settingsMap[SETTINGS.PRESERVE_WOOD].min\" max=\"settingsMap[SETTINGS.PRESERVE_WOOD].max\" value=\"settings[SETTINGS.PRESERVE_WOOD]\" enabled=\"true\"></div><td class=\"cell-bottom\"><input class=\"fit textfield-border text-center\" ng-model=\"settings[SETTINGS.PRESERVE_WOOD]\"><tr><td><span class=\"ff-cell-fix\">{{ 'preserve_clay' | i18n:loc.ale:'spy_recruiter' }}</span><td><div range-slider=\"\" min=\"settingsMap[SETTINGS.PRESERVE_CLAY].min\" max=\"settingsMap[SETTINGS.PRESERVE_CLAY].max\" value=\"settings[SETTINGS.PRESERVE_CLAY]\" enabled=\"true\"></div><td class=\"cell-bottom\"><input class=\"fit textfield-border text-center\" ng-model=\"settings[SETTINGS.PRESERVE_CLAY]\"><tr><td><span class=\"ff-cell-fix\">{{ 'preserve_iron' | i18n:loc.ale:'spy_recruiter' }}</span><td><div range-slider=\"\" min=\"settingsMap[SETTINGS.PRESERVE_IRON].min\" max=\"settingsMap[SETTINGS.PRESERVE_IRON].max\" value=\"settings[SETTINGS.PRESERVE_IRON]\" enabled=\"true\"></div><td class=\"cell-bottom\"><input class=\"fit textfield-border text-center\" ng-model=\"settings[SETTINGS.PRESERVE_IRON]\"><tr><td colspan=\"2\"><span class=\"ff-cell-fix\">{{ 'recruit_single_spy' | i18n:loc.ale:'spy_recruiter' }}</span><td><div switch-slider=\"\" enabled=\"true\" border=\"true\" value=\"settings[SETTINGS.RECRUIT_SINGLE_SPY]\" vertical=\"false\" size=\"'56x28'\"></div><tr><td><span class=\"ff-cell-fix\">{{ 'check_interval' | i18n:loc.ale:'spy_recruiter' }}</span><td colspan=\"2\" class=\"cell-bottom\"><input class=\"fit textfield-border text-center\" ng-model=\"settings[SETTINGS.CHECK_INTERVAL]\"></table></div></div></div></div><footer class=\"win-foot\"><ul class=\"list-btn list-center\"><li ng-show=\"selectedTab === TAB_TYPES.SETTINGS\"><a href=\"#\" class=\"btn-border btn-red\" ng-click=\"saveSettings()\">{{ 'save' | i18n:loc.ale:'common' }}</a><li><a href=\"#\" ng-class=\"{false:'btn-green', true:'btn-red'}[running]\" class=\"btn-border\" ng-click=\"switchState()\"><span ng-show=\"running\">{{ 'pause' | i18n:loc.ale:'common' }}</span> <span ng-show=\"!running\">{{ 'start' | i18n:loc.ale:'common' }}</span></a></ul></footer></div>`);
         interfaceOverflow.addStyle('#two-spy_recruiter div[select]{width:100%}#two-spy_recruiter div[select] .select-handler{line-height:28px}#two-spy_recruiter div[select] .select-wrapper{width:100%}#two-spy_recruiter .range-container{width:250px}#two-spy_recruiter .textfield-border{width:219px;height:34px;margin-bottom:2px;padding-top:2px}#two-spy_recruiter .textfield-border.fit{width:100%}');
     };
 
@@ -12478,7 +11113,7 @@ define('two/spy_recruiter/ui', [
         $scope.saveSettings = saveSettings;
         $scope.switchState = switchState;
 
-        const eventScope = new EventScope('twoverflow_spy_recruiter_window', function onDestroy () {});
+        const eventScope = new EventScope('TW2 Enchanced_spy_recruiter_window', function onDestroy () {});
 
         eventScope.register(eventTypeProvider.GROUPS_CREATED, eventHandlers.updateGroups, true);
         eventScope.register(eventTypeProvider.GROUPS_DESTROYED, eventHandlers.updateGroups, true);
@@ -12486,7 +11121,7 @@ define('two/spy_recruiter/ui', [
         eventScope.register(eventTypeProvider.spy_recruiter_START, eventHandlers.start);
         eventScope.register(eventTypeProvider.spy_recruiter_STOP, eventHandlers.stop);
 
-        windowManagerService.getScreenWithInjectedScope('!twoverflow_spy_recruiter_window', $scope);
+        windowManagerService.getScreenWithInjectedScope('!TW2 Enchanced_spy_recruiter_window', $scope);
     };
 
     return init;
